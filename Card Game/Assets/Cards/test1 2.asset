@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 411c63e12c7b28a49a59e2eb73d4e016, type: 3}
+  m_Name: test1 2
+  m_EditorClassIdentifier: 
+  cardArt: {fileID: 10912, guid: 0000000000000000f000000000000000, type: 0}
+  health: 3
+  attack: 3
+  cost: 3

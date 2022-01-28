@@ -8,12 +8,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Card_Card_BackMat
-    second: {fileID: 2100000, guid: 29606850ab9a1444d8e09a0b62a10474, type: 2}
+    second: {fileID: 2100000, guid: c51804cf320770f43853aaa0df3949c2, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Card_Card_FrontMat
-    second: {fileID: 2100000, guid: 132b370d6ba2afb46a3b129eb3cf49ca, type: 2}
+    second: {fileID: 2100000, guid: 822b6f2249bef7b44849ce0ea001c4df, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
