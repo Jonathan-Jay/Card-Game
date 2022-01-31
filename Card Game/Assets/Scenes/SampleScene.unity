@@ -359,7 +359,7 @@ MonoBehaviour:
   rowCount: 5
   cardHolderPrefab: {fileID: 9108104881741558373, guid: d2f63567c27a3f74685687a82288e286, type: 3}
   horizontalSeperation: 1
-  verticalSeperation: 1.5
+  verticalSeperation: 1.25
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
