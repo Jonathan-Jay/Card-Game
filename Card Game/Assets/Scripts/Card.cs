@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Card : MonoBehaviour
 {
 	public CardData data;
 	[SerializeField]	MeshRenderer frontFace;
-	[SerializeField]	TextMesh attackMesh;
-	[SerializeField]	TextMesh healthMesh;
-	[SerializeField]	TextMesh costMesh;
+	[SerializeField]	TMP_Text attackMesh;
+	[SerializeField]	TMP_Text healthMesh;
+	[SerializeField]	TMP_Text costMesh;
+	public int currHealth = 0;
+	public int currAttack = 0;
 
 	private void Start() {
 		if (data != null) {
@@ -19,13 +22,33 @@ public class Card : MonoBehaviour
 	public void SetData(CardData newData) {
 		data = newData;
 		frontFace.material.mainTexture = data.cardArt;
-		attackMesh.text = data.attack.ToString();
-		healthMesh.text = data.health.ToString();
+		currAttack = data.attack;
+		attackMesh.text = currAttack.ToString();
+
+		currHealth = data.health;
+		healthMesh.text = currHealth.ToString();
 		healthMesh.color = Color.black;
 		string cost = "";
 		for (int i = data.cost; i >= 0; --i) {
 			cost += 'o';
 		}
 		costMesh.text = cost;
+	}
+
+	//returns overkill
+	public int Attack(Card target) {
+		return target.TakeDamage(currAttack);
+	}
+
+	//returs overkill
+	public int TakeDamage(int amt) {
+		currHealth -= amt;
+		if (currHealth <= 0) {
+			healthMesh.text = "0";
+			//queue death here
+			return -currHealth;
+		}
+		healthMesh.text = currHealth.ToString(); 
+		return -1;
 	}
 }
