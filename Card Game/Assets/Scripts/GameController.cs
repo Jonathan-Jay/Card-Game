@@ -47,13 +47,15 @@ public class GameController : MonoBehaviour
 		
 		for (int i = 0; i < rowCount; ++i) {
 			//instantiated to have matching row count
-			player2Field.Add(Instantiate(cardHolderPrefab, offset, Quaternion.Euler(0f, 180f, 0f), transform)
+			player2Field.Add(Instantiate(cardHolderPrefab, Vector3.zero, Quaternion.Euler(0f, 180f, 0f), transform)
 				.GetComponent<CardHolder>());
+			player2Field[i].transform.localPosition = offset;
 			player2Field[i].index = i;
 			offset.z *= -1f;
 
-			player1Field.Add(Instantiate(cardHolderPrefab, offset, Quaternion.identity, transform)
+			player1Field.Add(Instantiate(cardHolderPrefab, Vector3.zero, Quaternion.identity, transform)
 				.GetComponent<CardHolder>());
+			player1Field[i].transform.localPosition = offset;
 			player1Field[i].index = i;
 			offset.z *= -1f;
 			offset.x += horizontalSeperation;
