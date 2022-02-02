@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &130804148
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 130804149}
+  m_Layer: 0
+  m_Name: Mouse
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &130804149
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130804148}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1987802561}
+  m_Father: {fileID: 963194228}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &369543962
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,9 +388,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rowCount: 4
-  cardHolderPrefab: {fileID: 9108104881741558373, guid: d2f63567c27a3f74685687a82288e286, type: 3}
+  cardHolderPrefab: {fileID: 9108104881741558368, guid: d2f63567c27a3f74685687a82288e286, type: 3}
+  turnEndButtonPrefab: {fileID: 4233657037377689130, guid: 3fa8119b8dc1241479ce3f22708aff84, type: 3}
+  deckPrefab: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
   horizontalSeperation: 1
   verticalSeperation: 1.25
+  player1HP: 100
+  player2HP: 100
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,7 +476,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 8.45, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1987802561}
+  - {fileID: 130804149}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 36, y: 180, z: 0}
@@ -457,9 +492,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3794d958ceb159646bd67bfa9363fbed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseObject: {fileID: 1987802557}
+  mouseObject: {fileID: 130804149}
   maxDist: 20
-  vertOffset: 0.4
+  vertOffset: 0.1
+  grabbedMask: 7
 --- !u!1 &1002933231
 GameObject:
   m_ObjectHideFlags: 0
@@ -569,7 +605,7 @@ GameObject:
   - component: {fileID: 1987802560}
   - component: {fileID: 1987802559}
   m_Layer: 0
-  m_Name: Mouse
+  m_Name: MouseIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -632,10 +668,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1987802557}
-  m_LocalRotation: {x: -0.3090171, y: 0, z: 0, w: 0.95105654}
-  m_LocalPosition: {x: 0, y: 2, z: 9}
+  m_LocalRotation: {x: -0.30901703, y: -0, z: -0, w: 0.9510565}
+  m_LocalPosition: {x: 0, y: 0.05, z: -0.064}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
-  m_Father: {fileID: 963194228}
+  m_Father: {fileID: 130804149}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 61.71, y: 0, z: 0}

@@ -46,9 +46,17 @@ public class Card : MonoBehaviour
 		if (currHealth <= 0) {
 			healthMesh.text = "0";
 			//queue death here
+			StartCoroutine("Death");
 			return -currHealth;
 		}
 		healthMesh.text = currHealth.ToString(); 
 		return -1;
+	}
+	IEnumerator Death() {
+		for (int i = 10; i >= 0; --i) {
+			transform.localScale = Vector3.one * i * 0.1f;
+			yield return new WaitForSeconds(0.05f);
+		}
+		Destroy(gameObject);
 	}
 }

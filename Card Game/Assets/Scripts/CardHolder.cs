@@ -7,6 +7,8 @@ public class CardHolder : MonoBehaviour
 	Card holding;
 	public int index;
 	public Vector3 floatingHeight = Vector3.up * 0.1f;
+	public float moveSpeed = 1f;
+	public float rotSpeed = 1f;
 
 	//damage to player
     public int DoUpdate(List<CardHolder> opposing)
@@ -29,12 +31,26 @@ public class CardHolder : MonoBehaviour
 	{
 		if (holding != null)	return false;
 
-		card.transform.SetParent(transform, false);
-		card.transform.position = floatingHeight;
-
-		//should be flipped, but animate it?
-		card.transform.rotation = Quaternion.identity;
+		card.transform.SetParent(transform, true);
 		holding = card;
+		StartCoroutine("CardTransition");
+
 		return true;
+	}
+
+	IEnumerator CardTransition() {
+		Transform cardTrans = holding.transform;
+		while (holding != null) {
+			cardTrans.localPosition = Vector3.Lerp(cardTrans.localPosition, floatingHeight,
+				moveSpeed * Time.deltaTime);
+			cardTrans.localRotation = Quaternion.Slerp(cardTrans.localRotation, Quaternion.identity,
+				rotSpeed * Time.deltaTime);
+			if (Quaternion.Angle(cardTrans.localRotation, Quaternion.identity) < 0.1f &&
+				Vector3.Distance(cardTrans.localPosition, floatingHeight) < 0.01f) {
+					//now valid
+					break;
+				}
+			yield return new WaitForEndOfFrame();
+		}
 	}
 }

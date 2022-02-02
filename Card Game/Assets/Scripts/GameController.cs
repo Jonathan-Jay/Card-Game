@@ -5,17 +5,31 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
 	public int rowCount;
-	public GameObject cardHolderPrefab;
+	public CardHolder cardHolderPrefab;
+	public PressEventButton turnEndButtonPrefab;
+	public DeckManager deckPrefab;
 	[SerializeField] float horizontalSeperation;
 	[SerializeField] float verticalSeperation;
 	List<CardHolder> player1Field = new List<CardHolder>();
 	List<CardHolder> player2Field = new List<CardHolder>();
-	
+
+
+	public int player1HP = 100;
+	public int player2HP = 100;
+
+
     // Start is called before the first frame update
     void Start()
     {
         Generate();
     }
+
+	void DoPlayer1Turn() {
+		player2HP -= Doturn(true);
+	}
+	void DoPlayer2Turn() {
+		player1HP -= Doturn(false);
+	}
 
 	//return damage taken by opposing player
 	int Doturn(bool player1) {
@@ -27,7 +41,7 @@ public class GameController : MonoBehaviour
 		return total;
 	}
 
-	//returns true on sucess
+	//returns true on success
 	bool AddCard(int index, bool player1, Card card) {
 		if (player1) {
 			return player1Field[index].PutCard(card);
@@ -45,17 +59,42 @@ public class GameController : MonoBehaviour
 		offset.z = verticalSeperation * 0.5f;
 		offset.x = horizontalSeperation * (rowCount - 1) * -0.5f;
 		
+		//spawn the deck (currently lets any player draw a card from either deck)
+		Transform temp = null;
+		temp = Instantiate(deckPrefab.gameObject, transform).transform;
+		temp.localPosition = Vector3.left * horizontalSeperation + offset;
+		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
+
+		temp = Instantiate(deckPrefab.gameObject, transform).transform;
+		temp.localPosition = Vector3.right * horizontalSeperation - offset;
+		temp.localRotation = Quaternion.identity;
+
+
+		//spawn turn buttons
+		temp = Instantiate(turnEndButtonPrefab.gameObject, transform).transform;
+		temp.localPosition = Vector3.forward * verticalSeperation * 1.25f;
+		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
+		temp.GetComponent<PressEventButton>().pressed += DoPlayer2Turn;
+
+		temp = Instantiate(turnEndButtonPrefab.gameObject, transform).transform;
+		temp.localPosition = Vector3.back * verticalSeperation * 1.25f;
+		temp.localRotation = Quaternion.identity;
+		temp.GetComponent<PressEventButton>().pressed += DoPlayer1Turn;
+
+
 		for (int i = 0; i < rowCount; ++i) {
 			//instantiated to have matching row count
-			player2Field.Add(Instantiate(cardHolderPrefab, Vector3.zero, Quaternion.Euler(0f, 180f, 0f), transform)
-				.GetComponent<CardHolder>());
-			player2Field[i].transform.localPosition = offset;
+			temp = Instantiate(cardHolderPrefab.gameObject, transform).transform;
+			temp.localPosition = offset;
+			temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
+			player2Field.Add(temp.GetComponent<CardHolder>());
 			player2Field[i].index = i;
 			offset.z *= -1f;
 
-			player1Field.Add(Instantiate(cardHolderPrefab, Vector3.zero, Quaternion.identity, transform)
-				.GetComponent<CardHolder>());
-			player1Field[i].transform.localPosition = offset;
+			temp = Instantiate(cardHolderPrefab.gameObject, transform).transform;
+			temp.localPosition = offset;
+			temp.localRotation = Quaternion.identity;
+			player1Field.Add(temp.GetComponent<CardHolder>());
 			player1Field[i].index = i;
 			offset.z *= -1f;
 			offset.x += horizontalSeperation;
