@@ -27,7 +27,7 @@ public class SpellCard : Card
 		//do spell thing
 		Card target = null;
 		while (target == null) {
-			target = ((SpellData)data).targetting.Invoke();
+			target = ((SpellData)data).targetting.Invoke(this);
 		}
 
 		//to check if targetting self or opponent (maybe limit this)

@@ -5,9 +5,9 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
 	[SerializeField]	List<Transform> posOptions = new List<Transform>();
-	[SerializeField] float speed = 2f;
+	[SerializeField]	int index = 0;
+	[SerializeField]	float speed = 2f;
 	Transform targetTrans;
-	int index = 0;
 	bool transitioning = true;
 
 	void Start()
@@ -21,22 +21,26 @@ public class CameraController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W)) {
 			if (++index >= posOptions.Count) {
-				index = 0;
+				index = posOptions.Count - 1;
 			}
-			targetTrans = posOptions[index];
-			if (!transitioning) {
-				transitioning = true;
-				StartCoroutine("MoveCam");
+			else {
+				targetTrans = posOptions[index];
+				if (!transitioning) {
+					transitioning = true;
+					StartCoroutine("MoveCam");
+				}
 			}
 		}
         if (Input.GetKeyDown(KeyCode.S)) {
 			if (--index < 0) {
-				index = posOptions.Count - 1;
+				index = 0;
 			}
-			targetTrans = posOptions[index];
-			if (!transitioning) {
-				transitioning = true;
-				StartCoroutine("MoveCam");
+			else {
+				targetTrans = posOptions[index];
+				if (!transitioning) {
+					transitioning = true;
+					StartCoroutine("MoveCam");
+				}
 			}
 		}
     }
