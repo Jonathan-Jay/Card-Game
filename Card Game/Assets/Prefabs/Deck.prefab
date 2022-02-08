@@ -149,5 +149,10 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 378b320bed89e9241800d94ca0eab3d0, type: 2}
   - amt: 3
     data: {fileID: 11400000, guid: 41b7a772cec82514b8619a722a1f50cd, type: 2}
-  cardPrefab: {fileID: 6117876407004506381, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
+  - amt: 3
+    data: {fileID: 11400000, guid: c757e0cc240fff4449ce1a6e4eb4a8e5, type: 2}
+  cardPrefab: {fileID: 763856821016003713, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
+  monsterPrefab: {fileID: 4927160011221335715, guid: b754fb93e1073534f82c348aa95ea457, type: 3}
+  spellPrefab: {fileID: 5665379, guid: e726434936a833d4a91d2c51dedefb33, type: 3}
   spawnOffset: {x: 0, y: 0.25, z: 0}
+  spawnRotation: {x: -70, y: 0, z: 0}

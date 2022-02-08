@@ -7,7 +7,9 @@ public class GameController : MonoBehaviour
 	public int rowCount;
 	public CardHolder cardHolderPrefab;
 	public PressEventButton turnEndButtonPrefab;
+	[SerializeField] Vector3 bellPos = Vector3.left;
 	public DeckManager deckPrefab;
+	[SerializeField] Vector3 deckPos = Vector3.right;
 	[SerializeField] float horizontalSeperation;
 	[SerializeField] float verticalSeperation;
 	List<CardHolder> player1Field = new List<CardHolder>();
@@ -42,7 +44,7 @@ public class GameController : MonoBehaviour
 	}
 
 	//returns true on success
-	bool AddCard(int index, bool player1, Card card) {
+	bool AddCard(int index, bool player1, MonsterCard card) {
 		if (player1) {
 			return player1Field[index].PutCard(card);
 		}
@@ -62,22 +64,22 @@ public class GameController : MonoBehaviour
 		//spawn the deck (currently lets any player draw a card from either deck)
 		Transform temp = null;
 		temp = Instantiate(deckPrefab.gameObject, transform).transform;
-		temp.localPosition = Vector3.left * horizontalSeperation + offset;
+		temp.localPosition = -deckPos;
 		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
 
 		temp = Instantiate(deckPrefab.gameObject, transform).transform;
-		temp.localPosition = Vector3.right * horizontalSeperation - offset;
+		temp.localPosition = deckPos;
 		temp.localRotation = Quaternion.identity;
 
 
 		//spawn turn buttons
 		temp = Instantiate(turnEndButtonPrefab.gameObject, transform).transform;
-		temp.localPosition = Vector3.forward * verticalSeperation * 1.25f;
+		temp.localPosition = -bellPos;
 		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
 		temp.GetComponent<PressEventButton>().pressed += DoPlayer2Turn;
 
 		temp = Instantiate(turnEndButtonPrefab.gameObject, transform).transform;
-		temp.localPosition = Vector3.back * verticalSeperation * 1.25f;
+		temp.localPosition = bellPos;
 		temp.localRotation = Quaternion.identity;
 		temp.GetComponent<PressEventButton>().pressed += DoPlayer1Turn;
 

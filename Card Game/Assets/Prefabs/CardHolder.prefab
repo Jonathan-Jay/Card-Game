@@ -140,7 +140,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab11de1acc38ad149ba7fc873c62b505, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasCard: {r: 1, g: 0.390566, b: 0.390566, a: 1}
   index: 0
-  floatingHeight: {x: 0, y: 0.075, z: 0}
+  floatingHeight: {x: 0, y: 0.075, z: -0.5}
   moveSpeed: 5
-  rotSpeed: 2.5
+  rotSpeed: 10
+  slamHeight: {x: 0, y: 0.575, z: -0.5}
+  slamSpeed: 10

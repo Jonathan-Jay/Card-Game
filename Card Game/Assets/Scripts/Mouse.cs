@@ -28,36 +28,42 @@ public class Mouse : MonoBehaviour {
 				//first check if we wanna do smt
 				GameObject hitObj = rayHitInfo.collider.gameObject;
 				if (hitObj.CompareTag("Interactable")) {
-					Card cardTest;
-					if (hitObj.TryGetComponent<Card>(out cardTest)) {
-						rayHitInfo.rigidbody.isKinematic = true;
-						cardTest.transform.SetParent(mouseObject, true);
-						cardTest.transform.position += Vector3.up * vertOffset;
-						tempLayer = cardTest.gameObject.layer;
-						cardTest.gameObject.layer = grabbedMask;
-						return;
-					}
-					DeckManager deckTest;
-					if (hitObj.TryGetComponent<DeckManager>(out deckTest)) {
-						Transform card = deckTest.DrawCard();
-						if (card != null) {
-							card.GetComponent<Rigidbody>().isKinematic = true;
-							card.SetParent(mouseObject, true);
-							card.position += Vector3.up * vertOffset;
-							tempLayer = card.gameObject.layer;
-							card.gameObject.layer = grabbedMask;
+					{
+						Card cardTest = hitObj.GetComponent<Card>();
+						if (cardTest != null) {
+							rayHitInfo.rigidbody.isKinematic = true;
+							cardTest.transform.SetParent(mouseObject, true);
+							cardTest.transform.position += Vector3.up * vertOffset;
+							tempLayer = cardTest.gameObject.layer;
+							cardTest.gameObject.layer = grabbedMask;
+							return;
 						}
-						return;
 					}
-					PressEventButton buttonTest;
-					if (hitObj.TryGetComponent<PressEventButton>(out buttonTest)) {
-						buttonTest.Press();
-						return;
+					{
+						DeckManager deckTest = hitObj.GetComponent<DeckManager>();
+						if (deckTest != null) {
+							Transform card = deckTest.DrawCard();
+							if (card != null) {
+								card.GetComponent<Rigidbody>().isKinematic = true;
+								card.SetParent(mouseObject, true);
+								card.position += Vector3.up * vertOffset;
+								tempLayer = card.gameObject.layer;
+								card.gameObject.layer = grabbedMask;
+							}
+							return;
+						}
+					}
+					{
+						PressEventButton buttonTest = hitObj.GetComponent<PressEventButton>();
+						if (buttonTest != null) {
+							buttonTest.Press();
+							return;
+						}
 					}
 				}
 			}
 			//we should be holding something
-			else if (tempLayer != -1) {
+			if (tempLayer != -1) {
 				if (Input.GetMouseButtonUp(0)) {
 					GameObject hitObj = rayHitInfo.collider.gameObject;
 					//cardholder test

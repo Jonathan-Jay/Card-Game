@@ -12,15 +12,16 @@ public class DeckManager : MonoBehaviour
 
 	public List<CardDataMultiplier> deck = new List<CardDataMultiplier>();
 	public Card cardPrefab;
+	public MonsterCard monsterPrefab;
+	public SpellCard spellPrefab;
 	public Vector3 spawnOffset = Vector3.up * 0.25f;
+	public Vector3 spawnRotation = Vector3.left * 90f;
 
 	GameObject temp;
 	CardData data;
 
     public Transform DrawCard() {
 		if (deck.Count == 0)	return null;
-
-		temp = Instantiate(cardPrefab.gameObject, transform.position + spawnOffset, transform.rotation);
 
 		//not good because doesn't take into account the amt of cards per type, could always remove the amt system
 		int index = Random.Range(0, deck.Count);
@@ -32,6 +33,15 @@ public class DeckManager : MonoBehaviour
 			}
 		}
 
+		if (data.GetType().Equals(typeof(MonsterData))) {
+			temp = Instantiate(monsterPrefab.gameObject, transform.position + spawnOffset, transform.rotation * Quaternion.Euler(spawnRotation));
+		}
+		else if (data.GetType().Equals(typeof(SpellData))) {
+			temp = Instantiate(spellPrefab.gameObject, transform.position + spawnOffset, transform.rotation * Quaternion.Euler(spawnRotation));
+		}
+		else {
+			temp = Instantiate(cardPrefab.gameObject, transform.position + spawnOffset, transform.rotation * Quaternion.Euler(spawnRotation));
+		}
 		temp.GetComponent<Card>().SetData(data);
 		data = null;
 
