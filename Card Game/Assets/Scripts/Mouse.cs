@@ -97,8 +97,8 @@ public class Mouse : MonoBehaviour {
     }
 
 	bool Hover(RaycastHit rayHitInfo, bool tryDehover = true) {
-		if (tryDehover && !DeHover(rayHitInfo)) return false;			//You cannot hover an object when dehovering another object
 		if (rayHitInfo.transform.gameObject.layer != 6) return false;	//Dont hover a non-card
+		if (tryDehover && !DeHover(rayHitInfo)) return false;			//You cannot hover an object when dehovering another object
 		if (!isHovering) {
 			isHovering = true;
 			hoverObj = rayHitInfo.transform.gameObject;

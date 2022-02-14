@@ -6,6 +6,7 @@ using TMPro;
 public class SpellCard : Card
 {
 	[SerializeField] protected TMP_Text descriptionMesh;
+	WaitForEndOfFrame frameWait = new WaitForEndOfFrame();
 
 	private void Start() {
 		if (data != null) {
@@ -27,7 +28,8 @@ public class SpellCard : Card
 		//do spell thing
 		Card target = null;
 		while (target == null) {
-			target = ((SpellData)data).targetting.Invoke(this);
+			yield return frameWait;
+			target = ((SpellData)data).targetting.Invoke(this, new RaycastHit());
 		}
 
 		//to check if targetting self or opponent (maybe limit this)

@@ -37,6 +37,7 @@ public class MonsterCard : Card
 
 	//returs overkill
 	public int TakeDamage(int amt) {
+		if (currHealth <= 0)	return 0;
 		currHealth -= amt;
 		if (currHealth <= 0) {
 			healthMesh.text = "0";

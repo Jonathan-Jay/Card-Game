@@ -14,5 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardArt: {fileID: 2800000, guid: dffef66376be4fa480fb02b19edbe903, type: 3}
   cost: 0
-  health: 0
-  attack: 0
+  canTargetOpponentHolders: 1
+  canTargetSelfHolders: 0
+  canTargetOpponent: 0
+  canTargetSelf: 0
+  actionParameter: 0
+  abilityParameter1: 1
+  abilityParameter2: 0

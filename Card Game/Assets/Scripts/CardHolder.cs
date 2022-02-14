@@ -7,6 +7,7 @@ public class CardHolder : MonoBehaviour
 	Card holding;
 	[SerializeField] Color hasCard = Color.white;
 	Color originalCol;
+	public string playerTag;
 	public int index;
 	public Vector3 floatingHeight = Vector3.up * 0.1f;
 	public float moveSpeed = 1f;
@@ -41,6 +42,7 @@ public class CardHolder : MonoBehaviour
 
 		card.transform.SetParent(transform, true);
 		card.placement = this;
+		card.tag = playerTag;
 		holding = card;
 		GetComponentInChildren<MeshRenderer>().material.color = hasCard;
 		StartCoroutine("CardTransition");

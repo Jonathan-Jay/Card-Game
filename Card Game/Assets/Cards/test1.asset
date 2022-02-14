@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: test1
   m_EditorClassIdentifier: 
   cardArt: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
-  health: 3
-  attack: 3
-  cost: 3
+  cost: 4
+  health: 4
+  attack: 4
