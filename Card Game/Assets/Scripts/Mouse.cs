@@ -12,7 +12,6 @@ public class Mouse : MonoBehaviour {
 	bool isHovering = false;
 	GameObject hoverObj;
 	Vector3 hoverObjOrigPos = Vector3.zero;
-	Vector3 hoverObjVel = Vector3.zero;
 	int tempLayer = -1;
 
     private Camera cam;
@@ -29,7 +28,7 @@ public class Mouse : MonoBehaviour {
 
         if (Physics.Raycast(rayInfo, out rayHitInfo, maxDist, mask)) {
             mouseObject.position = rayHitInfo.point + Vector3.up * vertOffset;
-			if (doHover) Hover(rayHitInfo);
+			if (doHover) HoverManagement(rayHitInfo);
 
 			if (Input.GetMouseButtonDown(0)) {
 				//first check if we wanna do smt
@@ -89,34 +88,66 @@ public class Mouse : MonoBehaviour {
         }
     }
 
-	bool Hover(RaycastHit rayHitInfo, bool tryDehover = true) {
-		if (tryDehover && !DeHover(rayHitInfo)) return false;			//You cannot hover an object when dehovering another object
-		if (rayHitInfo.transform.gameObject.layer != 6) return false;	//Dont hover a non-card
-		if (!isHovering) {
-			isHovering = true;
-			hoverObj = rayHitInfo.transform.gameObject;
-			hoverObjOrigPos = hoverObj.transform.position;
-		}
-
-		Vector3 targetPos = hoverObjOrigPos + hoverObj.transform.up * 0.1f;
-		hoverObj.transform.position = Vector3.SmoothDamp(hoverObj.transform.position, targetPos, ref hoverObjVel, 0.1f, 2f, Time.deltaTime);
-
-		return true;	//I am hover boi
+	void HoverManagement(RaycastHit rayHitInfo) {
+		//Can only dehover if you're hovering smth and if raycast has different output then saved input
+		if (isHovering && rayHitInfo.transform.gameObject != hoverObj) StartCoroutine(DeActivateHover(rayHitInfo));
+		//Can only animate the hovering if you arent hovering smth and if layer is card
+		if (!isHovering && rayHitInfo.transform.gameObject.layer == 6) StartCoroutine(ActivateHover(rayHitInfo));
 	}
 
-	bool DeHover(RaycastHit rayHitInfo) {
-		if (!isHovering || rayHitInfo.transform.gameObject == hoverObj) return true;	//No Obj was previously hovered OR still hovering over same Obj
+	IEnumerator ActivateHover(RaycastHit rayHitInfo) {
+		isHovering = true;
+		hoverObj = rayHitInfo.transform.gameObject;
+		hoverObjOrigPos = hoverObj.transform.localPosition;
 
-		if (Vector3.Distance(hoverObj.transform.position, hoverObjOrigPos) < 0.0001f ) {
-			hoverObj.transform.position = hoverObjOrigPos;
-			isHovering = false;
-			hoverObj = null;
-			hoverObjOrigPos = Vector3.zero;
-			return true;		//fully "dehovered" Obj
+		GameObject tempHoverObj = hoverObj;
+		Vector3 tempHoverObjOffset = tempHoverObj.transform.localRotation * new Vector3(0f, 0.066f, 0.1f);
+		Vector3 targetPos = hoverObjOrigPos + tempHoverObjOffset;
+		Vector3 hoverObjVel = Vector3.zero;
+		bool tempLoop = true;
+
+        while (tempLoop) {
+			if (tempHoverObj != hoverObj)
+				break;
+			targetPos = hoverObjOrigPos + tempHoverObjOffset;
+			tempLoop = Vector3.Distance(tempHoverObj.transform.localPosition, targetPos) >= 0.01f;
+
+			tempHoverObj.transform.localPosition = Vector3.SmoothDamp(tempHoverObj.transform.localPosition, targetPos, ref hoverObjVel, 0.1f, 2f, Time.deltaTime);
+
+			yield return null;
 		}
 
-		hoverObj.transform.position = Vector3.SmoothDamp(hoverObj.transform.position, hoverObjOrigPos, ref hoverObjVel, 0.1f, 2f, Time.deltaTime);
-		
-		return false;		//In process of "dehovering" Obj
+		if (!tempLoop)
+			tempHoverObj.transform.localPosition = targetPos;
+
+		//Debug.Log("ActivateHover: " + hoverObjOrigPos);
+	}
+
+	IEnumerator DeActivateHover(RaycastHit rayHitInfo) {
+		GameObject tempHoverObj = hoverObj;
+		Vector3 targetPos = hoverObjOrigPos;
+		Vector3 hoverObjVel = Vector3.zero;
+		bool tempLoop = true;
+
+		isHovering = false;
+		hoverObj = null;
+		hoverObjOrigPos = Vector3.zero;
+
+		while (tempLoop) {
+			if (tempHoverObj == hoverObj)
+				break;
+			tempLoop = Vector3.Distance(tempHoverObj.transform.localPosition, targetPos) >= 0.01f;
+
+			tempHoverObj.transform.localPosition = Vector3.SmoothDamp(tempHoverObj.transform.localPosition, targetPos, ref hoverObjVel, 0.1f, 2f, Time.deltaTime);
+
+			yield return null;
+		}
+
+		if (!tempLoop)
+			tempHoverObj.transform.localPosition = targetPos;
+		else
+			hoverObjOrigPos = targetPos;    //In process of dehovering object has been hovered again thus OriginalPos was set incorrectly
+
+		//Debug.Log("DeActivateHover: " + targetPos);
 	}
 }
