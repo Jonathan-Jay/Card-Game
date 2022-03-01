@@ -7,7 +7,6 @@ public class CardHolder : MonoBehaviour
 	public Card holding;
 	[SerializeField] Color hasCard = Color.white;
 	Color originalCol;
-	public string playerTag;
 	public GameController.PlayerData playerData;
 	public GameController.PlayerData opposingData;
 	public int index;
@@ -49,7 +48,7 @@ public class CardHolder : MonoBehaviour
 
 		card.transform.SetParent(transform, true);
 		card.placement = this;
-		card.tag = playerTag;
+		card.tag = playerData.playerTag;
 		holding = card;
 		GetComponentInChildren<MeshRenderer>().material.color = hasCard;
 		StartCoroutine("CardTransition");

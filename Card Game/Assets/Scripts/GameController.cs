@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour
 {
 	[System.Serializable]
 	public class PlayerData {
+		public string playerTag = "";
 		public int currentHP = 20;
 		public int maxHP = 20;
 		public int currentMana = 1;
@@ -107,7 +108,6 @@ public class GameController : MonoBehaviour
 			//temp.gameObject.tag = "Player2";
 			player2.field.Add(temp.GetComponent<CardHolder>());
 			player2.field[i].index = i;
-			player2.field[i].playerTag = "Player2";
 			player2.field[i].playerData = player2;
 			player2.field[i].opposingData = player1;
 			offset.z *= -1f;
@@ -118,7 +118,6 @@ public class GameController : MonoBehaviour
 			//temp.gameObject.tag = "Player1";
 			player1.field.Add(temp.GetComponent<CardHolder>());
 			player1.field[i].index = i;
-			player1.field[i].playerTag = "Player1";
 			player1.field[i].playerData = player1;
 			player1.field[i].opposingData = player2;
 			offset.z *= -1f;
