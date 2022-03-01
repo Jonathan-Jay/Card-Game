@@ -4,52 +4,63 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+	[System.Serializable]
+	public class PlayerData {
+		public int currentHP = 20;
+		public int maxHP = 20;
+		public int currentMana = 1;
+		public int maxMana = 5;
+
+		public List<CardHolder> field = new List<CardHolder>();
+	}
+	
 	public int rowCount;
-	public CardHolder cardHolderPrefab;
-	public PressEventButton turnEndButtonPrefab;
+	[SerializeField] bool generateField = true;
+	[SerializeField] CardHolder cardHolderPrefab;
+	[SerializeField] PressEventButton turnEndButtonPrefab;
+	[SerializeField] DeckManager deckPrefab;
 	[SerializeField] Vector3 bellPos = Vector3.left;
-	public DeckManager deckPrefab;
 	[SerializeField] Vector3 deckPos = Vector3.right;
 	[SerializeField] float horizontalSeperation;
 	[SerializeField] float verticalSeperation;
-	List<CardHolder> player1Field = new List<CardHolder>();
-	List<CardHolder> player2Field = new List<CardHolder>();
 
-
-	public int player1HP = 100;
-	public int player2HP = 100;
+	public int maxMana = 5;
+	public PlayerData player1 = new PlayerData();
+	public PlayerData player2 = new PlayerData();
 
 
     // Start is called before the first frame update
     void Start()
     {
-        Generate();
+		if (generateField)
+        	Generate();
     }
 
 	void DoPlayer1Turn() {
-		player2HP -= Doturn(true);
+		player2.currentHP -= Doturn(player1);;
 	}
 	void DoPlayer2Turn() {
-		player1HP -= Doturn(false);
+		player1.currentHP -= Doturn(player2);
 	}
 
 	//return damage taken by opposing player
-	int Doturn(bool player1) {
-		List<CardHolder> opposing = player1 ? player2Field : player1Field;
+	int Doturn(PlayerData current) {
 		int total = 0;
-		foreach (CardHolder tile in (player1 ? player1Field : player2Field)) {
-			total += tile.DoUpdate(opposing);
+		foreach (CardHolder tile in current.field) {
+			total += tile.DoUpdate();
 		}
+		current.currentMana = current.maxMana = Mathf.Clamp(++current.maxMana, 0, maxMana);
+
 		return total;
 	}
 
 	//returns true on success
-	bool AddCard(int index, bool player1, MonsterCard card) {
-		if (player1) {
-			return player1Field[index].PutCard(card);
+	bool AddCard(int index, bool isP1, MonsterCard card) {
+		if (isP1) {
+			return player1.field[index].PutCard(card);
 		}
 		else {
-			return player2Field[index].PutCard(card);
+			return player2.field[index].PutCard(card);
 		}
 	}
 
@@ -94,18 +105,22 @@ public class GameController : MonoBehaviour
 			temp.localPosition = offset;
 			temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
 			//temp.gameObject.tag = "Player2";
-			player2Field.Add(temp.GetComponent<CardHolder>());
-			player2Field[i].index = i;
-			player2Field[i].playerTag = "Player2";
+			player2.field.Add(temp.GetComponent<CardHolder>());
+			player2.field[i].index = i;
+			player2.field[i].playerTag = "Player2";
+			player2.field[i].playerData = player2;
+			player2.field[i].opposingData = player1;
 			offset.z *= -1f;
 
 			temp = Instantiate(cardHolderPrefab.gameObject, transform).transform;
 			temp.localPosition = offset;
 			temp.localRotation = Quaternion.identity;
 			//temp.gameObject.tag = "Player1";
-			player1Field.Add(temp.GetComponent<CardHolder>());
-			player1Field[i].index = i;
-			player1Field[i].playerTag = "Player1";
+			player1.field.Add(temp.GetComponent<CardHolder>());
+			player1.field[i].index = i;
+			player1.field[i].playerTag = "Player1";
+			player1.field[i].playerData = player1;
+			player1.field[i].opposingData = player2;
 			offset.z *= -1f;
 			offset.x += horizontalSeperation;
 		}
@@ -113,7 +128,7 @@ public class GameController : MonoBehaviour
 
 	void Clear() {
 		//consider killing all cards as well
-		player1Field.Clear();
-		player2Field.Clear();
+		player1.field.Clear();
+		player2.field.Clear();
 	}
 }

@@ -6,4 +6,8 @@ using UnityEngine;
 public class MonsterData : CardData {
 	public int health;
 	public int attack;
+	public override bool CheckCost(GameController.PlayerData player)
+	{
+		return true;
+	}
 }

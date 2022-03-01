@@ -1,25 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+
+//helps shorten things
+using AbilityFunc = System.Action<Card, SpellData>;
+using ActivationFunc = System.Action<GameController.PlayerData, int, System.Action<Card, SpellData>, SpellData>;
 
 [CreateAssetMenu(fileName = "Spell", menuName = "CardData/SpellData", order = 0)]
 public class SpellData : CardData {
-	public bool canTargetOpponentHolders = true;
-	public bool canTargetSelfHolders = false;
-	public bool canTargetOpponent = false;
-	public bool canTargetSelf = false;
-	public Func<Card, RaycastHit, Card> targetting = DefaultTargetting;
-	public Action<Card, Action<Card, int, int>, int, int, int> activate = DirectActivation;
-	public Action<Card, int, int> ability = DirectAbility;
-	public int actionParameter = 0;
+	public System.Func<Card, RaycastHit, Card> targetting = DefaultTargetting;
+	public ActivationFunc activate = DirectActivation;
+	public AbilityFunc ability = DirectAbility;
+	public string cardDescription = "I Forgor :Skull:";
+	public int actionParameter1 = 0;
+	public int actionParameter2 = 0;
 	public int abilityParameter1 = 0;
 	public int abilityParameter2 = 0;
 
+	public override bool CheckCost(GameController.PlayerData player) {
+		if (player.currentMana >= cost) {
+			player.currentMana -= cost;
+			return true;
+		}
+		return false;
+	}
+
 	//if target is self, this should be null
-	public void CastSpell(Card target) {
+	public void CastSpell(GameController.PlayerData target, int index) {
 		//select the target
-		activate.Invoke(target, ability, actionParameter, abilityParameter1, abilityParameter2);
+		activate.Invoke(target, index, ability, this);
 	}
 
 
@@ -30,39 +39,56 @@ public class SpellData : CardData {
 		return current;
 	}
 
-	//just calls the ability once on the target
-	static public void DirectActivation(Card target, Action<Card, int, int> ability,
-			int actionParameter, int abilityParameter1, int abilityParameter2) {
-		ability.Invoke(target, abilityParameter1, abilityParameter2);
+	//just calls the ability once on the card target
+	static public void DirectActivation(GameController.PlayerData target, int index,
+		AbilityFunc ability, SpellData spell)
+	{
+		ability.Invoke(target.field[index].holding, spell);
 	}
 
 	//deals abilityParameter1 once
-	static public void DirectAbility(Card target, int abilityParameter1, int abilityParameter2) {
+	static public void DirectAbility(Card target, SpellData spell) {
 		if (target != null) {
-			((MonsterCard)target).TakeDamage(abilityParameter1);
+			((MonsterCard)target).TakeDamage(spell.abilityParameter1);
 		}
 	}
 
 #region targettingOptions
-
+	static public Card TargetPlayer(Card current, RaycastHit hit) {
+		return current;
+	}
 #endregion
 
 #region ActivationOptions
-	//call the ability actionParameter times
-	static public void RepeatedActivation(Card target, Action<Card, int, int> ability,
-			int actionParameter, int abilityParameter1, int abilityParameter2) {
-		for (int i = 0; i < actionParameter; ++i) {
-			ability.Invoke(target, abilityParameter1, abilityParameter2);
+	//call the ability actionParameter1 times
+	static public void RepeatedActivation(GameController.PlayerData target, int index,
+		AbilityFunc ability, SpellData spell)
+	{
+		for (int i = 0; i < spell.actionParameter1; ++i) {
+			ability.Invoke(target.field[index].holding, spell);
+		}
+	}
+
+	//target a random card index times
+	static public void RandomizedActivation(GameController.PlayerData target, int index,
+		AbilityFunc ability, SpellData spell)
+	{
+		for (int i = 0; i < index;) {
+			int j = Random.Range(0, target.field.Count);
+			if (target.field[index].holding) {
+				ability.Invoke(target.field[index].holding, spell);
+				++i;
+			}
 		}
 	}
 #endregion
 
 #region AbilityOptions
 	//between abillityParameter1 inclusive and abilityParamter2 inclusive
-	static public void RandomDamage(Card target, int abilityParameter1, int abilityParameter2) {
+	static public void RandomDamage(Card target, SpellData spell) {
 		if (target != null) {
 			((MonsterCard)target).TakeDamage(UnityEngine.Random.Range(
-				abilityParameter1, abilityParameter2 + 1));
+				spell.abilityParameter1, spell.abilityParameter2 + 1));
 		}
 	}
 #endregion

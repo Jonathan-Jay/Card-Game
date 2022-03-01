@@ -99,8 +99,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Target <color=red><b>Opposing</b></color> Card and deal <color=red><i>100</i></color>
-    damage
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -127,7 +126,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.8
+  m_fontSize: 0.64
   m_fontSizeBase: 0.64
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -184,6 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae54b7bc810757a44afb1ebcc3473509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  placement: {fileID: 0}
   data: {fileID: 0}
   frontFace: {fileID: 437448587381898228}
   costMesh: {fileID: 7621244275813774440}

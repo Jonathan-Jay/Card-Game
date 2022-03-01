@@ -18,34 +18,49 @@ public class MonsterCard : Card
 
 	public override void SetData(CardData newData) {
 		base.SetData(newData);
-		currAttack = ((MonsterData)newData).attack;
-		attackMesh.text = currAttack.ToString();
+		SetAttack(((MonsterData)newData).attack, Color.black);
 
-		currHealth = ((MonsterData)newData).health;
-		healthMesh.text = currHealth.ToString();
-		healthMesh.color = Color.black;
+		SetHealth(((MonsterData)newData).attack, Color.black);
 	}
 
-	public override void OnPlace() {
+	public override void OnPlace(int index, GameController.PlayerData current,
+		GameController.PlayerData opposing)
+	{
 		
 	}
 
 	//returns overkill
 	public int Attack(MonsterCard target) {
-		return target.TakeDamage(currAttack);
+		int dmg = target.TakeDamage(currAttack);
+		
+		//reset attack if boosted
+		if (attackMesh.color != Color.black)
+			SetAttack(((MonsterData)data).attack, Color.black);
+		return dmg;
+	}
+
+	//also resets colour
+	public void SetAttack(int newValue, Color colour) {
+		currAttack = newValue;
+		attackMesh.text = currAttack.ToString();
+		attackMesh.color = colour;
+	}
+
+	public void SetHealth(int newValue, Color colour) {
+		currHealth = newValue;
+		healthMesh.text = currHealth.ToString();
+		healthMesh.color = colour;
 	}
 
 	//returs overkill
 	public int TakeDamage(int amt) {
 		if (currHealth <= 0)	return 0;
-		currHealth -= amt;
+		SetHealth(currHealth - amt, Color.red);
 		if (currHealth <= 0) {
-			healthMesh.text = "0";
 			//queue death here
 			StartCoroutine("Death");
 			return -currHealth;
 		}
-		healthMesh.text = currHealth.ToString(); 
 		return -1;
 	}
 }

@@ -9,6 +9,7 @@ public class Card : MonoBehaviour
 	public CardData data;
 	[SerializeField]	protected MeshRenderer frontFace;
 	[SerializeField]	protected TMP_Text costMesh;
+	static public WaitForEndOfFrame eof = new WaitForEndOfFrame();
 
 	private void Start() {
 		if (data != null) {
@@ -27,7 +28,10 @@ public class Card : MonoBehaviour
 		costMesh.text = cost;
 	}
 
-	public virtual void OnPlace() {
+	public virtual void OnPlace(int index, GameController.PlayerData current,
+		GameController.PlayerData opposing)
+	{
+		//don't allow default cards to survive
 		StartCoroutine("Death");
 	}
 
@@ -35,9 +39,9 @@ public class Card : MonoBehaviour
 		if (placement != null)
 			placement.UnLink();
 		transform.SetParent(null, true);
-		for (int i = 10; i >= 0; --i) {
-			transform.localScale = Vector3.one * i * 0.1f;
-			yield return new WaitForSeconds(0.05f);
+		for (float i = 1; i >= 0; i -= Time.deltaTime * 2f) {
+			transform.localScale = Vector3.one * i;
+			yield return eof;
 		}
 		Destroy(gameObject);
 	}

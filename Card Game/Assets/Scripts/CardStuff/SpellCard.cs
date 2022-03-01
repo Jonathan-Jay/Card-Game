@@ -6,7 +6,6 @@ using TMPro;
 public class SpellCard : Card
 {
 	[SerializeField] protected TMP_Text descriptionMesh;
-	WaitForEndOfFrame frameWait = new WaitForEndOfFrame();
 
 	private void Start() {
 		if (data != null) {
@@ -16,25 +15,40 @@ public class SpellCard : Card
 
 	public override void SetData(CardData newData) {
 		base.SetData(newData);
+		descriptionMesh.text = ((SpellData)newData).cardDescription;
 	}
 
-	public override void OnPlace()
+	public override void OnPlace(int index, GameController.PlayerData current,
+		GameController.PlayerData opposing)
 	{
-		StartCoroutine("CastSpell");
+		StartCoroutine(CastSpell(current, opposing, index));
 	}
 
-	IEnumerator CastSpell() {
+	IEnumerator CastSpell(GameController.PlayerData current,
+		GameController.PlayerData opposing, int index)
+	{
 		yield return new WaitForSeconds(0.25f);
 		//do spell thing
+		//GameController.PlayerData target = null;
+		//int newIndex = index;
+		int newIndex = -1;
 		Card target = null;
 		while (target == null) {
-			yield return frameWait;
+			yield return eof;
 			target = ((SpellData)data).targetting.Invoke(this, new RaycastHit());
 		}
 
-		//to check if targetting self or opponent (maybe limit this)
-		if (target == this)	target = null;
-		((SpellData)data).CastSpell(target);
+		//can't target something, so just drop card
+		if (newIndex < 0) {
+			if (placement != null)
+				placement.UnLink();
+			transform.SetParent(null, true);
+			//return the mana cost
+			current.currentMana += data.cost;
+			yield break;
+		}
+
+		((SpellData)data).CastSpell(opposing, newIndex);
 
 		//then die
 		StartCoroutine("Death");

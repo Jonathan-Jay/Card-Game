@@ -4,28 +4,31 @@ using UnityEngine;
 
 public class CardHolder : MonoBehaviour
 {
-	Card holding;
+	public Card holding;
 	[SerializeField] Color hasCard = Color.white;
 	Color originalCol;
 	public string playerTag;
+	public GameController.PlayerData playerData;
+	public GameController.PlayerData opposingData;
 	public int index;
 	public Vector3 floatingHeight = Vector3.up * 0.1f;
 	public float moveSpeed = 1f;
 	public float rotSpeed = 1f;
 	public Vector3 slamHeight = Vector3.up * 0.1f;
 	public float slamSpeed = 10f;
+	public int defaultCardLayer;
 
 	void Start() {
 		originalCol = GetComponentInChildren<MeshRenderer>().material.color;
 	}
 
 	//damage to player
-    public int DoUpdate(List<CardHolder> opposing)
+    public int DoUpdate()
     {
         if (holding == null)	return 0;
 
 		//assuming only direct attacks
-		MonsterCard target = (MonsterCard)opposing[index].holding;
+		MonsterCard target = (MonsterCard)opposingData.field[index].holding;
 		//hit player if not facing anything
 		if (target == null) {
 			return ((MonsterCard)holding).currAttack;
@@ -39,6 +42,10 @@ public class CardHolder : MonoBehaviour
 	public bool PutCard(Card card)
 	{
 		if (holding != null)	return false;
+		//check cost
+		if (!card.data.CheckCost(playerData)) {	return false;	}
+
+		//also allow other player to see the card, send a message to the server to set data
 
 		card.transform.SetParent(transform, true);
 		card.placement = this;
@@ -52,6 +59,8 @@ public class CardHolder : MonoBehaviour
 
 	//remove holding
 	public void UnLink() {
+		holding.gameObject.layer = defaultCardLayer;
+		holding.gameObject.tag = "Interactable";
 		holding = null;
 		//material change here
 		GetComponentInChildren<MeshRenderer>().material.color = originalCol;
@@ -66,18 +75,18 @@ public class CardHolder : MonoBehaviour
 				rotSpeed * Time.deltaTime);
 			if (Quaternion.Angle(cardTrans.localRotation, Quaternion.identity) < 1f &&
 				Vector3.Distance(cardTrans.localPosition, slamHeight) < 0.01f) {
-					//now valid
-					holding.OnPlace();
 					break;
 				}
-			yield return new WaitForEndOfFrame();
+			yield return Card.eof;
 		}
 		for (float i = 0; i < 1 && holding != null; i += slamSpeed * Time.deltaTime) {
 			cardTrans.localPosition = Vector3.Lerp(cardTrans.localPosition, floatingHeight, i);
-			yield return new WaitForEndOfFrame();
+			yield return Card.eof;
 		}
 		//final fix in case
 		if (holding != null) {
+			//now valid
+			holding.OnPlace(index, playerData, opposingData);
 			cardTrans.localPosition = floatingHeight;
 		}
 	}

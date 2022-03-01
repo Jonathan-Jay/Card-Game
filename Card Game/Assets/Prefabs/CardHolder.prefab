@@ -140,10 +140,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab11de1acc38ad149ba7fc873c62b505, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holding: {fileID: 0}
   hasCard: {r: 1, g: 0.390566, b: 0.390566, a: 1}
+  playerTag: 
+  playerData:
+    currentHP: 20
+    maxHP: 20
+    currentMana: 1
+    maxMana: 5
+    field: []
+  opposingData:
+    currentHP: 20
+    maxHP: 20
+    currentMana: 1
+    maxMana: 5
+    field: []
   index: 0
   floatingHeight: {x: 0, y: 0.075, z: -0.5}
   moveSpeed: 5
   rotSpeed: 10
   slamHeight: {x: 0, y: 0.575, z: -0.5}
   slamSpeed: 10
+  defaultCardLayer: 6
