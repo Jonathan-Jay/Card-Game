@@ -595,14 +595,14 @@ MonoBehaviour:
   verticalSeperation: 2
   maxMana: 5
   player1:
-    playerTag: player1
+    playerTag: Player1
     currentHP: 20
     maxHP: 20
     currentMana: 1
     maxMana: 5
     field: []
   player2:
-    playerTag: player2
+    playerTag: Player2
     currentHP: 20
     maxHP: 20
     currentMana: 1

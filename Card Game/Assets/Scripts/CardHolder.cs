@@ -15,6 +15,7 @@ public class CardHolder : MonoBehaviour
 	public float rotSpeed = 1f;
 	public Vector3 slamHeight = Vector3.up * 0.1f;
 	public float slamSpeed = 10f;
+	public string interactableTag= "Interactable";
 	public int defaultCardLayer;
 
 	void Start() {
@@ -59,7 +60,7 @@ public class CardHolder : MonoBehaviour
 	//remove holding
 	public void UnLink() {
 		holding.gameObject.layer = defaultCardLayer;
-		holding.gameObject.tag = "Interactable";
+		holding.gameObject.tag = interactableTag;
 		holding = null;
 		//material change here
 		GetComponentInChildren<MeshRenderer>().material.color = originalCol;
