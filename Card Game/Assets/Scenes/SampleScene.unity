@@ -130,6 +130,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 125853735}
     m_Modifications:
+    - target: {fileID: 5665379, guid: e726434936a833d4a91d2c51dedefb33, type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 11400000, guid: c757e0cc240fff4449ce1a6e4eb4a8e5, type: 2}
     - target: {fileID: 1376643482550696928, guid: e726434936a833d4a91d2c51dedefb33, type: 3}
       propertyPath: m_Name
       value: SpellCard
@@ -621,6 +625,7 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
+  - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -729,7 +734,22 @@ MonoBehaviour:
   - {fileID: 1414534143}
   - {fileID: 729725577}
   index: 1
-  speed: 2
+  moveSpeed: 2
+  rotSpeed: 5
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41d7b2cd39279684da22da2eeacdbdb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 963194230}
+  looping: 0
 --- !u!1 &1002933231
 GameObject:
   m_ObjectHideFlags: 0

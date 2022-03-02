@@ -12,10 +12,10 @@ public class SpellData : CardData {
 	public ActivationFunc activate = DirectActivation;
 	public AbilityFunc ability = DirectAbility;
 	public string cardDescription = "I Forgor :Skull:";
-	public int actionParameter1 = 0;
-	public int actionParameter2 = 0;
-	public int abilityParameter1 = 0;
-	public int abilityParameter2 = 0;
+	public int actionParameter1;
+	public int actionParameter2;
+	public int abilityParameter1;
+	public int abilityParameter2;
 
 	public override bool CheckCost(GameController.PlayerData player) {
 		if (player.currentMana >= cost) {

@@ -22,7 +22,7 @@ public class Card : MonoBehaviour
 		frontFace.material.mainTexture = data.cardArt;
 
 		string cost = "";
-		for (int i = data.cost; i >= 0; --i) {
+		for (int i = data.cost; i > 0; --i) {
 			cost += 'o';
 		}
 		costMesh.text = cost;
