@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
 		public int maxHP = 20;
 		public int currentMana = 1;
 		public int maxMana = 5;
+		public Transform hand = null;
 
 		public List<CardHolder> field = new List<CardHolder>();
 	}
@@ -78,11 +79,13 @@ public class GameController : MonoBehaviour
 		temp = Instantiate(deckPrefab.gameObject, transform).transform;
 		temp.localPosition = -deckPos;
 		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
+		temp.GetComponent<DeckManager>().player = player2;
 		//temp.gameObject.tag = "Player2";
 
 		temp = Instantiate(deckPrefab.gameObject, transform).transform;
 		temp.localPosition = deckPos;
 		temp.localRotation = Quaternion.identity;
+		temp.GetComponent<DeckManager>().player = player1;
 		//temp.gameObject.tag = "Player1";
 
 

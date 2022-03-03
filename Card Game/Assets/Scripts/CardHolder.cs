@@ -59,8 +59,10 @@ public class CardHolder : MonoBehaviour
 
 	//remove holding
 	public void UnLink() {
+		holding.placement = null;
 		holding.gameObject.layer = defaultCardLayer;
 		holding.gameObject.tag = interactableTag;
+		holding.transform.SetParent(null, true);
 		holding = null;
 		//material change here
 		GetComponentInChildren<MeshRenderer>().material.color = originalCol;
@@ -79,8 +81,9 @@ public class CardHolder : MonoBehaviour
 				}
 			yield return Card.eof;
 		}
-		for (float i = 0; i < 1 && holding != null; i += slamSpeed * Time.deltaTime) {
-			cardTrans.localPosition = Vector3.Lerp(cardTrans.localPosition, floatingHeight, i);
+		while (cardTrans.localPosition != floatingHeight) {
+			cardTrans.localPosition = Vector3.MoveTowards(
+					cardTrans.localPosition, floatingHeight, slamSpeed * Time.deltaTime);
 			yield return Card.eof;
 		}
 		//final fix in case

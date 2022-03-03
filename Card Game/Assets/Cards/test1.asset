@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411c63e12c7b28a49a59e2eb73d4e016, type: 3}
   m_Name: test1
   m_EditorClassIdentifier: 
+  cardName: medium boi
   cardArt: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
   cost: 4
-  health: 4
-  attack: 4
+  health: 5
+  attack: 5

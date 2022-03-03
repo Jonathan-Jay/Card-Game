@@ -42,7 +42,6 @@ public class SpellCard : Card
 		if (newIndex < 0) {
 			if (placement != null)
 				placement.UnLink();
-			transform.SetParent(null, true);
 			//return the mana cost
 			current.currentMana += data.cost;
 			yield break;

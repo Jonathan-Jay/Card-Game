@@ -357,6 +357,7 @@ MonoBehaviour:
   placement: {fileID: 0}
   data: {fileID: 0}
   frontFace: {fileID: 8308973208609000700}
+  nameMesh: {fileID: 4316719185209386507}
   costMesh: {fileID: 2060783283286803296}
   attackMesh: {fileID: 8797157165809492266}
   healthMesh: {fileID: 5406184301356650649}
@@ -417,6 +418,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MonsterCard
       objectReference: {fileID: 0}
+    - target: {fileID: 2412753085262959850, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 763856821016003713, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
@@ -435,6 +440,17 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2137671615821512857, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
   m_PrefabInstance: {fileID: 7991054928470248549}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4316719185209386507 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6128835198636157550, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
+  m_PrefabInstance: {fileID: 7991054928470248549}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2060783283286803296 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8249663661552242437, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
