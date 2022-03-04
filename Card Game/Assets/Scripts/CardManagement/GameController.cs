@@ -9,7 +9,7 @@ public class PlayerData {
 	public int maxHP = 20;
 	public int currentMana = 1;
 	public int maxMana = 5;
-	public Transform hand = null;
+	public HandManager hand = null;
 	public List<CardHolder> field = new List<CardHolder>();
 
 	//sends old value
@@ -48,7 +48,8 @@ public class PlayerData {
 		if (refillMana) {
 			int oldMana = currentMana;
 			currentMana = maxMana;
-			manaUpdated?.Invoke(oldMana);
+			if (oldMana != currentMana)
+				manaUpdated?.Invoke(oldMana);
 		}
 	}
 }

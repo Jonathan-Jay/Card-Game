@@ -20,6 +20,7 @@ public class DeckManager : MonoBehaviour
 
 	GameObject temp;
 	CardData data;
+	Card card;
 
     public Transform DrawCard() {
 		if (deck.Count == 0)	return null;
@@ -43,9 +44,12 @@ public class DeckManager : MonoBehaviour
 		else {
 			temp = Instantiate(cardPrefab.gameObject, transform.position + spawnOffset, transform.rotation * Quaternion.Euler(spawnRotation));
 		}
-		temp.GetComponent<Card>().SetData(data);
-		temp.GetComponent<Card>().hand = player.hand;
+		card = temp.GetComponent<Card>();
+		card.SetData(data);
+		card.hand = player.hand;
+
 		data = null;
+		card = null;
 
 		return temp.transform;
 	}

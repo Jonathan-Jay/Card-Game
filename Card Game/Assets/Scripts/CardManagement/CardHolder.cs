@@ -79,7 +79,7 @@ public class CardHolder : MonoBehaviour
 				}
 			yield return Card.eof;
 		}
-		while (cardTrans.localPosition != floatingHeight) {
+		while (holding != null && cardTrans.localPosition != floatingHeight) {
 			cardTrans.localPosition = Vector3.MoveTowards(
 					cardTrans.localPosition, floatingHeight, slamSpeed * Time.deltaTime);
 			yield return Card.eof;

@@ -110,14 +110,7 @@ public class SpellData : CardData {
 	static public PlayerData TargetOpposingCard(PlayerData current,
 		PlayerData opposing, ref int index, RaycastHit hit)
 	{
-		//check if facing a card
-		if (opposing.field[index].holding) {
-			//is the card a monster?
-			if (!opposing.field[index].holding.targettable) {
-				index = -2;
-			}
-		}
-		else {
+		if (!(opposing.field[index].holding && opposing.field[index].holding.targettable)) {
 			index = -2;
 		}
 		
@@ -131,10 +124,8 @@ public class SpellData : CardData {
 		List<int> valids = new List<int>();
 		index = -2;
 		for (int i = opposing.field.Count - 1; i >= 0; --i) {
-			if (opposing.field[i].holding) {
-				if (opposing.field[i].holding.targettable) {
-					valids.Add(i);
-				}
+			if (opposing.field[i].holding && opposing.field[i].holding.targettable) {
+				valids.Add(i);
 			}
 		}
 		if (valids.Count > 0) {
@@ -151,10 +142,8 @@ public class SpellData : CardData {
 		List<int> valids = new List<int>();
 		index = -2;
 		for (int i = current.field.Count - 1; i >= 0; --i) {
-			if (current.field[i].holding) {
-				if (current.field[i].holding.targettable) {
-					valids.Add(i);
-				}
+			if (current.field[i].holding && current.field[i].holding.targettable) {
+				valids.Add(i);
 			}
 		}
 		if (valids.Count > 0) {
@@ -208,21 +197,18 @@ public class SpellData : CardData {
 		//get number of cards
 		int cards = 0;
 		foreach (CardHolder holder in target.field) {
-			if (holder.holding)
-				if (holder.holding.targettable)
-					++cards;
+			if (holder.holding && holder.holding.targettable)
+				++cards;
 		}
 
 		for (int i = 0; i < spell.actionParameter1 && cards > 0;) {
 			int j = Random.Range(0, target.field.Count);
-			if (target.field[j].holding) {
-				if (target.field[j].holding.targettable) {
-					ability.Invoke(target, j, spell);
-					if (!target.field[j].holding) {
-						--cards;
-					}
-					++i;
+			if (target.field[j].holding && target.field[j].holding.targettable) {
+				ability.Invoke(target, j, spell);
+				if (!target.field[j].holding) {
+					--cards;
 				}
+				++i;
 			}
 		}
 	}

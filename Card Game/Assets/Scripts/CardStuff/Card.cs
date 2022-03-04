@@ -7,7 +7,7 @@ public class Card : MonoBehaviour
 {
 	public CardHolder placement;
 	public CardData data;
-	public Transform hand;
+	public HandManager hand;
 	[HideInInspector]	public bool targettable = false;
 	[SerializeField]	protected MeshRenderer frontFace;
 	[SerializeField]	protected TMP_Text nameMesh;
@@ -51,8 +51,8 @@ public class Card : MonoBehaviour
 	}
 
 	public void CallBackCard() {
-		if (transform.parent != hand) {
-			transform.SetParent(hand, true);
+		if (transform.parent != hand.transform) {
+			transform.SetParent(hand.transform, true);
 			StartCoroutine(ReturnToHand());
 		}
 	}
@@ -67,17 +67,18 @@ public class Card : MonoBehaviour
 	}
 
 	IEnumerator ReturnToHand() {
+		int tempLayer = gameObject.layer;
+		gameObject.layer = hand.input.ignoredLayer;
+
 		float returnSpeed = 2f;
 		float returnRotSpeed = 15f;
 		GetComponent<Rigidbody>().isKinematic = true;
 
 		//return the card to the hand, do somethign proper next time
-		Vector3 targetPos = Vector3.right * Random.Range(-1f, 1f)
-			+ Vector3.forward * Random.Range(-0.1f, 0.1f)
-			+ Vector3.up * Random.Range(-0.1f, 0.1f);
+		Vector3 targetPos = Vector3.zero;
 		Quaternion targetRot = Quaternion.identity;
 
-		while (transform.parent == hand)
+		while (transform.parent == hand.transform)
 		{
 			if (Vector3.Distance(transform.localPosition, targetPos) > 0.25f) {
 				transform.localPosition = Vector3.Lerp(transform.localPosition, targetPos,
@@ -106,5 +107,7 @@ public class Card : MonoBehaviour
 		//ensure transform is good
 		transform.localPosition = targetPos;
 		transform.localRotation = targetRot;
+
+		gameObject.layer = tempLayer;
 	}
 }
