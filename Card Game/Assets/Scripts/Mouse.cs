@@ -9,18 +9,19 @@ public class Mouse : MonoBehaviour {
 	public int grabbedMask;
 	public bool doHover = false;
 
-	bool isHovering = false;
-	GameObject hoverObj;
-	Vector3 hoverObjOrigPos = Vector3.zero;
-	Vector3 hoverObjVel = Vector3.zero;
-	[SerializeField]	Vector3 hoverOffset = Vector3.up * 0.1f;
+	private struct hoverObj {
+		public GameObject gameObject;
+		public Vector3 origPos;
+	}
+	int isHoveringIndex = -1;
+	List<hoverObj> hoverObjs = new List<hoverObj>();
 	int tempLayer = -1;
 
     private Camera cam;
     // Start is called before the first frame update
     void Start() {
         cam = GetComponent<Camera>();
-    }
+	}
 
     // Update is called once per frame
     void Update() {
@@ -30,7 +31,7 @@ public class Mouse : MonoBehaviour {
 
         if (Physics.Raycast(rayInfo, out rayHitInfo, maxDist, mask)) {
             mouseObject.position = rayHitInfo.point + Vector3.up * vertOffset;
-			if (doHover) Hover(rayHitInfo);
+			if (doHover) HoverManagement(rayHitInfo);
 
 			if (Input.GetMouseButtonDown(0)) {
 				//first check if we wanna do smt
@@ -96,27 +97,83 @@ public class Mouse : MonoBehaviour {
         }
     }
 
-	bool Hover(RaycastHit rayHitInfo, bool tryDehover = true) {
-		if (rayHitInfo.transform.gameObject.layer != 6) return false;	//Dont hover a non-card
-		if (tryDehover && !DeHover(rayHitInfo)) return false;			//You cannot hover an object when dehovering another object
-		if (!isHovering) {
-			isHovering = true;
-			hoverObj = rayHitInfo.transform.gameObject;
-			hoverObjOrigPos = hoverObj.transform.localPosition;
-		}
-
-		Vector3 targetPos = hoverObjOrigPos + hoverOffset;
-		hoverObj.transform.localPosition = Vector3.SmoothDamp(hoverObj.transform.localPosition, targetPos, ref hoverObjVel, 0.1f, 2f, Time.deltaTime);
-
-		return true;	//I am hover boi
+	void HoverManagement(RaycastHit rayHitInfo) {
+		//Can only dehover if you're hovering smth and if raycast has different output then saved input
+		if (IsHovering() && rayHitInfo.transform.gameObject != hoverObjs[isHoveringIndex].gameObject) StartCoroutine(DeActivateHover());
+		//Can only animate the hovering if you arent hovering smth, if layer is card, and if parent is the hand
+		if (!IsHovering() && rayHitInfo.transform.gameObject.layer == 6 && rayHitInfo.transform.parent && rayHitInfo.transform.parent.CompareTag("Player Hand")) StartCoroutine(ActivateHover(rayHitInfo));
 	}
 
-	bool DeHover(RaycastHit rayHitInfo) {
-		if (!isHovering || rayHitInfo.transform.gameObject == hoverObj) return true;	//No Obj was previously hovered OR still hovering over same Obj
+	bool IsHovering() {
+		return isHoveringIndex > -1;
+	}
 
-		StartCoroutine("AnimateDeHover");
-		
-		return false;		//In process of "dehovering" Obj
+	IEnumerator ActivateHover(RaycastHit rayHitInfo) {
+		bool tempLoop = false;		
+		hoverObj ms;
+		ms.gameObject = rayHitInfo.transform.gameObject;
+		ms.origPos = ms.gameObject.transform.localPosition;
+
+        for (isHoveringIndex = 0; isHoveringIndex < hoverObjs.Count; ++isHoveringIndex)
+			if (hoverObjs[isHoveringIndex].gameObject == ms.gameObject) {
+				tempLoop = true;
+				ms.origPos = hoverObjs[isHoveringIndex].origPos;
+				break;
+			}
+
+		if (!tempLoop)
+			hoverObjs.Add(ms);
+
+		Vector3 targetPos = ms.origPos + ms.gameObject.transform.localRotation * new Vector3(0f, 0.066f, 0.1f);
+		Vector3 hoverObjVel = Vector3.zero;
+		tempLoop = true;
+
+		while (tempLoop) {																					//if escapes through here then it's a "clean exit"
+			if (!IsHovering() || IsHovering() && ms.gameObject != hoverObjs[isHoveringIndex].gameObject)    //if escapes through here then it's a "unclean exit"
+				break;
+			tempLoop = Vector3.Distance(ms.gameObject.transform.localPosition, targetPos) >= 0.01f;
+
+			ms.gameObject.transform.localPosition = Vector3.SmoothDamp(ms.gameObject.transform.localPosition, targetPos, ref hoverObjVel, 0.1f, 2f, Time.deltaTime);
+
+			yield return null;
+		}
+
+		if (!tempLoop)
+			ms.gameObject.transform.localPosition = targetPos;
+
+		//Debug.Log("ActivateHover: " + hoverObjOrigPos);
+		//Debug.Log("AcHoverObjsAmt: " + hoverObjs.Count);
+	}
+
+	IEnumerator DeActivateHover() {
+		hoverObj ms;
+		ms.gameObject = hoverObjs[isHoveringIndex].gameObject;
+		ms.origPos = hoverObjs[isHoveringIndex].origPos;
+		isHoveringIndex = -1;
+
+		Vector3 hoverObjVel = Vector3.zero;
+		bool tempLoop = true;
+
+		while (tempLoop) {
+			if (IsHovering() && ms.gameObject == hoverObjs[isHoveringIndex].gameObject)
+				break;
+			tempLoop = Vector3.Distance(ms.gameObject.transform.localPosition, ms.origPos) >= 0.01f;
+
+			ms.gameObject.transform.localPosition = Vector3.SmoothDamp(ms.gameObject.transform.localPosition, ms.origPos, ref hoverObjVel, 0.1f, 2f, Time.deltaTime);
+
+			yield return null;
+		}
+
+		if (!tempLoop) {
+			ms.gameObject.transform.localPosition = ms.origPos;
+			//indexes can change if other DeActivator deletes it, only gets deleted if loop exited "cleanly" as "unclean" exits means it needs it
+			int indexToRemove = hoverObjs.FindIndex(x => x.gameObject == ms.gameObject);
+			hoverObjs.RemoveAt(indexToRemove);
+			if (isHoveringIndex >= indexToRemove && IsHovering()) --isHoveringIndex;
+		}
+
+		//Debug.Log("DeActivateHover: " + targetPos);
+		//Debug.Log("DeHoverObjsAmt: " + hoverObjs.Count);
 	}
 
 	IEnumerator AnimateDeHover() {

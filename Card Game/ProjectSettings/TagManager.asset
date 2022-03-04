@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Interactable
+  - Player Hand
   - Player1
   - Player2
   layers:
