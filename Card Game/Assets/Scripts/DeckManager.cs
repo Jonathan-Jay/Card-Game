@@ -16,7 +16,7 @@ public class DeckManager : MonoBehaviour
 	public SpellCard spellPrefab;
 	public Vector3 spawnOffset = Vector3.up * 0.25f;
 	public Vector3 spawnRotation = Vector3.left * 90f;
-	public GameController.PlayerData player;
+	public PlayerData player;
 
 	GameObject temp;
 	CardData data;

@@ -4,6 +4,7 @@ using UnityEditor;
 [CustomEditor(typeof(SpellData))]
 public class SpellDataEditor : Editor
 {
+	static bool lockedDescription = true;
 	SerializedProperty cardArt;
 	SerializedProperty cardName;
 	SerializedProperty cost;
@@ -15,6 +16,35 @@ public class SpellDataEditor : Editor
 	SerializedProperty targetting;
 	SerializedProperty activate;
 	SerializedProperty ability;
+
+	#region TargettingOptions
+	struct TargettingOption {
+		public string name;
+		public string description;
+		public string descriptionText;
+		//enumName for clarity
+		public TargettingOption(string name, string description,
+			string descriptionText, SpellData.TargettingOptions enumName)
+		{
+			this.name = name;
+			this.description = description;
+			this.descriptionText = descriptionText;
+		}
+	}
+
+	static TargettingOption[] targettingOptions = {
+		new TargettingOption("Opposing Card", "Target the card it's facing (returns to hand if invalid)",
+			"the opposing card", SpellData.TargettingOptions.OpposingCard),
+		new TargettingOption("Random Opponent's Card", "Target a random card of the opposing player",
+			"random active monster from the opponent", SpellData.TargettingOptions.OpposingField),
+		new TargettingOption("Random Caster's Card", "Target a random card of the caster",
+			"random active monster from the caster", SpellData.TargettingOptions.SelfField),
+		new TargettingOption("Opposing Player", "Target the opposing player directly (make sure to have correct activations though)",
+			"the opposing player", SpellData.TargettingOptions.OpposingPlayer),
+		new TargettingOption("Player Self", "Target Self (make sure to have correct activations though)",
+			"the caster", SpellData.TargettingOptions.PlayerSelf),
+	};
+	#endregion
 
 	#region ActivationOptions
 	struct ActivationOption {
@@ -34,11 +64,11 @@ public class SpellDataEditor : Editor
 
 	static ActivationOption[] activationOptions = {
 		new ActivationOption("Direct", "Just calls it once on the target",
-			"directly", SpellData.ActivationOptions.Direct),
+			"directly to ", SpellData.ActivationOptions.Direct),
 		new ActivationOption("Repeated", "Calls it {0} (actionParameter1) times",
-			"<color=green>{0}</color> times", SpellData.ActivationOptions.Repeated),
+			"<color=green>{0}</color> times to ", SpellData.ActivationOptions.Repeated),
 		new ActivationOption("Randomized", "Calls it {0} (actionParameter1) times, hits random opposing cards",
-			"<color=green>{0}</color> times to random opposing Monsters", SpellData.ActivationOptions.Randomized),
+			"<color=green>{0}</color> times to random ", SpellData.ActivationOptions.Randomized),
 	};
 	#endregion
 	
@@ -66,7 +96,6 @@ public class SpellDataEditor : Editor
 	};
 	#endregion
 
-	SpellData.TargettingOptions targettingIndex;
 	private void OnEnable() {
 		cardName = this.serializedObject.FindProperty("cardName");
 		cardArt = this.serializedObject.FindProperty("cardArt");
@@ -114,17 +143,18 @@ public class SpellDataEditor : Editor
 		dirty = temp != actionParameter2.intValue || dirty;
 
 		temp = abilityParameter1.intValue;
-		abilityParameter1.intValue = EditorGUILayout.IntSlider("Ability Parameter 1", abilityParameter1.intValue, 0, 10);
+		abilityParameter1.intValue = EditorGUILayout.IntSlider("Ability Parameter 1", abilityParameter1.intValue, -10, 10);
 		dirty = temp != abilityParameter1.intValue || dirty;
 
 		temp = abilityParameter2.intValue;
-		abilityParameter2.intValue = EditorGUILayout.IntSlider("Ability Parameter 2", abilityParameter2.intValue, 0, 10);
+		abilityParameter2.intValue = EditorGUILayout.IntSlider("Ability Parameter 2", abilityParameter2.intValue, -10, 10);
 		dirty = temp != abilityParameter2.intValue || dirty;
 
 		EditorGUILayout.LabelField("<b>Description:</b>", richText);
 		++EditorGUI.indentLevel;
 		cardDescription.stringValue = EditorGUILayout.TextField(cardDescription.stringValue, richTextBoxed);
 		--EditorGUI.indentLevel;
+		lockedDescription = EditorGUILayout.Toggle("Lock Description", lockedDescription);
 
 
 
@@ -155,11 +185,23 @@ public class SpellDataEditor : Editor
 			.Replace("{0}", actionParameter1.intValue.ToString())
 			.Replace("{1}", actionParameter2.intValue.ToString()), bigText);
 		--EditorGUI.indentLevel;
+		EditorGUILayout.Space();
 
-		if (dirty) {
+		//targetting
+		temp = targetting.enumValueIndex;
+		EditorGUILayout.PropertyField(targetting);
+		dirty = temp != targetting.enumValueIndex || dirty;
+		//display text
+		++EditorGUI.indentLevel;
+		EditorGUILayout.LabelField("Name: <b>" + targettingOptions[targetting.enumValueIndex].name + "</b>", richText);
+		EditorGUILayout.LabelField(targettingOptions[targetting.enumValueIndex].description);
+		--EditorGUI.indentLevel;
+
+		if (dirty && !lockedDescription) {
 			//change description
 			cardDescription.stringValue = abilityOptions[ability.enumValueIndex].descriptionText
-				+ activationOptions[activate.enumValueIndex].descriptionText;
+				+ activationOptions[activate.enumValueIndex].descriptionText
+				+ targettingOptions[targetting.enumValueIndex].descriptionText;
 			cardDescription.stringValue = cardDescription.stringValue.Replace("{0}", actionParameter1.intValue.ToString());
 			cardDescription.stringValue = cardDescription.stringValue.Replace("{1}", actionParameter2.intValue.ToString());
 			cardDescription.stringValue = cardDescription.stringValue.Replace("{2}", abilityParameter1.intValue.ToString());

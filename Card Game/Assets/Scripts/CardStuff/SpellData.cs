@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //helps shorten things
-using TargettingFunc = System.Func<Card, UnityEngine.RaycastHit, Card>;
-using ActivationFunc = System.Action<GameController.PlayerData, int, System.Action<Card, SpellData>, SpellData>;
-using AbilityFunc = System.Action<Card, SpellData>;
+using TargettingFunc = FuncOut<PlayerData, int, UnityEngine.RaycastHit>;
+using ActivationFunc = System.Action<PlayerData, int,
+	System.Action<PlayerData, int, SpellData>, SpellData>;
+using AbilityFunc = System.Action<PlayerData, int, SpellData>;
+public delegate T1 FuncOut<T1, T2, T3>(T1 current, T1 opposing, ref T2 index, T3 hit);
 
 [CreateAssetMenu(fileName = "Spell", menuName = "CardData/SpellData", order = 0)]
 public class SpellData : CardData {
@@ -24,12 +26,8 @@ public class SpellData : CardData {
 	public int abilityParameter1;
 	public int abilityParameter2;
 
-	public override bool CheckCost(GameController.PlayerData player) {
-		if (player.currentMana >= cost) {
-			player.currentMana -= cost;
-			return true;
-		}
-		return false;
+	public override bool CheckCost(PlayerData player) {
+		return player.ReduceMana(cost);
 	}
 	public override void Init() {
 		targetting = GetTargetting(targettingOption);
@@ -38,7 +36,7 @@ public class SpellData : CardData {
 	}
 
 	//if target is self, this should be null
-	public void CastSpell(GameController.PlayerData target, int index) {
+	public void CastSpell(PlayerData target, int index) {
 		//select the target
 		activate.Invoke(target, index, ability, this);
 	}
@@ -47,13 +45,27 @@ public class SpellData : CardData {
 	big space to show that there's lots of differences in this code
 	*/
 
+	#region spell enums
 	public enum TargettingOptions
 	{
+		OpposingCard,
+		OpposingField,
+		SelfField,
+		OpposingPlayer,
+		PlayerSelf,
 	}
 	static public TargettingFunc GetTargetting(TargettingOptions choice) {
 		switch (choice) {
 			default:
-				return DefaultTargetting;
+				return TargetOpposingCard;
+			case TargettingOptions.OpposingField:
+				return TargetOpposingField;
+			case TargettingOptions.SelfField:
+				return TargetSelfField;
+			case TargettingOptions.OpposingPlayer:
+				return TargetPlayer;
+			case TargettingOptions.PlayerSelf:
+				return TargetSelfPlayer;
 		}
 	}
 
@@ -67,6 +79,10 @@ public class SpellData : CardData {
 		switch (choice) {
 			default:
 				return DirectActivation;
+			case ActivationOptions.Repeated:
+				return RepeatedActivation;
+			case ActivationOptions.Randomized:
+				return RandomizedActivation;
 		}
 	}
 
@@ -79,70 +95,163 @@ public class SpellData : CardData {
 		switch (choice) {
 			default:
 				return DirectAbility;
+			case AbilityOptions.RandomDamage:
+				return RandomDamage;
 		}
 	}
+	#endregion
 
 	/*
 	big space to show that there's lots of differences in this code
 	*/
 
+	#region TargettingOptions
+	//return opposing card
+	static public PlayerData TargetOpposingCard(PlayerData current,
+		PlayerData opposing, ref int index, RaycastHit hit)
+	{
+		//check if facing a card
+		if (opposing.field[index].holding) {
+			//is the card a monster?
+			if (!opposing.field[index].holding.targettable) {
+				index = -2;
+			}
+		}
+		else {
+			index = -2;
+		}
+		
+		return opposing;
+	}
 
-	//to stop errors lol
-	//just returns self
-	static public Card DefaultTargetting(Card current, RaycastHit hit) {
+	//return random card on the field
+	static public PlayerData TargetOpposingField(PlayerData current,
+		PlayerData opposing, ref int index, RaycastHit hit)
+	{
+		List<int> valids = new List<int>();
+		index = -2;
+		for (int i = opposing.field.Count - 1; i >= 0; --i) {
+			if (opposing.field[i].holding) {
+				if (opposing.field[i].holding.targettable) {
+					valids.Add(i);
+				}
+			}
+		}
+		if (valids.Count > 0) {
+			index = valids[Random.Range(0, valids.Count)];
+		}
+
+		return opposing;
+	}
+
+	//return random card on the field
+	static public PlayerData TargetSelfField(PlayerData current,
+		PlayerData opposing, ref int index, RaycastHit hit)
+	{
+		List<int> valids = new List<int>();
+		index = -2;
+		for (int i = current.field.Count - 1; i >= 0; --i) {
+			if (current.field[i].holding) {
+				if (current.field[i].holding.targettable) {
+					valids.Add(i);
+				}
+			}
+		}
+		if (valids.Count > 0) {
+			index = valids[Random.Range(0, valids.Count)];
+		}
+
 		return current;
 	}
 
-	//just calls the ability once on the card target
-	static public void DirectActivation(GameController.PlayerData target, int index,
-		AbilityFunc ability, SpellData spell)
+	//return opposing player
+	static public PlayerData TargetPlayer(PlayerData current,
+		PlayerData opposing, ref int index, RaycastHit hit)
 	{
-		ability.Invoke(target.field[index].holding, spell);
+		index = -1;
+		return opposing;
 	}
 
-	//deals abilityParameter1 once
-	static public void DirectAbility(Card target, SpellData spell) {
-		if (target != null) {
-			((MonsterCard)target).TakeDamage(spell.abilityParameter1);
-		}
-	}
-
-#region targettingOptions
-	static public Card TargetPlayer(Card current, RaycastHit hit) {
+	//return self player
+	static public PlayerData TargetSelfPlayer(PlayerData current,
+		PlayerData opposing, ref int index, RaycastHit hit)
+	{
+		index = -1;
 		return current;
 	}
 	#endregion
 
 	#region ActivationOptions
+	//just calls the ability once on the card target or player if index < 0
+	static public void DirectActivation(PlayerData target, int index,
+		AbilityFunc ability, SpellData spell)
+	{
+		ability.Invoke(target, index, spell);
+	}
+
 	//call the ability actionParameter1 times
-	static public void RepeatedActivation(GameController.PlayerData target, int index,
+	static public void RepeatedActivation(PlayerData target, int index,
 		AbilityFunc ability, SpellData spell)
 	{
 		for (int i = 0; i < spell.actionParameter1; ++i) {
-			ability.Invoke(target.field[index].holding, spell);
+			ability.Invoke(target, index, spell);
 		}
 	}
 
 	//target a random card actionParameter1 times
-	static public void RandomizedActivation(GameController.PlayerData target, int index,
+	static public void RandomizedActivation(PlayerData target, int index,
 		AbilityFunc ability, SpellData spell)
 	{
-		for (int i = 0; i < spell.actionParameter1;) {
+		//doesn't work if targetting player
+		if (index < 0)	return;
+
+		//get number of cards
+		int cards = 0;
+		foreach (CardHolder holder in target.field) {
+			if (holder.holding)
+				if (holder.holding.targettable)
+					++cards;
+		}
+
+		for (int i = 0; i < spell.actionParameter1 && cards > 0;) {
 			int j = Random.Range(0, target.field.Count);
-			if (target.field[index].holding) {
-				ability.Invoke(target.field[index].holding, spell);
-				++i;
+			if (target.field[j].holding) {
+				if (target.field[j].holding.targettable) {
+					ability.Invoke(target, j, spell);
+					if (!target.field[j].holding) {
+						--cards;
+					}
+					++i;
+				}
 			}
 		}
 	}
 	#endregion
 
 	#region AbilityOptions
+	//deals abilityParameter1 once
+	static public void DirectAbility(PlayerData target, int index, SpellData spell) {
+		//targetting player
+		if (index < 0) {
+			target.TakeDamage(spell.abilityParameter1);
+		}
+		else if (target.field[index].holding) {
+			if (target.field[index].holding.targettable)
+				((MonsterCard)target.field[index].holding).TakeDamage(spell.abilityParameter1);
+		}
+	}
+
 	//between abillityParameter1 inclusive and abilityParamter2 inclusive
-	static public void RandomDamage(Card target, SpellData spell) {
-		if (target != null) {
-			((MonsterCard)target).TakeDamage(UnityEngine.Random.Range(
+	static public void RandomDamage(PlayerData target, int index, SpellData spell) {
+		//targetting player
+		if (index < 0) {
+			target.TakeDamage(UnityEngine.Random.Range(
 				spell.abilityParameter1, spell.abilityParameter2 + 1));
+		}
+		else if (target.field[index].holding) {
+			if (target.field[index].holding.targettable)
+				((MonsterCard)target.field[index].holding).TakeDamage(UnityEngine.Random.Range(
+					spell.abilityParameter1, spell.abilityParameter2 + 1));
 		}
 	}
 #endregion

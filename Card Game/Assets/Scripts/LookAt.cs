@@ -4,9 +4,17 @@ using UnityEngine;
 
 public class LookAt : MonoBehaviour
 {
+	public bool autoAssignCamera = false;
 	[SerializeField]	Transform target;
 	[SerializeField]	Transform dirtyCheck;
 	Vector3 lastPos = Vector3.zero;
+
+	private void Start() {
+		if (autoAssignCamera) {
+			target = Camera.main.transform;
+			dirtyCheck = Camera.main.transform;
+		}
+	}
 
     // Update is called once per frame
     void LateUpdate() {

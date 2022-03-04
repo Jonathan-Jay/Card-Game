@@ -19,13 +19,11 @@ public class MonsterCard : Card
 	public override void SetData(CardData newData) {
 		base.SetData(newData);
 		SetAttack(((MonsterData)newData).attack, Color.black);
-
-		SetHealth(((MonsterData)newData).attack, Color.black);
+		SetHealth(((MonsterData)newData).health, Color.black);
+		targettable = true;
 	}
 
-	public override void OnPlace(int index, GameController.PlayerData current,
-		GameController.PlayerData opposing)
-	{
+	public override void OnPlace(int index, PlayerData current, PlayerData opposing) {
 		
 	}
 

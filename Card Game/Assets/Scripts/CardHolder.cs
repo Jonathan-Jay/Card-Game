@@ -7,8 +7,8 @@ public class CardHolder : MonoBehaviour
 	public Card holding;
 	[SerializeField] Color hasCard = Color.white;
 	Color originalCol;
-	public GameController.PlayerData playerData;
-	public GameController.PlayerData opposingData;
+	public PlayerData playerData;
+	public PlayerData opposingData;
 	public int index;
 	public Vector3 floatingHeight = Vector3.up * 0.1f;
 	public float moveSpeed = 1f;
@@ -59,10 +59,8 @@ public class CardHolder : MonoBehaviour
 
 	//remove holding
 	public void UnLink() {
-		holding.placement = null;
 		holding.gameObject.layer = defaultCardLayer;
 		holding.gameObject.tag = interactableTag;
-		holding.transform.SetParent(null, true);
 		holding = null;
 		//material change here
 		GetComponentInChildren<MeshRenderer>().material.color = originalCol;

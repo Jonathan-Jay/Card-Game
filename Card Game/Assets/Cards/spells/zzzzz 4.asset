@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a4e61e0c6f5bc408eb48ca961bc9b5, type: 3}
+  m_Name: zzzzz 4
+  m_EditorClassIdentifier: 
+  cardName: targetting test 4
+  cardArt: {fileID: 2800000, guid: a18332f3cde6eba4db259d13eca91459, type: 3}
+  cost: 0
+  targettingOption: 4
+  activateOption: 1
+  abilityOption: 1
+  cardDescription: Heal or Deal up to <color=green>4</color> health points <color=green>2</color>
+    times to the the caster
+  actionParameter1: 2
+  actionParameter2: 0
+  abilityParameter1: -4
+  abilityParameter2: 4

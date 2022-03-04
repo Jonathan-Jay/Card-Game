@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9a4e61e0c6f5bc408eb48ca961bc9b5, type: 3}
-  m_Name: dkjfhkdfj
+  m_Name: zzzzz 3
   m_EditorClassIdentifier: 
-  cardName: simple punch
-  cardArt: {fileID: 2800000, guid: a44ae94a7512da045a9093286e47e1e5, type: 3}
+  cardName: targetting test 3
+  cardArt: {fileID: 2800000, guid: 454b44bc389845e4cbe7fa75b9c5caa6, type: 3}
   cost: 0
-  targettingOption: 0
-  activateOption: 0
-  abilityOption: 0
-  cardDescription: Deal <color=red>5</color> damage directly
-  actionParameter1: 0
+  targettingOption: 3
+  activateOption: 1
+  abilityOption: 1
+  cardDescription: Heal or Deal up to <color=red>4</color> health points <color=green>2</color>
+    times to the opposing player
+  actionParameter1: 2
   actionParameter2: 0
-  abilityParameter1: 5
-  abilityParameter2: 0
+  abilityParameter1: -4
+  abilityParameter2: 4

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a4e61e0c6f5bc408eb48ca961bc9b5, type: 3}
+  m_Name: zzzzz 2
+  m_EditorClassIdentifier: 
+  cardName: targetting test 2
+  cardArt: {fileID: 2800000, guid: 1171d61a3faa1a34fa108dc61291c851, type: 3}
+  cost: 1
+  targettingOption: 2
+  activateOption: 2
+  abilityOption: 0
+  cardDescription: Heal <color=green>3</color> health points <color=green>3</color>
+    times to random cards on caster's field
+  actionParameter1: 3
+  actionParameter2: 0
+  abilityParameter1: -3
+  abilityParameter2: 0

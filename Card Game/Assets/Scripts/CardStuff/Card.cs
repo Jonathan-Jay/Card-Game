@@ -8,6 +8,7 @@ public class Card : MonoBehaviour
 	public CardHolder placement;
 	public CardData data;
 	public Transform hand;
+	[HideInInspector]	public bool targettable = false;
 	[SerializeField]	protected MeshRenderer frontFace;
 	[SerializeField]	protected TMP_Text nameMesh;
 	[SerializeField]	protected TMP_Text costMesh;
@@ -33,11 +34,20 @@ public class Card : MonoBehaviour
 		costMesh.text = cost;
 	}
 
-	public virtual void OnPlace(int index, GameController.PlayerData current,
-		GameController.PlayerData opposing)
-	{
+	public virtual void OnPlace(int index, PlayerData current, PlayerData opposing) {
 		//don't allow default cards to survive
 		StartCoroutine("Death");
+	}
+
+	public void Release() {
+		if (placement != null) {
+			placement.UnLink();
+			placement = null;
+		}
+
+		if (transform.parent)
+			transform.SetParent(null, true);
+		GetComponent<Rigidbody>().isKinematic = false;
 	}
 
 	public void CallBackCard() {
@@ -48,9 +58,7 @@ public class Card : MonoBehaviour
 	}
 
 	IEnumerator Death() {
-		if (placement != null)
-			placement.UnLink();
-		transform.SetParent(null, true);
+		Release();
 		for (float i = 1; i >= 0; i -= Time.deltaTime * 2f) {
 			transform.localScale = Vector3.one * i;
 			yield return eof;

@@ -2,27 +2,68 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameController : MonoBehaviour
-{
-	[System.Serializable]
-	public class PlayerData {
-		public string playerTag = "";
-		public int currentHP = 20;
-		public int maxHP = 20;
-		public int currentMana = 1;
-		public int maxMana = 5;
-		public Transform hand = null;
+[System.Serializable]
+public class PlayerData {
+	public string playerTag = "";
+	public int currentHP = 20;
+	public int maxHP = 20;
+	public int currentMana = 1;
+	public int maxMana = 5;
+	public Transform hand = null;
+	public List<CardHolder> field = new List<CardHolder>();
 
-		public List<CardHolder> field = new List<CardHolder>();
+	//sends old value
+	public event System.Action<int> healthUpdated;
+	//sends old value
+	public event System.Action<int> manaUpdated;
+
+	public void Init() {
+		healthUpdated?.Invoke(0);
+		manaUpdated?.Invoke(0);
 	}
-	
+
+	//works when inverted
+	public void TakeDamage(int amt) {
+		currentHP -= amt;
+		healthUpdated?.Invoke(currentHP + amt);
+	}
+
+	//return true if player has enough mana
+	public bool ReduceMana(int amt) {
+		//can't reduce below 0
+		if (currentMana >= amt) {
+			int oldMana = currentMana;
+			currentMana -= amt;
+			if (currentMana > maxMana)
+				currentMana = maxMana;
+			//to subscribe to the event they need a reference to it, so dont need to send current
+			manaUpdated?.Invoke(oldMana);
+			return true;
+		}
+		return false;
+	}
+
+	public void IncreaseMaxMana(int newMax, bool refillMana = true) {
+		maxMana = newMax;
+		if (refillMana) {
+			int oldMana = currentMana;
+			currentMana = maxMana;
+			manaUpdated?.Invoke(oldMana);
+		}
+	}
+}
+
+public class GameController : MonoBehaviour
+{	
 	public int rowCount;
 	[SerializeField] bool generateField = true;
 	[SerializeField] CardHolder cardHolderPrefab;
 	[SerializeField] PressEventButton turnEndButtonPrefab;
-	[SerializeField] DeckManager deckPrefab;
 	[SerializeField] Vector3 bellPos = Vector3.left;
+	[SerializeField] DeckManager deckPrefab;
 	[SerializeField] Vector3 deckPos = Vector3.right;
+	[SerializeField] PlayerDataListener playerListenerPrefab;
+	[SerializeField] Vector3 playerListenerPos = Vector3.right;
 	[SerializeField] float horizontalSeperation;
 	[SerializeField] float verticalSeperation;
 
@@ -30,19 +71,25 @@ public class GameController : MonoBehaviour
 	public PlayerData player1 = new PlayerData();
 	public PlayerData player2 = new PlayerData();
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
+    void Awake() {
 		if (generateField)
         	Generate();
+		//get variables updated
     }
+	void Start() {
+		player1.Init();
+		player2.Init();
+	}
 
 	void DoPlayer1Turn() {
-		player2.currentHP -= Doturn(player1);;
+		int dmg = Doturn(player1);
+		if (dmg != 0)
+			player2.TakeDamage(dmg);
 	}
 	void DoPlayer2Turn() {
-		player1.currentHP -= Doturn(player2);
+		int dmg = Doturn(player2);
+		if (dmg != 0)
+			player1.TakeDamage(dmg);
 	}
 
 	//return damage taken by opposing player
@@ -51,7 +98,7 @@ public class GameController : MonoBehaviour
 		foreach (CardHolder tile in current.field) {
 			total += tile.DoUpdate();
 		}
-		current.currentMana = current.maxMana = Mathf.Clamp(++current.maxMana, 0, maxMana);
+		current.IncreaseMaxMana(Mathf.Clamp(++current.maxMana, 0, maxMana));
 
 		return total;
 	}
@@ -100,6 +147,20 @@ public class GameController : MonoBehaviour
 		temp.localPosition = bellPos;
 		temp.localRotation = Quaternion.identity;
 		temp.GetComponent<PressEventButton>().pressed += DoPlayer1Turn;
+		//temp.gameObject.tag = "Player1";
+
+
+		//spawn turn buttons
+		temp = Instantiate(playerListenerPrefab.gameObject, transform).transform;
+		temp.GetComponent<PlayerDataListener>().SetTarget(player2);
+		temp.localPosition = -playerListenerPos;
+		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
+		//temp.gameObject.tag = "Player2";
+
+		temp = Instantiate(playerListenerPrefab.gameObject, transform).transform;
+		temp.GetComponent<PlayerDataListener>().SetTarget(player1);
+		temp.localPosition = playerListenerPos;
+		temp.localRotation = Quaternion.identity;
 		//temp.gameObject.tag = "Player1";
 
 
