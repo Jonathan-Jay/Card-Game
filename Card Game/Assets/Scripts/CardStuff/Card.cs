@@ -105,8 +105,10 @@ public class Card : MonoBehaviour
 		}
 
 		//ensure transform is good
-		transform.localPosition = targetPos;
-		transform.localRotation = targetRot;
+		if (transform.parent == hand.transform) {
+			transform.localPosition = targetPos;
+			transform.localRotation = targetRot;
+		}
 
 		gameObject.layer = tempLayer;
 	}
