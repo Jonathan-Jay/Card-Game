@@ -124,7 +124,7 @@ public class Mouse : MonoBehaviour {
 		if (!tempLoop)
 			hoverObjs.Add(ms);
 
-		Vector3 targetPos = ms.origPos + ms.gameObject.transform.localRotation * new Vector3(0f, 0.066f, 0.1f);
+		Vector3 targetPos = ms.origPos + Vector3.up * 0.066f;
 		Vector3 hoverObjVel = Vector3.zero;
 		tempLoop = true;
 
@@ -174,33 +174,5 @@ public class Mouse : MonoBehaviour {
 
 		//Debug.Log("DeActivateHover: " + targetPos);
 		//Debug.Log("DeHoverObjsAmt: " + hoverObjs.Count);
-	}
-
-	IEnumerator AnimateDeHover() {
-		isHovering = false;
-		GameObject tempHoverObj = hoverObj;
-		hoverObj = null;
-		Vector3 tempHoverObjOrigPos = hoverObjOrigPos;
-		hoverObjOrigPos = Vector3.zero;
-		Vector3 tempHoverObjVel = hoverObjVel;
-		tempHoverObjVel = Vector3.zero;
-		int tempLayer = tempHoverObj.layer;
-		tempHoverObj.layer = grabbedMask;	//ignored layer
-		while (true) {
-			if (Vector3.Distance(tempHoverObj.transform.localPosition, tempHoverObjOrigPos) < 0.0001f) {
-				tempHoverObj.transform.localPosition = tempHoverObjOrigPos;
-				//isHovering = false;
-				//hoverObj = null;
-				//hoverObjOrigPos = Vector3.zero;
-				//return true;        //fully "dehovered" Obj
-				break;
-			}
-
-			tempHoverObj.transform.localPosition = Vector3.SmoothDamp(tempHoverObj.transform.localPosition,
-				tempHoverObjOrigPos, ref tempHoverObjVel, 0.1f, 2f, Time.deltaTime);
-			yield return new WaitForEndOfFrame();
-		}
-
-		tempHoverObj.layer = tempLayer;
 	}
 }
