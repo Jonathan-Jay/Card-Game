@@ -15,9 +15,16 @@ public class Mouse : MonoBehaviour {
 
     private Camera cam;
     // Start is called before the first frame update
-    void Start() {
+    private void Awake() {
         cam = GetComponent<Camera>();
 	}
+
+	//delete this later to allow a networking manager to handle it
+	private void Start() {
+		LinkInteractablesFunc();
+	}
+
+	public Transform holding = null;
 
     // Update is called once per frame
     void Update() {
@@ -26,72 +33,118 @@ public class Mouse : MonoBehaviour {
 
         if (Physics.Raycast(rayInfo, out rayHitInfo, maxDist, ~(1 << ignoredLayer))) {
             mouseObject.position = rayHitInfo.point + Vector3.up * vertOffset;
+			
 			hoverEvent?.Invoke(rayHitInfo);
 
 			if (Input.GetMouseButtonDown(0)) {
 				clickEvent?.Invoke(rayHitInfo);
-				//first check if we wanna do smt
-				GameObject hitObj = rayHitInfo.transform.gameObject;
-				if (hitObj.CompareTag("Interactable")) {
-					{
-						Card cardTest = hitObj.GetComponent<Card>();
-						if (cardTest != null) {
-							rayHitInfo.rigidbody.isKinematic = true;
-							cardTest.transform.SetParent(mouseObject, true);
-							cardTest.transform.position += Vector3.up * vertOffset;
-							tempLayer = cardTest.gameObject.layer;
-							cardTest.gameObject.layer = ignoredLayer;
-							return;
-						}
-					}
-					{
-						DeckManager deckTest = hitObj.GetComponent<DeckManager>();
-						if (deckTest != null) {
-							Transform card = deckTest.DrawCard();
-							if (card != null) {
-								card.GetComponent<Rigidbody>().isKinematic = true;
-								card.SetParent(mouseObject, true);
-								card.position += Vector3.up * vertOffset;
-								tempLayer = card.gameObject.layer;
-								card.gameObject.layer = ignoredLayer;
-							}
-							return;
-						}
-					}
-					{
-						PressEventButton buttonTest = hitObj.GetComponent<PressEventButton>();
-						if (buttonTest != null) {
-							buttonTest.Press();
-							return;
-						}
-					}
-				}
 			}
 			//we should be holding something
 			if (Input.GetMouseButtonUp(0)) {
 				releaseEvent?.Invoke(rayHitInfo);
-				if (tempLayer != -1) {
-
-					GameObject hitObj = rayHitInfo.collider.gameObject;
-					//cardholder test
-					if (hitObj.CompareTag("Interactable")) {
-						CardHolder tempHolder;
-						if (hitObj.TryGetComponent<CardHolder>(out tempHolder)) {
-							if (tempHolder.PutCard(mouseObject.GetChild(1).GetComponent<Card>())) {
-								//dont allow cards to be interactable when in holder (aka leave layer)
-								//mouseObject.GetChild(1).gameObject.layer = tempLayer;
-								tempLayer = -1;
-								return;
-							}
-						}
-					}
-					//just drop the card otherwise
-					mouseObject.GetChild(1).GetComponent<Rigidbody>().isKinematic = false;
-					mouseObject.GetChild(1).gameObject.layer = tempLayer;
-					tempLayer = -1;
-					mouseObject.GetChild(1).SetParent(null, true);
-				}
 			}
         }
     }
+
+	public void LinkInteractablesFunc() {
+		//make sure we're not holding anything
+		if (holding) {
+			holding.GetComponent<Rigidbody>().isKinematic = false;
+			holding.gameObject.layer = tempLayer;
+			holding.SetParent(null, true);
+			holding = null;
+		}
+		clickEvent += ClickInteractable;
+		releaseEvent += ReleaseInteractable;
+	}
+
+	public void UnLinkInteractablesFunc() {
+		//make sure we're not holding anything
+		if (holding) {
+			holding.GetComponent<Rigidbody>().isKinematic = false;
+			holding.gameObject.layer = tempLayer;
+			holding.SetParent(null, true);
+			holding = null;
+		}
+		clickEvent -= ClickInteractable;
+		releaseEvent -= ReleaseInteractable;
+	}
+
+	public void ActivateSpellMode() {
+		UnLinkInteractablesFunc();
+		//change rendering
+		
+	}
+
+	public void DeactivateSpellMode() {
+		LinkInteractablesFunc();
+		//change rendering
+
+	}
+
+	public void ClickInteractable(RaycastHit hit) {
+		//first check if we wanna do smt
+		GameObject hitObj = hit.transform.gameObject;
+		if (hitObj.CompareTag("Interactable")) {
+			{
+				Card cardTest = hitObj.GetComponent<Card>();
+				if (cardTest != null) {
+					hit.rigidbody.isKinematic = true;
+					cardTest.transform.SetParent(mouseObject, true);
+					cardTest.transform.position += Vector3.up * vertOffset;
+					tempLayer = cardTest.gameObject.layer;
+					cardTest.gameObject.layer = ignoredLayer;
+
+					holding = cardTest.transform;
+					return;
+				}
+			}
+			{
+				DeckManager deckTest = hitObj.GetComponent<DeckManager>();
+				if (deckTest != null)
+				{
+					Transform card = deckTest.DrawCard();
+					if (card != null)
+					{
+						card.GetComponent<Rigidbody>().isKinematic = true;
+						card.SetParent(mouseObject, true);
+						card.position += Vector3.up * vertOffset;
+						tempLayer = card.gameObject.layer;
+						card.gameObject.layer = ignoredLayer;
+
+						holding = card;
+					}
+					return;
+				}
+			}
+			{
+				PressEventButton buttonTest = hitObj.GetComponent<PressEventButton>();
+				if (buttonTest != null) {
+					buttonTest.Press();
+					return;
+				}
+			}
+		}
+	}
+	public void ReleaseInteractable(RaycastHit hit) {
+		if (holding) {
+			GameObject hitObj = hit.transform.gameObject;
+			//cardholder test
+			if (hitObj.CompareTag("Interactable")) {
+				CardHolder tempHolder = hitObj.GetComponent<CardHolder>();
+				if (tempHolder != null && tempHolder.PutCard(holding.GetComponent<Card>())) {
+					//dont allow cards to be interactable when in holder (aka dont change the layer)
+					//holding.gameObject.layer = tempLayer;
+					holding = null;
+					return;
+				}
+			}
+
+			//just drop the card otherwise
+			holding.GetComponent<Rigidbody>().isKinematic = false;
+			holding.gameObject.layer = tempLayer;
+			holding.SetParent(null, true);
+			holding = null;
+		}
+	}
 }

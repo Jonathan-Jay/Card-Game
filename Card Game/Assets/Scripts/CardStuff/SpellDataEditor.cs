@@ -36,13 +36,15 @@ public class SpellDataEditor : Editor
 		new TargettingOption("Opposing Card", "Target the card it's facing (returns to hand if invalid)",
 			"the opposing card", SpellData.TargettingOptions.OpposingCard),
 		new TargettingOption("Random Opponent's Card", "Target a random card of the opposing player",
-			"random active monster from the opponent", SpellData.TargettingOptions.OpposingField),
+			"random card of the opponent", SpellData.TargettingOptions.OpposingField),
 		new TargettingOption("Random Caster's Card", "Target a random card of the caster",
-			"random active monster from the caster", SpellData.TargettingOptions.SelfField),
+			"random card of the caster", SpellData.TargettingOptions.SelfField),
 		new TargettingOption("Opposing Player", "Target the opposing player directly (make sure to have correct activations though)",
 			"the opposing player", SpellData.TargettingOptions.OpposingPlayer),
 		new TargettingOption("Player Self", "Target Self (make sure to have correct activations though)",
 			"the caster", SpellData.TargettingOptions.PlayerSelf),
+		new TargettingOption("Any Card", "Players choose which card to affect, click on the spell to cancel",
+			"any card", SpellData.TargettingOptions.AnyCard),
 	};
 	#endregion
 

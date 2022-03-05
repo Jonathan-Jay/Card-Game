@@ -8,7 +8,7 @@ public class Card : MonoBehaviour
 	public CardHolder placement;
 	public CardData data;
 	public HandManager hand;
-	[HideInInspector]	public bool targettable = false;
+	[HideInInspector]	public bool targetable = false;
 	[SerializeField]	protected MeshRenderer frontFace;
 	[SerializeField]	protected TMP_Text nameMesh;
 	[SerializeField]	protected TMP_Text costMesh;

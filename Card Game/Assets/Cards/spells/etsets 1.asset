@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9a4e61e0c6f5bc408eb48ca961bc9b5, type: 3}
-  m_Name: etsets
+  m_Name: etsets 1
   m_EditorClassIdentifier: 
   cardName: randomized everything
-  cardArt: {fileID: 2800000, guid: dffef66376be4fa480fb02b19edbe903, type: 3}
-  cost: 5
-  targettingOption: 0
-  activateOption: 2
+  cardArt: {fileID: 10307, guid: 0000000000000000f000000000000000, type: 0}
+  cost: 0
+  targettingOption: 5
+  activateOption: 0
   abilityOption: 1
-  cardDescription: Deal <color=red>0</color>-<color=red>10</color> damage <color=green>4</color>
-    times to random opposing cards
+  cardDescription: Deal <color=red>2</color>-<color=red>5</color> damage directly
+    to any card
   actionParameter1: 4
   actionParameter2: 0
-  abilityParameter1: 0
-  abilityParameter2: 10
+  abilityParameter1: 2
+  abilityParameter2: 5

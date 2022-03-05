@@ -7,7 +7,7 @@ using TargettingFunc = FuncOut<PlayerData, int, UnityEngine.RaycastHit>;
 using ActivationFunc = System.Action<PlayerData, int,
 	System.Action<PlayerData, int, SpellData>, SpellData>;
 using AbilityFunc = System.Action<PlayerData, int, SpellData>;
-public delegate T1 FuncOut<T1, T2, T3>(T1 current, T1 opposing, ref T2 index, T3 hit);
+public delegate T1 FuncOut<T1, T2, T3>(T1 current, T1 opposing, ref T2 index, ref T3 hit);
 
 [CreateAssetMenu(fileName = "Spell", menuName = "CardData/SpellData", order = 0)]
 public class SpellData : CardData {
@@ -53,6 +53,7 @@ public class SpellData : CardData {
 		SelfField,
 		OpposingPlayer,
 		PlayerSelf,
+		AnyCard,
 	}
 	static public TargettingFunc GetTargetting(TargettingOptions choice) {
 		switch (choice) {
@@ -66,6 +67,8 @@ public class SpellData : CardData {
 				return TargetPlayer;
 			case TargettingOptions.PlayerSelf:
 				return TargetSelfPlayer;
+			case TargettingOptions.AnyCard:
+				return TargetAnyCard;
 		}
 	}
 
@@ -108,9 +111,9 @@ public class SpellData : CardData {
 	#region TargettingOptions
 	//return opposing card
 	static public PlayerData TargetOpposingCard(PlayerData current,
-		PlayerData opposing, ref int index, RaycastHit hit)
+		PlayerData opposing, ref int index, ref RaycastHit hit)
 	{
-		if (!(opposing.field[index].holding && opposing.field[index].holding.targettable)) {
+		if (!(opposing.field[index].holding && opposing.field[index].holding.targetable)) {
 			index = -2;
 		}
 		
@@ -119,12 +122,12 @@ public class SpellData : CardData {
 
 	//return random card on the field
 	static public PlayerData TargetOpposingField(PlayerData current,
-		PlayerData opposing, ref int index, RaycastHit hit)
+		PlayerData opposing, ref int index, ref RaycastHit hit)
 	{
 		List<int> valids = new List<int>();
 		index = -2;
 		for (int i = opposing.field.Count - 1; i >= 0; --i) {
-			if (opposing.field[i].holding && opposing.field[i].holding.targettable) {
+			if (opposing.field[i].holding && opposing.field[i].holding.targetable) {
 				valids.Add(i);
 			}
 		}
@@ -137,12 +140,12 @@ public class SpellData : CardData {
 
 	//return random card on the field
 	static public PlayerData TargetSelfField(PlayerData current,
-		PlayerData opposing, ref int index, RaycastHit hit)
+		PlayerData opposing, ref int index, ref RaycastHit hit)
 	{
 		List<int> valids = new List<int>();
 		index = -2;
 		for (int i = current.field.Count - 1; i >= 0; --i) {
-			if (current.field[i].holding && current.field[i].holding.targettable) {
+			if (current.field[i].holding && current.field[i].holding.targetable) {
 				valids.Add(i);
 			}
 		}
@@ -155,7 +158,7 @@ public class SpellData : CardData {
 
 	//return opposing player
 	static public PlayerData TargetPlayer(PlayerData current,
-		PlayerData opposing, ref int index, RaycastHit hit)
+		PlayerData opposing, ref int index, ref RaycastHit hit)
 	{
 		index = -1;
 		return opposing;
@@ -163,10 +166,34 @@ public class SpellData : CardData {
 
 	//return self player
 	static public PlayerData TargetSelfPlayer(PlayerData current,
-		PlayerData opposing, ref int index, RaycastHit hit)
+		PlayerData opposing, ref int index, ref RaycastHit hit)
 	{
 		index = -1;
 		return current;
+	}
+
+	static public PlayerData TargetAnyCard(PlayerData current,
+		PlayerData opposing, ref int index, ref RaycastHit hit)
+	{
+		//check if hitting something
+		if (hit.transform) {
+			//check if holder
+			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+			//check if holding a card if it's a holder
+			if (holder != null && holder.holding) {
+				//if targettign self, return error code
+				if (holder == current.field[index]) {
+					index = -2;
+					return current;
+				}
+				//if targetable, just use it i guess :shrug:
+				if (holder.holding.targetable) {
+					index = holder.index;
+					return holder.playerData;
+				}
+			}
+		}
+		return null;
 	}
 	#endregion
 
@@ -197,13 +224,13 @@ public class SpellData : CardData {
 		//get number of cards
 		int cards = 0;
 		foreach (CardHolder holder in target.field) {
-			if (holder.holding && holder.holding.targettable)
+			if (holder.holding && holder.holding.targetable)
 				++cards;
 		}
 
 		for (int i = 0; i < spell.actionParameter1 && cards > 0;) {
 			int j = Random.Range(0, target.field.Count);
-			if (target.field[j].holding && target.field[j].holding.targettable) {
+			if (target.field[j].holding && target.field[j].holding.targetable) {
 				ability.Invoke(target, j, spell);
 				if (!target.field[j].holding) {
 					--cards;
@@ -222,7 +249,7 @@ public class SpellData : CardData {
 			target.TakeDamage(spell.abilityParameter1);
 		}
 		else if (target.field[index].holding) {
-			if (target.field[index].holding.targettable)
+			if (target.field[index].holding.targetable)
 				((MonsterCard)target.field[index].holding).TakeDamage(spell.abilityParameter1);
 		}
 	}
@@ -235,7 +262,7 @@ public class SpellData : CardData {
 				spell.abilityParameter1, spell.abilityParameter2 + 1));
 		}
 		else if (target.field[index].holding) {
-			if (target.field[index].holding.targettable)
+			if (target.field[index].holding.targetable)
 				((MonsterCard)target.field[index].holding).TakeDamage(UnityEngine.Random.Range(
 					spell.abilityParameter1, spell.abilityParameter2 + 1));
 		}

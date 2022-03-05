@@ -20,7 +20,7 @@ public class MonsterCard : Card
 		base.SetData(newData);
 		SetAttack(((MonsterData)newData).attack, Color.black);
 		SetHealth(((MonsterData)newData).health, Color.black);
-		targettable = true;
+		targetable = true;
 	}
 
 	public override void OnPlace(int index, PlayerData current, PlayerData opposing) {
