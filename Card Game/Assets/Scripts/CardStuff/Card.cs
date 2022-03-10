@@ -7,7 +7,7 @@ public class Card : MonoBehaviour
 {
 	public CardHolder placement;
 	public CardData data;
-	public HandManager hand;
+	public PlayerData player;
 	[HideInInspector]	public bool targetable = false;
 	[SerializeField]	protected MeshRenderer frontFace;
 	[SerializeField]	protected TMP_Text nameMesh;
@@ -51,8 +51,8 @@ public class Card : MonoBehaviour
 	}
 
 	public void CallBackCard() {
-		if (transform.parent != hand.transform) {
-			transform.SetParent(hand.transform, true);
+		if (transform.parent != player.hand.transform) {
+			transform.SetParent(player.hand.transform, true);
 			StartCoroutine(ReturnToHand());
 		}
 	}
@@ -68,7 +68,7 @@ public class Card : MonoBehaviour
 
 	IEnumerator ReturnToHand() {
 		int tempLayer = gameObject.layer;
-		gameObject.layer = hand.input.ignoredLayer;
+		gameObject.layer = player.hand.input.ignoredLayer;
 
 		float returnSpeed = 2f;
 		float returnRotSpeed = 15f;
@@ -78,7 +78,7 @@ public class Card : MonoBehaviour
 		Vector3 targetPos = Vector3.zero;
 		Quaternion targetRot = Quaternion.identity;
 
-		while (transform.parent == hand.transform)
+		while (transform.parent == player.hand.transform)
 		{
 			if (Vector3.Distance(transform.localPosition, targetPos) > 0.25f) {
 				transform.localPosition = Vector3.Lerp(transform.localPosition, targetPos,
@@ -105,7 +105,7 @@ public class Card : MonoBehaviour
 		}
 
 		//ensure transform is good
-		if (transform.parent == hand.transform) {
+		if (transform.parent == player.hand.transform) {
 			transform.localPosition = targetPos;
 			transform.localRotation = targetRot;
 		}

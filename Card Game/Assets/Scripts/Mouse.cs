@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Mouse : MonoBehaviour {
     public Transform mouseObject;
+	public PlayerData player;
 	public HandManager hand;
     public float maxDist = 0f;
     public float vertOffset = 0f;
@@ -88,7 +89,7 @@ public class Mouse : MonoBehaviour {
 		if (hitObj.CompareTag("Interactable")) {
 			{
 				Card cardTest = hitObj.GetComponent<Card>();
-				if (cardTest != null) {
+				if (cardTest != null && cardTest.player == player) {
 					hit.rigidbody.isKinematic = true;
 					cardTest.transform.SetParent(mouseObject, true);
 					cardTest.transform.position += Vector3.up * vertOffset;
@@ -101,7 +102,7 @@ public class Mouse : MonoBehaviour {
 			}
 			{
 				DeckManager deckTest = hitObj.GetComponent<DeckManager>();
-				if (deckTest != null)
+				if (deckTest != null && deckTest.player == player)
 				{
 					Transform card = deckTest.DrawCard();
 					if (card != null)
@@ -119,7 +120,7 @@ public class Mouse : MonoBehaviour {
 			}
 			{
 				PressEventButton buttonTest = hitObj.GetComponent<PressEventButton>();
-				if (buttonTest != null) {
+				if (buttonTest != null && (buttonTest.anyPlayer || buttonTest.player == player)) {
 					buttonTest.Press();
 					return;
 				}

@@ -41,9 +41,8 @@ public class CardHolder : MonoBehaviour
 	//returns true on sucess
 	public bool PutCard(Card card)
 	{
-		if (holding != null)	return false;
-		//check cost
-		if (!card.data.CheckCost(playerData)) {	return false;	}
+		//check if holding smt already, if valid player, and cost
+		if (holding != null || card.player != playerData || !card.data.CheckCost(playerData)) {	return false;	}
 
 		//also allow other player to see the card, send a message to the server to set data
 

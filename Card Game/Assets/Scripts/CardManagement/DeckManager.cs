@@ -46,7 +46,7 @@ public class DeckManager : MonoBehaviour
 		}
 		card = temp.GetComponent<Card>();
 		card.SetData(data);
-		card.hand = player.hand;
+		card.player = player;
 
 		data = null;
 		card = null;

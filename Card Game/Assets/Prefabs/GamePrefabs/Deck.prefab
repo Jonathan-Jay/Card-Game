@@ -155,6 +155,10 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: c56641eaef1b11a4389022c8cdb9a0e4, type: 2}
   - amt: 3
     data: {fileID: 11400000, guid: 37cf40fa697142040bd3513896e92012, type: 2}
+  - amt: 3
+    data: {fileID: 11400000, guid: a7df2b53a8952f94997975bdb31f2e6d, type: 2}
+  - amt: 3
+    data: {fileID: 11400000, guid: 4ddfaef0c8744f045990918598241c9d, type: 2}
   cardPrefab: {fileID: 763856821016003713, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
   monsterPrefab: {fileID: 4927160011221335715, guid: b754fb93e1073534f82c348aa95ea457, type: 3}
   spellPrefab: {fileID: 5665379, guid: e726434936a833d4a91d2c51dedefb33, type: 3}

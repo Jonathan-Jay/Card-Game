@@ -44,7 +44,11 @@ public class SpellDataEditor : Editor
 		new TargettingOption("Player Self", "Target Self (make sure to have correct activations though)",
 			"the caster", SpellData.TargettingOptions.PlayerSelf),
 		new TargettingOption("Any Card", "Players choose which card to affect, click on the spell to cancel",
-			"any card", SpellData.TargettingOptions.AnyCard),
+			"any card", SpellData.TargettingOptions.TargetAny),
+		new TargettingOption("Caster's Card", "Players choose which card of their card to affect, click on the spell to cancel",
+			"one of the caster's card", SpellData.TargettingOptions.TargetAnyPlayer),
+		new TargettingOption("Opponent's Card", "Players choose which card of the opposing player's card to affect, click on the spell to cancel",
+			"one of the opponent's card", SpellData.TargettingOptions.TargetAnyOpposing),
 	};
 	#endregion
 

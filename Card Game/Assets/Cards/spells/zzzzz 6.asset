@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9a4e61e0c6f5bc408eb48ca961bc9b5, type: 3}
-  m_Name: zzzzz 3
+  m_Name: zzzzz 6
   m_EditorClassIdentifier: 
-  cardName: targetting test 3
-  cardArt: {fileID: 2800000, guid: 454b44bc389845e4cbe7fa75b9c5caa6, type: 3}
+  cardName: targetting test 4
+  cardArt: {fileID: 2800000, guid: c89d75ee5e33d57438747ea912c93ad2, type: 3}
   cost: 1
-  targettingOption: 3
-  activateOption: 1
-  abilityOption: 1
-  cardDescription: Heal or Deal up to <color=red>4</color> health points <color=green>2</color>
-    times to the opposing player
-  actionParameter1: 2
+  targettingOption: 6
+  activateOption: 0
+  abilityOption: 0
+  cardDescription: Heal <color=red>1</color> health point directly to one of the
+    caster's card
+  actionParameter1: 0
   actionParameter2: 0
-  abilityParameter1: -4
-  abilityParameter2: 4
+  abilityParameter1: -1
+  abilityParameter2: 0

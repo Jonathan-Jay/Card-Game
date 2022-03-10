@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: zzzzz 5
   m_EditorClassIdentifier: 
   cardName: targetting test 4
-  cardArt: {fileID: 2800000, guid: a18332f3cde6eba4db259d13eca91459, type: 3}
-  cost: 0
+  cardArt: {fileID: 2800000, guid: 454b44bc389845e4cbe7fa75b9c5caa6, type: 3}
+  cost: 1
   targettingOption: 1
   activateOption: 1
   abilityOption: 1

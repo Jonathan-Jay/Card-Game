@@ -53,7 +53,9 @@ public class SpellData : CardData {
 		SelfField,
 		OpposingPlayer,
 		PlayerSelf,
-		AnyCard,
+		TargetAny,
+		TargetAnyPlayer,
+		TargetAnyOpposing,
 	}
 	static public TargettingFunc GetTargetting(TargettingOptions choice) {
 		switch (choice) {
@@ -67,8 +69,12 @@ public class SpellData : CardData {
 				return TargetPlayer;
 			case TargettingOptions.PlayerSelf:
 				return TargetSelfPlayer;
-			case TargettingOptions.AnyCard:
+			case TargettingOptions.TargetAny:
 				return TargetAnyCard;
+			case TargettingOptions.TargetAnyPlayer:
+				return TargetAnyPlayerCard;
+			case TargettingOptions.TargetAnyOpposing:
+				return TargetAnyOpposingCard;
 		}
 	}
 
@@ -188,6 +194,54 @@ public class SpellData : CardData {
 				}
 				//if targetable, just use it i guess :shrug:
 				if (holder.holding.targetable) {
+					index = holder.index;
+					return holder.playerData;
+				}
+			}
+		}
+		return null;
+	}
+
+	static public PlayerData TargetAnyPlayerCard(PlayerData current,
+		PlayerData opposing, ref int index, ref RaycastHit hit)
+	{
+		//check if hitting something
+		if (hit.transform) {
+			//check if holder
+			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+			//check if holding a card if it's a holder
+			if (holder != null && holder.holding) {
+				//if targettign self, return error code
+				if (holder == current.field[index]) {
+					index = -2;
+					return current;
+				}
+				//if targetable and valid field, just use it i guess :shrug:
+				if (holder.holding.targetable && holder.playerData == current) {
+					index = holder.index;
+					return holder.playerData;
+				}
+			}
+		}
+		return null;
+	}
+
+	static public PlayerData TargetAnyOpposingCard(PlayerData current,
+		PlayerData opposing, ref int index, ref RaycastHit hit)
+	{
+		//check if hitting something
+		if (hit.transform) {
+			//check if holder
+			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+			//check if holding a card if it's a holder
+			if (holder != null && holder.holding) {
+				//if targettign self, return error code
+				if (holder == current.field[index]) {
+					index = -2;
+					return current;
+				}
+				//if targetable and valid field, just use it i guess :shrug:
+				if (holder.holding.targetable && holder.playerData == opposing) {
 					index = holder.index;
 					return holder.playerData;
 				}

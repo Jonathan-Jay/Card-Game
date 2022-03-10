@@ -32,8 +32,8 @@ public class SpellCard : Card
 		}
 
 		//stop mouse from working
-		hand.input.ActivateSpellMode();
-		hand.input.clickEvent += UpdateRaycastHit;
+		player.hand.input.ActivateSpellMode();
+		player.hand.input.clickEvent += UpdateRaycastHit;
 
 		Vector3 startPos = transform.localPosition;
 		Vector3 endPos = Vector3.up * 0.25f;
@@ -56,8 +56,8 @@ public class SpellCard : Card
 		}
 
 		//relinnk mouse functions
-		hand.input.clickEvent += UpdateRaycastHit;
-		hand.input.DeactivateSpellMode();
+		player.hand.input.clickEvent += UpdateRaycastHit;
+		player.hand.input.DeactivateSpellMode();
 
 		//can't target something, so just drop card
 		if (newIndex < -1) {
