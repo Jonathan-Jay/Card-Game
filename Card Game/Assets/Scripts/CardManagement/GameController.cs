@@ -2,58 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class PlayerData {
-	public string playerTag = "";
-	public int currentHP = 20;
-	public int maxHP = 20;
-	public int currentMana = 1;
-	public int maxMana = 5;
-	public HandManager hand = null;
-	public List<CardHolder> field = new List<CardHolder>();
-
-	//sends old value
-	public event System.Action<int> healthUpdated;
-	//sends old value
-	public event System.Action<int> manaUpdated;
-
-	public void Init() {
-		healthUpdated?.Invoke(0);
-		manaUpdated?.Invoke(0);
-	}
-
-	//works when inverted
-	public void TakeDamage(int amt) {
-		currentHP -= amt;
-		healthUpdated?.Invoke(currentHP + amt);
-	}
-
-	//return true if player has enough mana
-	public bool ReduceMana(int amt) {
-		//can't reduce below 0
-		if (currentMana >= amt) {
-			int oldMana = currentMana;
-			currentMana -= amt;
-			if (currentMana > maxMana)
-				currentMana = maxMana;
-			//to subscribe to the event they need a reference to it, so dont need to send current
-			manaUpdated?.Invoke(oldMana);
-			return true;
-		}
-		return false;
-	}
-
-	public void IncreaseMaxMana(int newMax, bool refillMana = true) {
-		maxMana = newMax;
-		if (refillMana) {
-			int oldMana = currentMana;
-			currentMana = maxMana;
-			if (oldMana != currentMana)
-				manaUpdated?.Invoke(oldMana);
-		}
-	}
-}
-
 public class GameController : MonoBehaviour
 {	
 	public int rowCount;
@@ -69,14 +17,16 @@ public class GameController : MonoBehaviour
 	[SerializeField] float verticalSeperation;
 
 	public int maxMana = 5;
-	public PlayerData player1 = new PlayerData();
-	public PlayerData player2 = new PlayerData();
+	public PlayerData player1;
+	public PlayerData player2;
+	public event System.Action turnEnded;
 
     void Awake() {
 		if (generateField)
         	Generate();
 		//get variables updated
     }
+
 	void Start() {
 		player1.Init();
 		player2.Init();
@@ -101,8 +51,24 @@ public class GameController : MonoBehaviour
 		}
 		current.IncreaseMaxMana(Mathf.Clamp(++current.maxMana, 0, maxMana));
 
+		turnEnded?.Invoke();
+
 		return total;
 	}
+
+	//display current turn?
+	/*
+	private void OnEnable() {
+		turnEnded += TurnEnd;
+	}
+
+	private void OnDisable() {
+		turnEnded -= TurnEnd;
+	}
+
+	void TurnEnd() {
+		
+	}*/
 
 	//returns true on success
 	bool AddCard(int index, bool isP1, MonsterCard card) {

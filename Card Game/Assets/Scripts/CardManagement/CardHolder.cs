@@ -25,7 +25,7 @@ public class CardHolder : MonoBehaviour
 	//damage to player
     public int DoUpdate()
     {
-        if (holding == null)	return 0;
+        if (holding == null || !holding.GetType().Equals(typeof(MonsterCard)))	return 0;
 
 		//assuming only direct attacks
 		MonsterCard target = (MonsterCard)opposingData.field[index].holding;
@@ -66,6 +66,8 @@ public class CardHolder : MonoBehaviour
 	}
 
 	IEnumerator CardTransition() {
+		playerData.hand.input.ActivateAnimationMode();
+
 		Transform cardTrans = holding.transform;
 		while (holding != null) {
 			cardTrans.localPosition = Vector3.Lerp(cardTrans.localPosition, slamHeight,
@@ -89,5 +91,8 @@ public class CardHolder : MonoBehaviour
 			holding.OnPlace(index, playerData, opposingData);
 			cardTrans.localPosition = floatingHeight;
 		}
+
+		yield return new WaitForSeconds(0.25f);
+		playerData.hand.input.DeactivateAnimationMode();
 	}
 }

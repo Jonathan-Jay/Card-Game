@@ -13,18 +13,31 @@ public class MonsterCard : Card
 	private void Start() {
 		if (data != null) {
 			SetData(data);
+			if (renderingFace) {
+				//because of the dirty flag
+				renderingFace = false;
+				RenderFace();
+			}
 		}
 	}
 
 	public override void SetData(CardData newData) {
 		base.SetData(newData);
-		SetAttack(((MonsterData)newData).attack, Color.black);
-		SetHealth(((MonsterData)newData).health, Color.black);
 		targetable = true;
 	}
 
+	public override void RenderFace()
+	{
+		if (renderingFace || !data)	return;
+
+		base.RenderFace();
+
+		SetAttack(((MonsterData)data).attack, Color.black);
+		SetHealth(((MonsterData)data).health, Color.black);
+	}
+
 	public override void OnPlace(int index, PlayerData current, PlayerData opposing) {
-		
+		RenderFace();
 	}
 
 	//returns overkill

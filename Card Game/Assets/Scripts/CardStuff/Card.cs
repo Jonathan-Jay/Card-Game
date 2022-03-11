@@ -8,6 +8,7 @@ public class Card : MonoBehaviour
 	public CardHolder placement;
 	public CardData data;
 	public PlayerData player;
+	public bool renderingFace = false;
 	[HideInInspector]	public bool targetable = false;
 	[SerializeField]	protected MeshRenderer frontFace;
 	[SerializeField]	protected TMP_Text nameMesh;
@@ -17,25 +18,40 @@ public class Card : MonoBehaviour
 	private void Start() {
 		if (data != null) {
 			SetData(data);
+			if (renderingFace) {
+				//because of the dirty flag
+				renderingFace = false;
+				RenderFace();
+			}
 		}
 	}
 
 	public virtual void SetData(CardData newData) {
 		data = newData;
 		data.Init();
+	}
+
+	public virtual void RenderFace() {
+		if (renderingFace || !data)	return;
+
 		nameMesh.text = data.cardName;
 
 		frontFace.material.mainTexture = data.cardArt;
 
 		string cost = "";
-		for (int i = data.cost; i > 0; --i) {
+		for (int i = data.cost; i > 0; --i)
+		{
 			cost += 'o';
 		}
 		costMesh.text = cost;
+
+		//dirty flag
+		renderingFace = true;
 	}
 
 	public virtual void OnPlace(int index, PlayerData current, PlayerData opposing) {
 		//don't allow default cards to survive
+		RenderFace();
 		StartCoroutine("Death");
 	}
 

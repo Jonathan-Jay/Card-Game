@@ -10,7 +10,8 @@ public class DeckManager : MonoBehaviour
 		public CardData data;
 	}
 
-	public List<CardDataMultiplier> deck = new List<CardDataMultiplier>();
+	public List<CardDataMultiplier> deckOptions = new List<CardDataMultiplier>();
+	Stack<int> deck = new Stack<int>();
 	public Card cardPrefab;
 	public MonsterCard monsterPrefab;
 	public SpellCard spellPrefab;
@@ -22,17 +23,52 @@ public class DeckManager : MonoBehaviour
 	CardData data;
 	Card card;
 
+	private void Start() {
+		ShuffleDeck();
+	}
+
+	void ShuffleDeck() {
+		//only shuffle empty decks?
+		//if (deck.Count > 0)	return;
+		//deck.Clear();
+
+		//if deckoptions is full of 0s, nothing happens
+		int count = 0, index = 0;
+		List<int> cards = new List<int>();
+		foreach (CardDataMultiplier data in deckOptions) {
+			count += data.amt;
+			for (int i = 0; i < data.amt; ++i) {
+				cards.Add(index);
+			}
+			++index;
+		}
+		for (int i = 0; i < count; ++i) {
+			index = Random.Range(0, cards.Count);
+			deck.Push(cards[index]);
+			cards.RemoveAt(index);
+		}
+	}
+
     public Transform DrawCard() {
 		if (deck.Count == 0)	return null;
+		/*if (deckOptions.Count == 0)	return null;
 
 		//not good because doesn't take into account the amt of cards per type, could always remove the amt system
-		int index = Random.Range(0, deck.Count);
-		data = deck[index].data;
-		if (--deck[index].amt <= 0) {
-			deck.RemoveAt(index);
-			if (deck.Count == 0) {
+		int index = Random.Range(0, deckOptions.Count);
+		data = deckOptions[index].data;
+		if (--deckOptions[index].amt <= 0) {
+			deckOptions.RemoveAt(index);
+			if (deckOptions.Count == 0) {
 				GetComponentInChildren<MeshRenderer>().material.color = Color.black;
 			}
+		}*/
+		int index = deck.Pop();
+		data = deckOptions[index].data;
+		//if you shuffle what's remaining
+		--deckOptions[index].amt;
+
+		if (deck.Count == 0) {
+			GetComponentInChildren<MeshRenderer>().material.color = Color.black;
 		}
 
 		if (data.GetType().Equals(typeof(MonsterData))) {

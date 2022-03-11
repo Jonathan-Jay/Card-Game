@@ -10,30 +10,43 @@ public class SpellCard : Card
 	private void Start() {
 		if (data != null) {
 			SetData(data);
+			if (renderingFace) {
+				//because of the dirty flag
+				renderingFace = false;
+				RenderFace();
+			}
 		}
 	}
 
 	public override void SetData(CardData newData) {
 		base.SetData(newData);
-		descriptionMesh.text = ((SpellData)newData).cardDescription;
+	}
+
+	public override void RenderFace()
+	{
+		if (renderingFace || !data)	return;
+
+		base.RenderFace();
+
+		descriptionMesh.text = ((SpellData)data).cardDescription;
 	}
 
 	public override void OnPlace(int index, PlayerData current, PlayerData opposing) {
+		RenderFace();
 		StartCoroutine(CastSpell(current, opposing, index));
 	}
 
 	IEnumerator CastSpell(PlayerData current, PlayerData opposing, int index) {
-		yield return new WaitForSeconds(0.25f);
-
 		RaycastHit hit = new RaycastHit();
-
 		void UpdateRaycastHit(RaycastHit rayHit) {
 			hit = rayHit;
 		}
 
-		//stop mouse from working
+		//stop mouse from working immidiately
 		player.hand.input.ActivateSpellMode();
 		player.hand.input.clickEvent += UpdateRaycastHit;
+
+		yield return new WaitForSeconds(0.25f);
 
 		Vector3 startPos = transform.localPosition;
 		Vector3 endPos = Vector3.up * 0.25f;
