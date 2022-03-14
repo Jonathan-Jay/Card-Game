@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //helps shorten things
-using TargettingFunc = FuncOut<PlayerData, int, UnityEngine.RaycastHit>;
 using ActivationFunc = System.Action<PlayerData, int,
 	System.Action<PlayerData, int, SpellData>, SpellData>;
 using AbilityFunc = System.Action<PlayerData, int, SpellData>;
-public delegate T1 FuncOut<T1, T2, T3>(T1 current, T1 opposing, ref T2 index, ref T3 hit);
+public delegate PlayerData TargettingFunc(PlayerData current, PlayerData opposing,
+	ref int index, ref UnityEngine.RaycastHit hit);
 
 [CreateAssetMenu(fileName = "Spell", menuName = "CardData/SpellData", order = 0)]
 public class SpellData : CardData {
