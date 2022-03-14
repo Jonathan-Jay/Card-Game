@@ -1452,7 +1452,7 @@ MonoBehaviour:
   playerListenerPos: {x: -0.4, y: 0, z: -1}
   horizontalSeperation: 1
   verticalSeperation: 2
-  startingHandSize: 0
+  startingHandSize: 4
   startingMana: 1
   maxMana: 5
   cardsPerTurn: 1

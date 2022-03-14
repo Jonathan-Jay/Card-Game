@@ -36,10 +36,6 @@ public class MonsterCard : Card
 		SetHealth(((MonsterData)data).health, Color.black);
 	}
 
-	public override void OnPlace(int index, PlayerData current, PlayerData opposing) {
-		RenderFace();
-	}
-
 	//returns overkill
 	public int Attack(MonsterCard target) {
 		int dmg = target.TakeDamage(currAttack);

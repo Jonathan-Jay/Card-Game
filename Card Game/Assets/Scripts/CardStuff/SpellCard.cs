@@ -68,21 +68,48 @@ public class SpellCard : Card
 				startPos, 4f * Time.deltaTime);
 		}
 
-		//relinnk mouse functions
-		player.hand.input.clickEvent += UpdateRaycastHit;
-		player.hand.input.DeactivateSpellMode();
+		//relink mouse functions
+		player.hand.input.clickEvent -= UpdateRaycastHit;
 
 		//can't target something, so just drop card
 		if (newIndex < -1) {
+			//relink mouse functions
+			player.hand.input.DeactivateSpellMode();
 			Release();
 			//return the mana cost
 			current.ReduceMana(-data.cost);
 			yield break;
 		}
 
-		((SpellData)data).CastSpell(target, newIndex);
+		//cast spell should take card of this
+		((SpellData)data).CastSpell(this, target, newIndex);
+	}
 
-		//then die
-		StartCoroutine("Death");
+	public void ActivationDelay(AbilityFunc ability, PlayerData target, int index,
+		float delayDelay, float delay, bool endSpellMode)
+	{
+		StartCoroutine(DelayedCasting(ability, target, index, (SpellData)data, delayDelay, delay, endSpellMode));
+	}
+	IEnumerator DelayedCasting(AbilityFunc ability, PlayerData target, int index,
+		SpellData spell, float delayDelay, float delay, bool endSpellMode)
+	{
+		Vector3 targetPos = target.hand.transform.position + Vector3.up * 1f;
+		if (index >= 0) {
+			targetPos = target.field[index].transform.position + Vector3.up * 0.1f
+				+ transform.rotation * (Vector3.back * 0.5f);
+		}
+		yield return new WaitForSeconds(delayDelay);
+
+		for (float i = 0; i < delay; i += Time.deltaTime) {
+			transform.position = Vector3.MoveTowards(transform.position, targetPos, 2f * Time.deltaTime);
+			yield return eof;
+		}
+
+		ability?.Invoke(target, index, spell);
+
+		if (endSpellMode) {
+			player.hand.input.DeactivateSpellMode();
+			StartCoroutine("Death");
+		}
 	}
 }

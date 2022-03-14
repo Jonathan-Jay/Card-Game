@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //helps shorten things
-public delegate void AbilityFunc(PlayerData target, int index, SpellData spell);
-public delegate void ActivationFunc(PlayerData target, int index, AbilityFunc ability, SpellData spell);
 public delegate PlayerData TargettingFunc(PlayerData current, PlayerData opposing,
 	ref int index, ref UnityEngine.RaycastHit hit);
+public delegate void ActivationFunc(SpellCard caster, PlayerData target, int index, AbilityFunc ability, SpellData spell);
+public delegate void AbilityFunc(PlayerData target, int index, SpellData spell);
 
 [CreateAssetMenu(fileName = "Spell", menuName = "CardData/SpellData", order = 0)]
 public class SpellData : CardData {
@@ -35,9 +35,9 @@ public class SpellData : CardData {
 	}
 
 	//if target is self, this should be null
-	public void CastSpell(PlayerData target, int index) {
+	public void CastSpell(SpellCard caster, PlayerData target, int index) {
 		//select the target
-		activate.Invoke(target, index, ability, this);
+		activate.Invoke(caster, target, index, ability, this);
 	}
 
 	/*
@@ -252,23 +252,27 @@ public class SpellData : CardData {
 
 	#region ActivationOptions
 	//just calls the ability once on the card target or player if index < 0
-	static public void DirectActivation(PlayerData target, int index,
+	static public void DirectActivation(SpellCard caster, PlayerData target, int index,
 		AbilityFunc ability, SpellData spell)
 	{
-		ability.Invoke(target, index, spell);
+		//ability.Invoke(target, index, spell);
+		float delay = 0.5f;
+		caster.ActivationDelay(ability, target, index, 0f, delay, true);
 	}
 
 	//call the ability actionParameter1 times
-	static public void RepeatedActivation(PlayerData target, int index,
+	static public void RepeatedActivation(SpellCard caster, PlayerData target, int index,
 		AbilityFunc ability, SpellData spell)
 	{
-		for (int i = 0; i < spell.actionParameter1; ++i) {
-			ability.Invoke(target, index, spell);
+		float delay = 0.5f;
+		for (int i = 1; i <= spell.actionParameter1; ++i) {
+			//ability.Invoke(target, index, spell);
+			caster.ActivationDelay(ability, target, index, (i - 1) * delay, delay, i == spell.actionParameter1);
 		}
 	}
 
 	//target a random card actionParameter1 times
-	static public void RandomizedActivation(PlayerData target, int index,
+	static public void RandomizedActivation(SpellCard caster, PlayerData target, int index,
 		AbilityFunc ability, SpellData spell)
 	{
 		//doesn't work if targetting player
@@ -281,15 +285,22 @@ public class SpellData : CardData {
 				++cards;
 		}
 
-		for (int i = 0; i < spell.actionParameter1 && cards > 0;) {
+		float delay = 0.5f;
+		for (int i = 1; i <= spell.actionParameter1 && cards > 0;) {
 			int j = Random.Range(0, target.field.Count);
 			if (target.field[j].holding && target.field[j].holding.targetable) {
-				ability.Invoke(target, j, spell);
+				//ability.Invoke(target, j, spell);
+				caster.ActivationDelay(ability, target, j, (i - 1) * delay, delay, i == spell.actionParameter1);
 				if (!target.field[j].holding) {
 					--cards;
 				}
 				++i;
 			}
+		}
+
+		if (cards == 0) {
+			//safety
+			caster.ActivationDelay(null, target, index, 0f, 0f, true);
 		}
 	}
 	#endregion

@@ -52,7 +52,6 @@ public class Card : MonoBehaviour
 	public virtual void OnPlace(int index, PlayerData current, PlayerData opposing) {
 		//don't allow default cards to survive
 		RenderFace();
-		StartCoroutine("Death");
 	}
 
 	public void Release() {

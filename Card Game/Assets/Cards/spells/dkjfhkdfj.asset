@@ -18,7 +18,7 @@ MonoBehaviour:
   targettingOption: 0
   activateOption: 0
   abilityOption: 0
-  cardDescription: Deal <color=red>5</color> damage directlyto the opposing card
+  cardDescription: Deal <color=red>5</color> damage directly to the opposing card
   actionParameter1: 0
   actionParameter2: 0
   abilityParameter1: 5
