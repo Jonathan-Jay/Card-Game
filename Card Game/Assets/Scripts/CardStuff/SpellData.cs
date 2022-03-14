@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //helps shorten things
-using ActivationFunc = System.Action<PlayerData, int,
-	System.Action<PlayerData, int, SpellData>, SpellData>;
-using AbilityFunc = System.Action<PlayerData, int, SpellData>;
+public delegate void AbilityFunc(PlayerData target, int index, SpellData spell);
+public delegate void ActivationFunc(PlayerData target, int index, AbilityFunc ability, SpellData spell);
 public delegate PlayerData TargettingFunc(PlayerData current, PlayerData opposing,
 	ref int index, ref UnityEngine.RaycastHit hit);
 
