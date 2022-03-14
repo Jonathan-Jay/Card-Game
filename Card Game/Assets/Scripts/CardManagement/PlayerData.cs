@@ -3,23 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerData : MonoBehaviour {
-	public string playerTag = "";
+	public string playerTag;
 	public int currentHP = 20;
 	public int maxHP = 20;
 	public int currentMana = 1;
 	public int maxMana = 1;
-	public HandManager hand = null;
+	public HandManager hand;
 	public List<CardHolder> field = new List<CardHolder>();
+	public DeckManager deck;
+	public PressEventButton turnEndButton;
+	public int canDraw = 0;
 
 	//sends old value
 	public event System.Action<int> healthUpdated;
 	//sends old value
 	public event System.Action<int> manaUpdated;
+	public event System.Action drawCard;
 
-	public void Init()
+	public void Init(int startingMana, int cardsPerTurn)
 	{
+		currentMana = startingMana;
+		canDraw = cardsPerTurn;
+		
 		healthUpdated?.Invoke(0);
 		manaUpdated?.Invoke(0);
+		drawCard?.Invoke();
+	}
+
+	public void DrewCard() {
+		drawCard?.Invoke();
+	}
+
+	//do whatever a player does when their turn ends
+	public void TurnEnd(int maxMana, int cardsPerTurn)
+	{
+		IncreaseMaxMana(Mathf.Clamp(++this.maxMana, 0, maxMana));
+		canDraw = cardsPerTurn;
+		drawCard?.Invoke();
 	}
 
 	//works when inverted

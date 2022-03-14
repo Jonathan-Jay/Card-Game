@@ -83,11 +83,10 @@ public class Card : MonoBehaviour
 	}
 
 	IEnumerator ReturnToHand() {
-		int tempLayer = gameObject.layer;
 		gameObject.layer = player.hand.input.ignoredLayer;
 
 		float returnSpeed = 2f;
-		float returnRotSpeed = 15f;
+		float returnRotSpeed = 135f;
 		GetComponent<Rigidbody>().isKinematic = true;
 
 		//return the card to the hand, do somethign proper next time
@@ -107,7 +106,7 @@ public class Card : MonoBehaviour
 
 			if (Quaternion.Angle(transform.localRotation, targetRot) > 1f) {
 				transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRot,
-					returnRotSpeed * Time.deltaTime);
+					returnSpeed * Time.deltaTime);
 			}
 			else {
 				transform.localRotation = Quaternion.RotateTowards(transform.localRotation, targetRot,
@@ -126,6 +125,6 @@ public class Card : MonoBehaviour
 			transform.localRotation = targetRot;
 		}
 
-		gameObject.layer = tempLayer;
+		gameObject.layer = player.hand.input.cardLayer;
 	}
 }

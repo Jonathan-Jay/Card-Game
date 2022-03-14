@@ -9,6 +9,6 @@ public class PressEventButton : MonoBehaviour
 	public PlayerData player;
 
 	public void Press() {
-		pressed.Invoke();
+		pressed?.Invoke();
 	}
 }

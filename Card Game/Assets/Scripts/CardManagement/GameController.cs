@@ -16,7 +16,10 @@ public class GameController : MonoBehaviour
 	[SerializeField] float horizontalSeperation;
 	[SerializeField] float verticalSeperation;
 
+	public int startingHandSize = 4;
+	public int startingMana = 1;
 	public int maxMana = 5;
+	public int cardsPerTurn = 1;
 	public PlayerData player1;
 	public PlayerData player2;
 	public event System.Action turnEnded;
@@ -24,12 +27,27 @@ public class GameController : MonoBehaviour
     void Awake() {
 		if (generateField)
         	Generate();
-		//get variables updated
     }
 
-	void Start() {
-		player1.Init();
-		player2.Init();
+	public void StartGame(bool p1Starts, bool renderFirst, bool renderSecond) {
+		PlayerData first = p1Starts ? player1 : player2;
+		PlayerData second = p1Starts ? player2 : player1;
+
+		//update player
+		first.Init(startingMana, cardsPerTurn);
+		second.Init(startingMana, cardsPerTurn);
+
+		//update bells
+		player1.turnEndButton.pressed += DoPlayer1Turn;
+		player2.turnEndButton.pressed += DoPlayer2Turn;
+
+		//shuffle decks
+		first.deck.ShuffleDeck();
+		second.deck.ShuffleDeck();
+
+		//fill hands
+		first.deck.AutoDrawCards(startingHandSize, 0.25f, renderFirst);
+		second.deck.AutoDrawCards(startingHandSize, 0.25f, renderSecond);
 	}
 
 	void DoPlayer1Turn() {
@@ -49,7 +67,7 @@ public class GameController : MonoBehaviour
 		foreach (CardHolder tile in current.field) {
 			total += tile.DoUpdate();
 		}
-		current.IncreaseMaxMana(Mathf.Clamp(++current.maxMana, 0, maxMana));
+		current.TurnEnd(maxMana, cardsPerTurn);
 
 		turnEnded?.Invoke();
 
@@ -70,54 +88,48 @@ public class GameController : MonoBehaviour
 		
 	}*/
 
-	//returns true on success
-	bool AddCard(int index, bool isP1, MonsterCard card) {
-		if (isP1) {
-			return player1.field[index].PutCard(card);
-		}
-		else {
-			return player2.field[index].PutCard(card);
-		}
-	}
-
 	void Generate() {
 		//clear current field
 		Clear();
 
 		Vector3 offset = Vector3.right * horizontalSeperation * rowCount * 0.5f;
 
-		//spawn the deck (currently lets any player draw a card from either deck)
+		//spawn the deck
 		Transform temp = null;
 		temp = Instantiate(deckPrefab.gameObject, transform).transform;
 		temp.localPosition = -(deckPos + (deckPos.x > 0 ? offset : -offset));
 		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
-		temp.GetComponent<DeckManager>().player = player2;
+		player2.deck = temp.GetComponent<DeckManager>();
+		player2.deck.player = player2;
 		//temp.gameObject.tag = "Player2";
 
 		temp = Instantiate(deckPrefab.gameObject, transform).transform;
 		temp.localPosition = deckPos + (deckPos.x > 0 ? offset : -offset);
 		temp.localRotation = Quaternion.identity;
-		temp.GetComponent<DeckManager>().player = player1;
+		player1.deck = temp.GetComponent<DeckManager>();
+		player1.deck.player = player1;
 		//temp.gameObject.tag = "Player1";
+
 
 
 		//spawn turn buttons
 		temp = Instantiate(turnEndButtonPrefab.gameObject, transform).transform;
 		temp.localPosition = -(bellPos + (bellPos.x > 0 ? offset : -offset));
 		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
-		temp.GetComponent<PressEventButton>().player = player2;
-		temp.GetComponent<PressEventButton>().pressed += DoPlayer2Turn;
+		player2.turnEndButton = temp.GetComponent<PressEventButton>();
+		player2.turnEndButton.player = player2;
 		//temp.gameObject.tag = "Player2";
 
 		temp = Instantiate(turnEndButtonPrefab.gameObject, transform).transform;
 		temp.localPosition = bellPos + (bellPos.x > 0 ? offset : -offset);
 		temp.localRotation = Quaternion.identity;
-		temp.GetComponent<PressEventButton>().player = player1;
-		temp.GetComponent<PressEventButton>().pressed += DoPlayer1Turn;
+		player1.turnEndButton = temp.GetComponent<PressEventButton>();
+		player1.turnEndButton.player = player1;
 		//temp.gameObject.tag = "Player1";
 
 
-		//spawn turn buttons
+
+		//spawn the health and mana things
 		temp = Instantiate(playerListenerPrefab.gameObject, transform).transform;
 		temp.GetComponent<PlayerDataListener>().SetTarget(player2);
 		temp.localPosition = -(playerListenerPos + (playerListenerPos.x > 0 ? offset : -offset));

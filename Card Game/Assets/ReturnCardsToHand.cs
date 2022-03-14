@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ReturnCardsToHand : MonoBehaviour
 {
+	[SerializeField] PlayerData player;
 	private void OnEnable() {
 		GetComponent<PressEventButton>().pressed += Return;
 	}
@@ -15,8 +16,10 @@ public class ReturnCardsToHand : MonoBehaviour
     void Return()
     {
         foreach(Card card in FindObjectsOfType<Card>()) {
-			if (!card.placement)
-				card.CallBackCard();
+			if (!card.placement) {
+				if (player == null || card.player == player)
+					card.CallBackCard();
+			}
 		}
     }
 }

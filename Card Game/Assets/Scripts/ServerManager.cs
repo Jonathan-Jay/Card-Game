@@ -27,32 +27,47 @@ public class ServerManager : MonoBehaviour
 		/*/
 		if (p1turn) {
 			p1mouse.ActivateAll();
-			p2mouse.ActivateCard();
+			p2mouse.ActivateEssentials();
 		}
 		else {
-			p1mouse.ActivateCard();
+			p1mouse.ActivateEssentials();
 			p2mouse.ActivateAll();
 		}
 		game.turnEnded += TurnEndPlayerChange;
 		//*/
-		
+	}
+
+	//late inits
+	private void Start() {
 		//disable the other player
 		if (p1turn) {
 			p1cam.enabled = true;
 			p1mouse.disabled = false;
 			p2cam.enabled = false;
 			p2mouse.disabled = true;
+
+			game.player2.turnEndButton.enabled = false;
 		}
 		else {
 			p1cam.enabled = false;
 			p1mouse.disabled = true;
 			p2cam.enabled = true;
 			p2mouse.disabled = false;
+
+			game.player1.turnEndButton.enabled = false;
 		}
 
 		if (localMultiplayer) {
 			updateFunc = LocalMulti;
+			//show all cards
+			//game.StartGame(p1turn, true, true);
+			StartCoroutine(DelayedStart());
 		}
+	}
+
+	IEnumerator DelayedStart() {
+		yield return new WaitForSeconds(2f);
+		game.StartGame(p1turn, true, true);
 	}
 
     // Update is called once per frame
@@ -67,12 +82,14 @@ public class ServerManager : MonoBehaviour
 			if (p1cam.enabled) {
 				p1cam.enabled = false;
 				p1mouse.disabled = true;
+
 				p2cam.enabled = true;
 				p2mouse.disabled = false;
 			}
 			else {
 				p1cam.enabled = true;
 				p1mouse.disabled = false;
+
 				p2cam.enabled = false;
 				p2mouse.disabled = true;
 			}
@@ -85,16 +102,22 @@ public class ServerManager : MonoBehaviour
 		if (p1turn) {
 			p1turn = false;
 			p1mouse.DeActivateAll();
-			p1mouse.ActivateCard();
-			p2mouse.DeActivateCard();
+			p1mouse.ActivateEssentials();
+			game.player1.turnEndButton.enabled = false;
+
+			p2mouse.DeActivateEssentials();
 			p2mouse.ActivateAll();
+			game.player2.turnEndButton.enabled = true;
 		}
 		else {
 			p1turn = true;
-			p1mouse.DeActivateCard();
+			p1mouse.DeActivateEssentials();
 			p1mouse.ActivateAll();
+			game.player1.turnEndButton.enabled = true;
+
 			p2mouse.DeActivateAll();
-			p2mouse.ActivateCard();
+			p2mouse.ActivateEssentials();
+			game.player2.turnEndButton.enabled = false;
 		}
 	}
 }

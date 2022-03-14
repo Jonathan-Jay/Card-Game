@@ -9,6 +9,7 @@ public class Mouse : MonoBehaviour {
     public float maxDist = 0f;
     public float vertOffset = 0f;
 	public int ignoredLayer;
+	public int invisibleLayer;
 	public int cardLayer;
 
 	//has to be assigned outside of the class
@@ -30,12 +31,16 @@ public class Mouse : MonoBehaviour {
 	//public RaycastEvent releaseEvent;
 
     private Camera cam;
+	int mask;
+
 	//used in the disabling of things
 	int activeAnims = 0;
 	int activeSpells = 0;
     // Start is called before the first frame update
     private void Awake() {
         cam = GetComponent<Camera>();
+		//just do this once
+		mask = ~((1 << ignoredLayer) | (1 << invisibleLayer));
 	}
 
 	public Transform holding = null;
@@ -47,7 +52,7 @@ public class Mouse : MonoBehaviour {
         Ray rayInfo = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit rayHitInfo;
 
-        if (Physics.Raycast(rayInfo, out rayHitInfo, maxDist, ~(1 << ignoredLayer))) {
+        if (Physics.Raycast(rayInfo, out rayHitInfo, maxDist, mask)) {
             mouseObject.position = rayHitInfo.point + Vector3.up * vertOffset;
 			
 			hoverEvent?.Invoke(rayHitInfo);
@@ -62,27 +67,31 @@ public class Mouse : MonoBehaviour {
     }
 
 	public void ActivateAll() {
-		clickEvent += ClickInteractable;
+		clickEvent += ClickButton;
+		clickEvent += ClickDeck;
 		releaseEvent += ReleaseCardHolder;
 		clickEvent += ClickCard;
 		releaseEvent += ReleaseCard;
 	}
 
 	public void DeActivateAll() {
-		clickEvent -= ClickInteractable;
+		clickEvent -= ClickButton;
+		clickEvent -= ClickDeck;
 		releaseEvent -= ReleaseCardHolder;
 		clickEvent -= ClickCard;
 		releaseEvent -= ReleaseCard;
 	}
 
-	public void ActivateCard()
+	public void ActivateEssentials()
 	{
+		clickEvent += ClickButton;
 		clickEvent += ClickCard;
 		releaseEvent += ReleaseCard;
 	}
 
-	public void DeActivateCard()
+	public void DeActivateEssentials()
 	{
+		clickEvent -= ClickButton;
 		clickEvent -= ClickCard;
 		releaseEvent -= ReleaseCard;
 	}
@@ -118,14 +127,16 @@ public class Mouse : MonoBehaviour {
 		//if more animations
 		if (activeAnims++ != 0)	return;
 
-			clickEvent -= ClickInteractable;
+		clickEvent -= ClickButton;
+		clickEvent -= ClickDeck;
 	}
 
 	public void DeactivateAnimationMode() {
 		//if no more animations
 		if (--activeAnims != 0)	return;
 
-		clickEvent += ClickInteractable;
+		clickEvent += ClickButton;
+		clickEvent += ClickDeck;
 	}
 
 	public void ActivateSpellMode() {
@@ -159,10 +170,9 @@ public class Mouse : MonoBehaviour {
 			cardTest.gameObject.layer = ignoredLayer;
 
 			holding = cardTest.transform;
-			return;
 		}
 	}
-	void ClickInteractable(RaycastHit hit) {
+	void ClickDeck(RaycastHit hit) {
 		//first check if we wanna do smt
 		GameObject hitObj = hit.transform.gameObject;
 		if (!hitObj.CompareTag("Interactable"))	return;
@@ -171,9 +181,6 @@ public class Mouse : MonoBehaviour {
 		if (deckTest != null && deckTest.player == player) {
 			Transform card = deckTest.DrawCard();
 			if (card != null) {
-				//render the card since it's the active player?
-				card.GetComponent<Card>().RenderFace();
-
 				card.GetComponent<Rigidbody>().isKinematic = true;
 				card.SetParent(mouseObject, true);
 				card.position += Vector3.up * vertOffset;
@@ -181,13 +188,16 @@ public class Mouse : MonoBehaviour {
 
 				holding = card;
 			}
-			return;
 		}
+	}
+
+	void ClickButton(RaycastHit hit) {
+		GameObject hitObj = hit.transform.gameObject;
+		if (!hitObj.CompareTag("Interactable")) return;
 
 		PressEventButton buttonTest = hitObj.GetComponent<PressEventButton>();
-		if (buttonTest != null && (buttonTest.player == null || buttonTest.player == player)) {
+		if (buttonTest != null && buttonTest.enabled && (buttonTest.player == null || buttonTest.player == player)) {
 			buttonTest.Press();
-			return;
 		}
 	}
 
@@ -203,7 +213,6 @@ public class Mouse : MonoBehaviour {
 			//dont allow cards to be interactable when in holder (aka dont change the layer)
 			//holding.gameObject.layer = tempLayer;
 			holding = null;
-			return;
 		}
 	}
 
