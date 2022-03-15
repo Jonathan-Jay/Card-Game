@@ -28,7 +28,7 @@ public class MonsterDataEditor : Editor
 
 		cardName.stringValue = EditorGUILayout.TextField("Card Name", cardName.stringValue, richText);
 		EditorGUILayout.PropertyField(cardArt);
-		cost.intValue = EditorGUILayout.IntSlider("Cost", cost.intValue, 0, 10);
+		cost.intValue = EditorGUILayout.IntSlider("Cost", cost.intValue, 0, 3);
 		health.intValue = EditorGUILayout.IntSlider("Health", health.intValue, 1, 10);
 		attack.intValue = EditorGUILayout.IntSlider("Attack", attack.intValue, 0, 10);
 

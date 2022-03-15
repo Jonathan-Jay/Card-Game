@@ -24,6 +24,7 @@ public class SpellData : CardData {
 	public int actionParameter2;
 	public int abilityParameter1;
 	public int abilityParameter2;
+	public int abilityParameter3;
 
 	public override bool CheckCost(PlayerData player) {
 		return player.ReduceMana(cost);
@@ -45,8 +46,7 @@ public class SpellData : CardData {
 	*/
 
 	#region spell enums
-	public enum TargettingOptions
-	{
+	public enum TargettingOptions {
 		OpposingCard,
 		OpposingField,
 		SelfField,
@@ -77,8 +77,7 @@ public class SpellData : CardData {
 		}
 	}
 
-	public enum ActivationOptions
-	{
+	public enum ActivationOptions {
 		Direct,
 		Repeated,
 		Randomized,
@@ -94,10 +93,12 @@ public class SpellData : CardData {
 		}
 	}
 
-	public enum AbilityOptions
-	{
+	public enum AbilityOptions {
 		Direct,
 		RandomDamage,
+		Kill,
+		Boost,
+		StealMana,
 	}
 	static public AbilityFunc GetAbility(AbilityOptions choice) {
 		switch (choice) {
@@ -105,6 +106,12 @@ public class SpellData : CardData {
 				return DirectAbility;
 			case AbilityOptions.RandomDamage:
 				return RandomDamage;
+			case AbilityOptions.Kill:
+				return Kill;
+			case AbilityOptions.Boost:
+				return Boost;
+			case AbilityOptions.StealMana:
+				return StealMana;
 		}
 	}
 	#endregion
@@ -330,6 +337,36 @@ public class SpellData : CardData {
 				((MonsterCard)target.field[index].holding).TakeDamage(UnityEngine.Random.Range(
 					spell.abilityParameter1, spell.abilityParameter2 + 1));
 		}
+	}
+
+	//all you need is kill
+	static public void Kill(PlayerData target, int index, SpellData spell) {
+		if (index < 0) {
+			target.TakeDamage(target.currentHP);
+		}
+		else if (target.field[index].holding) {
+			Card card = target.field[index].holding;
+			if (card.targetable)
+				((MonsterCard)card).TakeDamage(((MonsterCard)card).currHealth);
+		}
+	}
+
+	//parameter 1 is duration, parameter 2 is hp, parameter 3 is atk
+	static public void Boost(PlayerData target, int index, SpellData spell) {
+		//dont work on players lol
+		if (index < 0)	return;
+		if (target.field[index].holding) {
+			if (target.field[index].holding.targetable)
+				((MonsterCard)target.field[index].holding).Boost(new MonsterCard.TempEffect(
+					spell.abilityParameter1, spell.abilityParameter2, spell.abilityParameter3));
+		}
+	}
+
+	//parameter 1 is mana amount (clamped to 0)
+	static public void StealMana(PlayerData target, int index, SpellData spell) {
+		//dont work on cards lol
+		if (index >= 0)	return;
+		target.StealMana(spell.abilityParameter1);
 	}
 #endregion
 

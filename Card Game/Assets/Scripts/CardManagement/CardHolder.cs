@@ -25,17 +25,16 @@ public class CardHolder : MonoBehaviour
 	//damage to player
     public int DoUpdate()
     {
-        if (holding == null || !holding.GetType().Equals(typeof(MonsterCard)))	return 0;
-
-		//assuming only direct attacks
-		MonsterCard target = (MonsterCard)opposingData.field[index].holding;
-		//hit player if not facing anything
-		if (target == null) {
-			return ((MonsterCard)holding).currAttack;
+		int dmg = 0;
+		//all targetables are monsters for now
+        if (holding != null && holding.targetable) {
+			//assuming only direct attacks
+			MonsterCard target = (MonsterCard)opposingData.field[index].holding;
+			
+			//can directly attack the opponent if target is empty
+			dmg = ((MonsterCard)holding).Attack(target);
 		}
-		//assuming no overkill system (Attack returns overkill)
-		((MonsterCard)holding).Attack(target);
-		return 0;
+		return dmg;
     }
 
 	//returns true on sucess
@@ -88,7 +87,7 @@ public class CardHolder : MonoBehaviour
 		//final fix in case
 		if (holding != null) {
 			//now valid
-			holding.OnPlace(index, playerData, opposingData);
+			holding.OnPlace(playerData, opposingData);
 			cardTrans.localPosition = floatingHeight;
 		}
 

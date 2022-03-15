@@ -26,17 +26,28 @@ public class SpellCard : Card
 	{
 		if (renderingFace || !data)	return;
 
-		base.RenderFace();
+		//dont do it cause render cost differently
+		//base.RenderFace();
+
+		//copy pasted from the above
+		nameMesh.text = data.cardName;
+
+		frontFace.material.mainTexture = data.cardArt;
+
+		costMesh.text = (data.cost) + "*";
+
+		//dirty flag
+		renderingFace = true;
 
 		descriptionMesh.text = ((SpellData)data).cardDescription;
 	}
 
-	public override void OnPlace(int index, PlayerData current, PlayerData opposing) {
+	public override void OnPlace(PlayerData current, PlayerData opposing) {
 		RenderFace();
-		StartCoroutine(CastSpell(current, opposing, index));
+		StartCoroutine(CastSpell(current, opposing));
 	}
 
-	IEnumerator CastSpell(PlayerData current, PlayerData opposing, int index) {
+	IEnumerator CastSpell(PlayerData current, PlayerData opposing) {
 		RaycastHit hit = new RaycastHit();
 		void UpdateRaycastHit(RaycastHit rayHit) {
 			hit = rayHit;
@@ -52,7 +63,7 @@ public class SpellCard : Card
 		Vector3 endPos = Vector3.up * 0.25f;
 
 		//do spell thing
-		int newIndex = index;
+		int newIndex = placement.index;
 		PlayerData target = null;
 		while (target == null) {
 			yield return eof;

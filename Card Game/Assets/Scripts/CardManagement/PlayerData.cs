@@ -49,6 +49,14 @@ public class PlayerData : MonoBehaviour {
 		healthUpdated?.Invoke(currentHP + amt);
 	}
 
+	//clamps at 0
+	public void StealMana(int amt)
+	{
+		int oldMana = currentMana;
+		currentMana = Mathf.Max(currentMana - amt, 0);
+		manaUpdated?.Invoke(oldMana);
+	}
+	
 	//return true if player has enough mana
 	public bool ReduceMana(int amt)
 	{

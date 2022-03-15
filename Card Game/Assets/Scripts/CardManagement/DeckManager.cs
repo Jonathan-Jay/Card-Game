@@ -143,34 +143,12 @@ public class DeckManager : MonoBehaviour
 			trans = DrawCard(renderFace, true, true);
 			//just in case
 			if (trans) {
-				trans.SetParent(player.hand.transform, true);
-
-				//use hand manager to get target position and rotation maybe, or do this in there
-				StartCoroutine(AnimateCard(trans, Vector3.zero, Quaternion.identity));
+				trans.GetComponent<Card>().CallBackCard();
 			}
 			//break if empty deck
 			if (deck.Count == 0) break;
 
 			yield return delay;
 		}
-	}
-
-	IEnumerator AnimateCard(Transform card, Vector3 targetPos, Quaternion targetRot) {
-		card.gameObject.layer = player.hand.input.ignoredLayer;
-
-		float returnSpeed = 2f;
-		float rotSpeed =135f;
-		card.GetComponent<Rigidbody>().isKinematic = true;
-
-		while (card != null && (card.localPosition != targetPos || card.localRotation != targetRot)) {
-			card.localPosition = Vector3.MoveTowards(card.localPosition, targetPos,
-					returnSpeed * Time.deltaTime);
-			card.localRotation = Quaternion.RotateTowards(card.localRotation, targetRot,
-					rotSpeed * Time.deltaTime);
-			yield return Card.eof;
-		}
-
-		if (card != null)
-			card.gameObject.layer = player.hand.input.cardLayer;
 	}
 }

@@ -38,18 +38,13 @@ public class Card : MonoBehaviour
 
 		frontFace.material.mainTexture = data.cardArt;
 
-		string cost = "";
-		for (int i = data.cost; i > 0; --i)
-		{
-			cost += 'o';
-		}
-		costMesh.text = cost;
+		costMesh.text = "Lv. " + (data.cost  + 1);
 
 		//dirty flag
 		renderingFace = true;
 	}
 
-	public virtual void OnPlace(int index, PlayerData current, PlayerData opposing) {
+	public virtual void OnPlace(PlayerData current, PlayerData opposing) {
 		//don't allow default cards to survive
 		RenderFace();
 	}
@@ -89,12 +84,19 @@ public class Card : MonoBehaviour
 		GetComponent<Rigidbody>().isKinematic = true;
 
 		//return the card to the hand, do somethign proper next time
-		Vector3 targetPos = Vector3.zero;
-		Quaternion targetRot = Quaternion.identity;
+		int numInHands = player.hand.transform.childCount;
+		Vector3 targetPos = Vector3.left * 1.2f + Vector3.forward * 0.3f;
+		while (numInHands > 5) {
+			targetPos += Vector3.back * 0.2f + Vector3.up * 0.1f;
+			numInHands -= 5;
+		}
+		targetPos += Vector3.right * numInHands * 0.4f;
+		//Quaternion targetRot = Quaternion.identity;
+		Quaternion targetRot = Quaternion.Euler(0f, 0f, 10f);
 
 		while (transform.parent == player.hand.transform)
 		{
-			if (Vector3.Distance(transform.localPosition, targetPos) > 0.25f) {
+			if (Vector3.Distance(transform.localPosition, targetPos) > 0.1f) {
 				transform.localPosition = Vector3.Lerp(transform.localPosition, targetPos,
 					returnSpeed * Time.deltaTime);
 			}
@@ -103,11 +105,12 @@ public class Card : MonoBehaviour
 					returnSpeed * Time.deltaTime);
 			}
 
-			if (Quaternion.Angle(transform.localRotation, targetRot) > 1f) {
-				transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRot,
-					returnSpeed * Time.deltaTime);
-			}
-			else {
+			if (transform.localRotation != targetRot) {
+			//if (Quaternion.Angle(transform.localRotation, targetRot) > 1f) {
+			//	transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRot,
+			//		returnSpeed * Time.deltaTime);
+			//}
+			//else {
 				transform.localRotation = Quaternion.RotateTowards(transform.localRotation, targetRot,
 					returnRotSpeed * Time.deltaTime);
 			}

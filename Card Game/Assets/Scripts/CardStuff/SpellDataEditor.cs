@@ -12,6 +12,7 @@ public class SpellDataEditor : Editor
 	SerializedProperty actionParameter2;
 	SerializedProperty abilityParameter1;
 	SerializedProperty abilityParameter2;
+	SerializedProperty abilityParameter3;
 	SerializedProperty cardDescription;
 	SerializedProperty targetting;
 	SerializedProperty activate;
@@ -84,6 +85,7 @@ public class SpellDataEditor : Editor
 		public string description;
 		//{2} gets replaced with abilityP1
 		//{3} gets replaced with abilityP2
+		//{4} gets replaced with abilityP3
 		public string descriptionText;
 		//enumName for clarity
 		public AbilityOption(string name, string description,
@@ -99,6 +101,12 @@ public class SpellDataEditor : Editor
 			"Deal <color=red>{2}</color> damage ", SpellData.AbilityOptions.Direct),
 		new AbilityOption("Randomized damage", "Deals between {2} (abilityParameter1) and {3} (abilityParameter2) damge to the target",
 			"Deal <color=red>{2}</color>-<color=red>{3}</color> damage ", SpellData.AbilityOptions.RandomDamage),
+		new AbilityOption("Instant Kill", "Kill the target with no overkill",
+			"Destroy ", SpellData.AbilityOptions.Kill),
+		new AbilityOption("Boost stats", "temporarily boost a monster's stats by {3} hp (abilityParameter2) and {4} (abilityParameter3) attack for {2} (abilityParameter1) turns (<= 0 is infinite)",
+			"Boost hp by <color=red>{3}</color> and attack by <color=red>{4}</color> for <color=green>{2}</color> turns of ", SpellData.AbilityOptions.Boost),
+		new AbilityOption("Remove mana", "Remove {2} (abilityParameter1) mana from the opponent",
+			"Lose <color=yellow>{2}</color> mana ", SpellData.AbilityOptions.StealMana),
 	};
 	#endregion
 
@@ -110,6 +118,7 @@ public class SpellDataEditor : Editor
 		actionParameter2 = this.serializedObject.FindProperty("actionParameter2");
 		abilityParameter1 = this.serializedObject.FindProperty("abilityParameter1");
 		abilityParameter2 = this.serializedObject.FindProperty("abilityParameter2");
+		abilityParameter3 = this.serializedObject.FindProperty("abilityParameter3");
 		cardDescription = this.serializedObject.FindProperty("cardDescription");
 		
 		targetting = this.serializedObject.FindProperty("targettingOption");
@@ -156,6 +165,10 @@ public class SpellDataEditor : Editor
 		abilityParameter2.intValue = EditorGUILayout.IntSlider("Ability Parameter 2", abilityParameter2.intValue, -10, 10);
 		dirty = temp != abilityParameter2.intValue || dirty;
 
+		temp = abilityParameter3.intValue;
+		abilityParameter3.intValue = EditorGUILayout.IntSlider("Ability Parameter 3", abilityParameter3.intValue, -10, 10);
+		dirty = temp != abilityParameter3.intValue || dirty;
+
 		EditorGUILayout.LabelField("<b>Description:</b>", richText);
 		++EditorGUI.indentLevel;
 		cardDescription.stringValue = EditorGUILayout.TextField(cardDescription.stringValue, richTextBoxed);
@@ -176,7 +189,8 @@ public class SpellDataEditor : Editor
 		EditorGUILayout.LabelField("Name: <b>" + abilityOptions[ability.enumValueIndex].name + "</b>", richText);
 		EditorGUILayout.LabelField(abilityOptions[ability.enumValueIndex].description
 			.Replace("{2}", abilityParameter1.intValue.ToString())
-			.Replace("{3}", abilityParameter2.intValue.ToString()), bigText);
+			.Replace("{3}", abilityParameter2.intValue.ToString())
+			.Replace("{4}", abilityParameter3.intValue.ToString()), bigText);
 		--EditorGUI.indentLevel;
 		EditorGUILayout.Space();
 
@@ -208,10 +222,12 @@ public class SpellDataEditor : Editor
 			cardDescription.stringValue = abilityOptions[ability.enumValueIndex].descriptionText
 				+ activationOptions[activate.enumValueIndex].descriptionText
 				+ targettingOptions[targetting.enumValueIndex].descriptionText;
-			cardDescription.stringValue = cardDescription.stringValue.Replace("{0}", actionParameter1.intValue.ToString());
-			cardDescription.stringValue = cardDescription.stringValue.Replace("{1}", actionParameter2.intValue.ToString());
-			cardDescription.stringValue = cardDescription.stringValue.Replace("{2}", abilityParameter1.intValue.ToString());
-			cardDescription.stringValue = cardDescription.stringValue.Replace("{3}", abilityParameter2.intValue.ToString());
+			cardDescription.stringValue = cardDescription.stringValue
+				.Replace("{0}", actionParameter1.intValue.ToString())
+				.Replace("{1}", actionParameter2.intValue.ToString())
+				.Replace("{2}", abilityParameter1.intValue.ToString())
+				.Replace("{3}", abilityParameter2.intValue.ToString())
+				.Replace("{4}", abilityParameter3.intValue.ToString());
 		}
 		this.serializedObject.ApplyModifiedProperties();
 	}

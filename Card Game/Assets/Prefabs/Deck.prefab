@@ -173,34 +173,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deckOptions:
+  - amt: 1
+    data: {fileID: 11400000, guid: 6357489cb9bb87d44885f33c5629d8af, type: 2}
+  - amt: 1
+    data: {fileID: 11400000, guid: 4f8763984f2e49b428bf3c8172ae2230, type: 2}
+  - amt: 1
+    data: {fileID: 11400000, guid: fe3b9b9fab972714d938fbfa548f5815, type: 2}
+  - amt: 1
+    data: {fileID: 11400000, guid: 5b0c831435bc9aa48bcf0f30fe63d708, type: 2}
+  - amt: 1
+    data: {fileID: 11400000, guid: 6d86a2cb952f1114da7642db39a24340, type: 2}
+  - amt: 4
+    data: {fileID: 11400000, guid: eb03304f94b6b3748b48932e2136c543, type: 2}
   - amt: 3
-    data: {fileID: 11400000, guid: b87b3726315d3734ebf1b7b490d3d4bd, type: 2}
+    data: {fileID: 11400000, guid: b6c5892b888ffea4997d2e056e9045d2, type: 2}
   - amt: 3
-    data: {fileID: 11400000, guid: 378b320bed89e9241800d94ca0eab3d0, type: 2}
-  - amt: 3
-    data: {fileID: 11400000, guid: 41b7a772cec82514b8619a722a1f50cd, type: 2}
-  - amt: 3
-    data: {fileID: 11400000, guid: 41b7a772cec82514b8619a722a1f50cd, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: 37cf40fa697142040bd3513896e92012, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: c56641eaef1b11a4389022c8cdb9a0e4, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: c757e0cc240fff4449ce1a6e4eb4a8e5, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: 512ac4aec03989041b9ac82ce9643a80, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: 2cb520aa2efc2b049b8c3b12b8f03263, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: f47a577e45de71f42abc321f88746058, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: a1ea29d3f21d31f4499b60fe7d0f8d89, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: b435a7502bc52aa458fb1b17e9b0cc90, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: a7df2b53a8952f94997975bdb31f2e6d, type: 2}
-  - amt: 1
-    data: {fileID: 11400000, guid: 4ddfaef0c8744f045990918598241c9d, type: 2}
+    data: {fileID: 11400000, guid: a5ba82881812ccf4987223c7f1a3cf45, type: 2}
+  - amt: 4
+    data: {fileID: 11400000, guid: 1e6f8cbad5b198e4ab5612fe261ddec8, type: 2}
+  - amt: 2
+    data: {fileID: 11400000, guid: 723f815ee14b4bc43875754a470bc2b3, type: 2}
   cardStack: {fileID: 8249296022170754993}
   col: {fileID: 7326191857588110041}
   cardHeight: 0.02

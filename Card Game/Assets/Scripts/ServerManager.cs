@@ -13,8 +13,11 @@ public class ServerManager : MonoBehaviour
 	public System.Action updateFunc;
 
 	//store the current turn
-	[SerializeField]
-	bool p1turn = true;
+	public bool p1turn = true;
+
+	MeshRenderer p1bell;
+	MeshRenderer p2bell;
+	Color defaultBellCol;
 
 	private void Awake() {
 		p1cam = p1mouse.GetComponent<Camera>();
@@ -39,6 +42,11 @@ public class ServerManager : MonoBehaviour
 
 	//late inits
 	private void Start() {
+		p1bell = game.player1.turnEndButton.GetComponentInChildren<MeshRenderer>();
+		p2bell = game.player2.turnEndButton.GetComponentInChildren<MeshRenderer>();
+
+		defaultBellCol = p1bell.material.color;
+
 		//disable the other player
 		if (p1turn) {
 			p1cam.enabled = true;
@@ -47,6 +55,7 @@ public class ServerManager : MonoBehaviour
 			p2mouse.disabled = true;
 
 			game.player2.turnEndButton.enabled = false;
+			p2bell.material.color = Color.grey;
 		}
 		else {
 			p1cam.enabled = false;
@@ -55,6 +64,7 @@ public class ServerManager : MonoBehaviour
 			p2mouse.disabled = false;
 
 			game.player1.turnEndButton.enabled = false;
+			p1bell.material.color = Color.grey;
 		}
 
 		if (localMultiplayer) {
@@ -104,20 +114,24 @@ public class ServerManager : MonoBehaviour
 			p1mouse.DeActivateAll();
 			p1mouse.ActivateEssentials();
 			game.player1.turnEndButton.enabled = false;
+			p1bell.material.color = Color.grey;
 
 			p2mouse.DeActivateEssentials();
 			p2mouse.ActivateAll();
 			game.player2.turnEndButton.enabled = true;
+			p2bell.material.color = defaultBellCol;
 		}
 		else {
 			p1turn = true;
 			p1mouse.DeActivateEssentials();
 			p1mouse.ActivateAll();
 			game.player1.turnEndButton.enabled = true;
+			p1bell.material.color = defaultBellCol;
 
 			p2mouse.DeActivateAll();
 			p2mouse.ActivateEssentials();
 			game.player2.turnEndButton.enabled = false;
+			p2bell.material.color = Color.grey;
 		}
 	}
 }
