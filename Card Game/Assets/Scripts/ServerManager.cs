@@ -14,6 +14,7 @@ public class ServerManager : MonoBehaviour
 
 	//store the current turn
 	public bool p1turn = true;
+	[SerializeField]	KeyCode swapCam;
 
 	MeshRenderer p1bell;
 	MeshRenderer p2bell;
@@ -77,7 +78,7 @@ public class ServerManager : MonoBehaviour
 
 	IEnumerator DelayedStart() {
 		yield return new WaitForSeconds(2f);
-		game.StartGame(p1turn, true, true);
+		game.StartGame(p1turn, true, false);
 	}
 
     // Update is called once per frame
@@ -87,7 +88,7 @@ public class ServerManager : MonoBehaviour
     }
 
 	void LocalMulti() {
-		if (Input.GetKeyDown(KeyCode.Backspace)) {
+		if (Input.GetKeyDown(swapCam)) {
 			//toggle cameras
 			if (p1cam.enabled) {
 				p1cam.enabled = false;
@@ -120,6 +121,16 @@ public class ServerManager : MonoBehaviour
 			p2mouse.ActivateAll();
 			game.player2.turnEndButton.enabled = true;
 			p2bell.material.color = defaultBellCol;
+
+			//disable all of p1's cards that aren't on the field and revel p2's cards
+			foreach(Card card in FindObjectsOfType<Card>()) {
+				if (!card.placement) {
+					if (card.player == game.player1)
+						card.HideFace();
+					else
+						card.RenderFace();
+				}
+			}
 		}
 		else {
 			p1turn = true;
@@ -132,6 +143,16 @@ public class ServerManager : MonoBehaviour
 			p2mouse.ActivateEssentials();
 			game.player2.turnEndButton.enabled = false;
 			p2bell.material.color = Color.grey;
+
+			//disable all of p2's cards that aren't on the field and revel p1's cards
+			foreach (Card card in FindObjectsOfType<Card>()) {
+				if (!card.placement) {
+					if (card.player == game.player2)
+						card.HideFace();
+					else
+						card.RenderFace();
+				}
+			}
 		}
 	}
 }

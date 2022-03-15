@@ -42,6 +42,15 @@ public class SpellCard : Card
 		descriptionMesh.text = ((SpellData)data).cardDescription;
 	}
 
+	public override void HideFace()
+	{
+		if (!renderingFace)	return;
+
+		base.HideFace();
+
+		descriptionMesh.text = "";
+	}
+
 	public override void OnPlace(PlayerData current, PlayerData opposing) {
 		RenderFace();
 		StartCoroutine(CastSpell(current, opposing));
@@ -101,6 +110,7 @@ public class SpellCard : Card
 	{
 		StartCoroutine(DelayedCasting(ability, target, index, (SpellData)data, delayDelay, delay, endSpellMode));
 	}
+
 	IEnumerator DelayedCasting(AbilityFunc ability, PlayerData target, int index,
 		SpellData spell, float delayDelay, float delay, bool endSpellMode)
 	{
@@ -111,8 +121,10 @@ public class SpellCard : Card
 		}
 		yield return new WaitForSeconds(delayDelay);
 
+		float oneOverDelay = 1f/delay;
 		for (float i = 0; i < delay; i += Time.deltaTime) {
-			transform.position = Vector3.MoveTowards(transform.position, targetPos, 2f * Time.deltaTime);
+			transform.position = Vector3.Lerp(transform.position, targetPos,
+				Mathf.SmoothStep(0f, 1f, oneOverDelay * i));
 			yield return eof;
 		}
 

@@ -271,7 +271,7 @@ public class SpellData : CardData {
 	static public void RepeatedActivation(SpellCard caster, PlayerData target, int index,
 		AbilityFunc ability, SpellData spell)
 	{
-		float delay = 0.5f;
+		float delay = 0.25f;
 		for (int i = 1; i <= spell.actionParameter1; ++i) {
 			//ability.Invoke(target, index, spell);
 			caster.ActivationDelay(ability, target, index, (i - 1) * delay, delay, i == spell.actionParameter1);
@@ -292,7 +292,7 @@ public class SpellData : CardData {
 				++cards;
 		}
 
-		float delay = 0.5f;
+		float delay = 0.25f;
 		for (int i = 1; i <= spell.actionParameter1 && cards > 0;) {
 			int j = Random.Range(0, target.field.Count);
 			if (target.field[j].holding && target.field[j].holding.targetable) {

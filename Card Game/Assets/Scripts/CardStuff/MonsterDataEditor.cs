@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -35,3 +36,4 @@ public class MonsterDataEditor : Editor
 		this.serializedObject.ApplyModifiedProperties();
 	}
 }
+#endif

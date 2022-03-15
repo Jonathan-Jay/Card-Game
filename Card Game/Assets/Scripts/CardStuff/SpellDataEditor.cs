@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -232,3 +233,4 @@ public class SpellDataEditor : Editor
 		this.serializedObject.ApplyModifiedProperties();
 	}
 }
+#endif

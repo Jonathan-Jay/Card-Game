@@ -10,10 +10,10 @@ public class KeypressCamController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W)) {
+        if (Input.GetKeyDown(KeyCode.UpArrow)) {
 			cam.IncrementIndex(looping);
 		}
-        if (Input.GetKeyDown(KeyCode.S)) {
+        if (Input.GetKeyDown(KeyCode.DownArrow)) {
 			cam.DecrementIndex(looping);
 		}
     }

@@ -37,6 +37,11 @@ public class MonsterCard : Card
 	public override void SetData(CardData newData) {
 		base.SetData(newData);
 		targetable = true;
+
+		currAttack = ((MonsterData)data).attack;
+		attackMesh.color = Color.black;
+		currHealth = ((MonsterData)data).health;
+		healthMesh.color = Color.black;
 	}
 
 	public override void RenderFace()
@@ -45,8 +50,22 @@ public class MonsterCard : Card
 
 		base.RenderFace();
 
-		SetAttack(((MonsterData)data).attack, Color.black);
-		SetHealth(((MonsterData)data).health, Color.black);
+		//manually do it to not reset colours
+		attackMesh.text = Mathf.Max(currAttack, 0).ToString();
+		healthMesh.text = currHealth.ToString();
+
+		//SetAttack(((MonsterData)data).attack, Color.black);
+		//SetHealth(((MonsterData)data).health, Color.black);
+	}
+
+	public override void HideFace()
+	{
+		if (!renderingFace)	return;
+
+		base.HideFace();
+
+		healthMesh.text = "";
+		attackMesh.text = "";
 	}
 
 	public override void OnPlace(PlayerData current, PlayerData opposing)

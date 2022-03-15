@@ -55,22 +55,22 @@ public class CameraController : MonoBehaviour
 		while (transitioning) {
 			yield return Card.eof;
 
-			if (Vector3.Distance(transform.position, targetTrans.position) < moveSpeed) {
-				transform.position = Vector3.MoveTowards(transform.position,
-					targetTrans.position, moveSpeed * Time.deltaTime);
-			}
-			else {
+			if (Vector3.Distance(transform.position, targetTrans.position) > 0.1f) {
 				transform.position = Vector3.Lerp(transform.position,
 					targetTrans.position, moveSpeed * Time.deltaTime);
 			}
+			else {
+				transform.position = Vector3.MoveTowards(transform.position,
+					targetTrans.position, 0.25f * Time.deltaTime);
+			}
 
-			if (Quaternion.Angle(transform.rotation, targetTrans.rotation) < rotSpeed) {
-				transform.rotation = Quaternion.RotateTowards(transform.rotation,
+			if (Quaternion.Angle(transform.rotation, targetTrans.rotation) > rotSpeed) {
+				transform.rotation = Quaternion.Lerp(transform.rotation,
 					targetTrans.rotation, rotSpeed * Time.deltaTime);
 			}
 			else {
-				transform.rotation = Quaternion.Lerp(transform.rotation,
-					targetTrans.rotation, rotSpeed * Time.deltaTime);
+				transform.rotation = Quaternion.RotateTowards(transform.rotation,
+					targetTrans.rotation, rotSpeed * 2.5f * Time.deltaTime);
 			}
 
 			if (transform.position == targetTrans.position

@@ -691,7 +691,7 @@ MonoBehaviour:
   - {fileID: 1654144821}
   index: 0
   moveSpeed: 3
-  rotSpeed: 1.5
+  rotSpeed: 4
 --- !u!114 &1049465399
 MonoBehaviour:
   m_ObjectHideFlags: 0

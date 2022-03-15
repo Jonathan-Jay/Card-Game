@@ -14,8 +14,12 @@ public class Card : MonoBehaviour
 	[SerializeField]	protected TMP_Text nameMesh;
 	[SerializeField]	protected TMP_Text costMesh;
 	static public WaitForEndOfFrame eof = new WaitForEndOfFrame();
-
+	static Material defaultMaterial = null;
+	
 	private void Start() {
+		if (!defaultMaterial) {
+			defaultMaterial = frontFace.material;
+		}
 		if (data != null) {
 			SetData(data);
 			if (renderingFace) {
@@ -42,6 +46,18 @@ public class Card : MonoBehaviour
 
 		//dirty flag
 		renderingFace = true;
+	}
+
+	public virtual void HideFace() {
+		if (!renderingFace) return;
+
+		nameMesh.text = "";
+
+		frontFace.material = defaultMaterial;
+
+		costMesh.text = "";
+
+		renderingFace = false;
 	}
 
 	public virtual void OnPlace(PlayerData current, PlayerData opposing) {
@@ -102,7 +118,7 @@ public class Card : MonoBehaviour
 			}
 			else {
 				transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPos,
-					returnSpeed * Time.deltaTime);
+					0.25f * Time.deltaTime);
 			}
 
 			if (transform.localRotation != targetRot) {
