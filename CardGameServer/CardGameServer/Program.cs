@@ -7,6 +7,7 @@ using System.Net.Sockets;
 public class SynServer
 {
 	const int msgCodeSize = 3;
+	static byte[] joinMsg;
 	public class Player
 	{
 		public Socket handler;
@@ -46,7 +47,8 @@ public class SynServer
 		return "NewUser" + (num++);
 	}
 
-	public static void StartServer(int maxPlayers, IPAddress ip) {
+	//return true on success
+	public static bool StartServer(int maxPlayers, IPAddress ip) {
 		IPEndPoint localEP = new IPEndPoint(ip, 42069);
 
 		server = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -59,7 +61,11 @@ public class SynServer
 		}
 		catch (Exception e) {
 			Console.WriteLine(e.ToString());
+			return false;
 		}
+
+		joinMsg = Encoding.ASCII.GetBytes("JND");
+		return true;
 	}
 
 	static bool RunServer() {
@@ -76,6 +82,7 @@ public class SynServer
 			//Print Client info (IP and PORT)
 			Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
 			tempHandler.Blocking = false;
+			tempHandler.Send(joinMsg);
 
 			string defaultName = GetName();
 			serverLobby.players.Add(new Player(tempHandler, defaultName));
@@ -244,9 +251,27 @@ public class SynServer
 	}
 
 	public static int Main(string[] args) {
-		StartServer(10, Dns.GetHostAddresses(Dns.GetHostName())[1]);
+
+		Console.Write("Type IP address (blank for host ip): ");
+		IPAddress ip;
+		string input = Console.ReadLine();
+		if (input == "") {
+			ip = Dns.GetHostAddresses(Dns.GetHostName())[1];
+		}
+		else {
+			ip = IPAddress.Parse(input);
+		}
+
+		//if the ip fails
+		if (!StartServer(10, ip)) {
+			Console.WriteLine("Press any button to close the app...");
+			Console.ReadKey();
+			return -1;
+		}
+		Console.WriteLine("Server started on " + ip.ToString());
 		while(RunServer());
 		CloseServer();
+		Console.WriteLine("Press any button to close the app...");
 		Console.ReadKey();
 		return 0;
 	}

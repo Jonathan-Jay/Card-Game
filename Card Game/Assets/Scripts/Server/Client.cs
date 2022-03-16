@@ -12,45 +12,91 @@ public class Client : MonoBehaviour
     byte[] buffer = new byte[512];
 	Socket client;
 	IPEndPoint server;
+	[SerializeField] TMPro.TMP_Text ipError;
+	[SerializeField] TMPro.TMP_InputField ipInput;
+	public float waitDuration = 5f;
+	public bool connecting = false;
+	public bool canStart = false;
+	[SerializeField] GameObject chatCanvas;
+	[SerializeField] TMPro.TMP_InputField textChat;
+	[SerializeField] TextChat chat;
+	int recv;
 
-	void Start() 
+	public void TryConnect() 
     {
+		//dont allow empty
+		if (ipInput.text == "")	return;
+
+		//dont if connecting
+		if (connecting) return;
+
+		StartCoroutine(ConnectionAttempt(ipInput.text));
+	}
+
+	IEnumerator ConnectionAttempt(string ipText) {
+		connecting = true;
+		ipError.text = "Connecting...";
         //Setup our end point (server)
-        try
-        {
+        try {
             //IPAddress ip = Dns.GetHostAddresses("mail.bigpond.com")[0];
-            IPAddress ip = IPAddress.Parse("35.169.14.57");
+            IPAddress ip = IPAddress.Parse(ipText);
             server = new IPEndPoint(ip, 42069);
             //create out client socket 
             client = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-            try
-            {
-            	//attempted a connection
-                client.Connect(server);
-				client.Blocking = false;
-            }
-            catch (ArgumentNullException argExc)
-            {
-                Debug.Log(argExc.ToString());
-            }
-            catch (SocketException SockExc)
-            {
-				Debug.Log(SockExc.ToString());
-            }
-            catch (Exception e)
-            {
-				Debug.Log(e.ToString());
-            }
-        }
-        catch (Exception e)
-        {
+			client.Blocking = false;
+		}
+		catch (Exception e) {
 			Debug.Log(e.ToString());
-        }
+			ipError.text = "Inputed ip Invalid";
+			connecting = false;
+		}
 
+		//if broke
+		if (!connecting)	yield break;
+		try {
+			client.Connect(server);
+		}
+		catch (SocketException SockExc) {
+			if (SockExc.SocketErrorCode != SocketError.WouldBlock) {
+				Debug.Log(SockExc.ToString());
+				ipError.text = "Inputed ip Invalid";
+				connecting = false;
+			}
+		}
+
+		//if broke
+		if (!connecting)	yield break;
+
+		bool connected = false;
+		for (float counter = 0; counter < waitDuration; counter += Time.deltaTime) {
+        	try {
+				recv = client.Receive(buffer);
+				connected = true;
+				break;
+			}
+			catch (SocketException SockExc) {
+				if (SockExc.SocketErrorCode != SocketError.WouldBlock) {
+					Debug.Log(SockExc.ToString());
+					connecting = false;
+				}
+			}
+			yield return new WaitForEndOfFrame();
+		}
+
+		if (connected) {
+			//connected is true
+			ipError.text = "Connected";
+			chatCanvas.SetActive(true);
+			yield return new WaitForEndOfFrame();
+			canStart = true;
+		}
+		else {
+			ipError.text = "Failed";
+			client = null;
+		}
+		connecting = false;
     }
 
-	[SerializeField]	TMPro.TMP_InputField textChat;
 	public void SendTextChatMessage() {
 		byte[] msg = System.Text.ASCIIEncoding.ASCII.GetBytes("MSG" + textChat.text);
 		client.SendTo(msg, server);
@@ -58,15 +104,17 @@ public class Client : MonoBehaviour
 	}
 
 	private void OnDestroy() {
+		if (!canStart)	return;
 		//release the resource
 		client.SendTo(Encoding.ASCII.GetBytes("LAP"), server);
 		client.Shutdown(SocketShutdown.Both);
 		client.Close();
 	}
 
-	[SerializeField]	TextChat chat;
-	int recv;
 	private void Update() {
+		//only if client is existing
+		if (!canStart)	return;
+
 		try {
 			recv = client.Receive(buffer) - msgCodeSize;
 			if (recv >= 0) {
