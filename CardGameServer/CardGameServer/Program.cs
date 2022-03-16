@@ -40,9 +40,8 @@ public class SynServer
 
 
 
-	public static void StartServer(int maxPlayers, string localIP) {
-		IPAddress ip = IPAddress.Parse(localIP);
-		IPEndPoint localEP = new IPEndPoint(ip, 11111);
+	public static void StartServer(int maxPlayers, IPAddress ip) {
+		IPEndPoint localEP = new IPEndPoint(ip, 42069);
 
 		server = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 		server.Blocking = false;
@@ -70,13 +69,14 @@ public class SynServer
 			IPEndPoint clientEP = (IPEndPoint)tempHandler.RemoteEndPoint;
 			//Print Client info (IP and PORT)
 			Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
+
+			serverLobby.players.Add(new Player(tempHandler, ""));
 		}
 		catch (SocketException sockExcep) {
 			//if error isn't blocking related, send
 			if (sockExcep.SocketErrorCode == SocketError.WouldBlock) {
 				//send the new player joining to all others?
 				//also wait till the player responds with their username
-				serverLobby.players.Add(new Player(tempHandler, ""));
 				tempHandler = null;
 			}
 			else {
@@ -94,7 +94,7 @@ public class SynServer
 			recv = player.handler.Receive(buffer);
 			if (recv > 0) {
 				//do something with it
-				Console.Write("test");
+				Console.Write(ASCIIEncoding.ASCII.GetString(buffer));
 			}
 		}
 
@@ -109,7 +109,7 @@ public class SynServer
 	}
 
 	public static int Main(string[] args) {
-		StartServer(10, "127.0.0.1");
+		StartServer(10, Dns.GetHostAddresses(Dns.GetHostName())[1]);
 		while(RunServer());
 		CloseServer();
 		Console.ReadKey();
