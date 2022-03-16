@@ -77,6 +77,7 @@ public class SynServer
 			Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
 			tempHandler.Blocking = false;
 			serverLobby.players.Add(new Player(tempHandler, GetName()));
+			Console.WriteLine(serverLobby.players.Count);
 		}
 		catch (SocketException sockExcep) {
 			//if error isn't blocking related, send
@@ -100,10 +101,11 @@ public class SynServer
 
 			try {
 				recv = player.handler.Receive(buffer) - msgCodeSize;
-				if (recv > 0) {
+				if (recv >= 0) {
 					//do something with it
 					//Console.Write(ASCIIEncoding.ASCII.GetString(buffer, 0, recv));
 					string code = Encoding.ASCII.GetString(buffer, 0, msgCodeSize);
+					Console.WriteLine(code);
 					if (code == "MSG") {
 						//create message
 						byte[] start = Encoding.ASCII.GetBytes("MSG" + player.username + ": ");
@@ -114,7 +116,7 @@ public class SynServer
 						foreach (Player other in serverLobby.players) {
 							//ignore self
 							//if (other == player) continue;
-							player.handler.Send(message);
+							player.handler.SendTo(message, player.remoteEP);
 						}
 					}
 					else if (code == "LAP") {

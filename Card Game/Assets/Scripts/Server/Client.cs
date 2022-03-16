@@ -8,6 +8,7 @@ using System.Net.Sockets;
 
 public class Client : MonoBehaviour
 {
+	const int msgCodeSize = 3;
     byte[] buffer = new byte[512];
 	Socket client;
 	IPEndPoint server;
@@ -67,9 +68,9 @@ public class Client : MonoBehaviour
 	int recv;
 	private void Update() {
 		try {
-			recv = client.Receive(buffer);
-			if (recv > 0) {
-				chat.UpdateChat(Encoding.ASCII.GetString(buffer, 3, recv));
+			recv = client.Receive(buffer) - msgCodeSize;
+			if (recv >= 0) {
+				chat.UpdateChat(Encoding.ASCII.GetString(buffer, msgCodeSize, recv));
 			}
 		}
 		catch (SocketException sock) {
