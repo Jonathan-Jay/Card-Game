@@ -8,51 +8,56 @@ using System.Net.Sockets;
 
 public class Client : MonoBehaviour
 {
-        void Start() 
-        {
-            byte[] buffer = new byte[512];
+    byte[] buffer = new byte[512];
+	Socket client;
+	IPEndPoint server;
 
-            //Setup our end point (server)
+	void Start() 
+    {
+        //Setup our end point (server)
+        try
+        {
+            //IPAddress ip = Dns.GetHostAddresses("mail.bigpond.com")[0];
+            IPAddress ip = IPAddress.Parse("35.169.14.57");
+            server = new IPEndPoint(ip, 42069);
+            //create out client socket 
+            client = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
             try
             {
-                //IPAddress ip = Dns.GetHostAddresses("mail.bigpond.com")[0];
-                IPAddress ip = IPAddress.Parse("35.169.14.57");
-                IPEndPoint server = new IPEndPoint(ip, 42069);
-
-                //create out client socket 
-                Socket client = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                //attempted a connection
-                try
-                {
-                    Debug.Log("Attempting Connection to server...");
-                    client.Connect(server);
-                    //release the resource
-                    client.Shutdown(SocketShutdown.Both);
-                    client.Close();
-                }
-                catch (ArgumentNullException argExc)
-                {
-                    
-                }
-                catch (SocketException SockExc)
-                {
-                    
-                }
-                catch (Exception e)
-                {
-                    
-                }
+            	//attempted a connection
+                client.Connect(server);
+            }
+            catch (ArgumentNullException argExc)
+            {
+                Debug.Log(argExc.ToString());
+            }
+            catch (SocketException SockExc)
+            {
+				Debug.Log(SockExc.ToString());
             }
             catch (Exception e)
-            { 
-                   
+            {
+				Debug.Log(e.ToString());
             }
-
         }
-    [SerializaField] TMPro.text 
-    // Update is called once per frame
-    void SendMessage(string message)
-    {
-        
+        catch (Exception e)
+        {
+			Debug.Log(e.ToString());
+        }
+
     }
+
+	[SerializeField]	TMPro.TMP_InputField textChat;
+	public void SendTextChatMessage() {
+		byte[] msg = System.Text.ASCIIEncoding.ASCII.GetBytes(textChat.text);
+		client.SendTo(msg, server);
+		textChat.text = "";
+	}
+
+	private void OnDestroy() {
+		//release the resource
+		client.Shutdown(SocketShutdown.Both);
+		client.Close();
+	}
 }
