@@ -49,10 +49,10 @@ public class Client : MonoBehaviour
             }
 
         }
-    [SerializaField] TMPro.text 
-    // Update is called once per frame
-    void SendMessage(string message)
+    [SerializeField]    TMPro.TMP_InputField textChat;
+    public void SendTextMessage() 
     {
-        
+        //bytes = System.Text.ASCIIEncoding.ASCII.GetBytes(textChat.text);
+        textChat.text = "";
     }
 }
