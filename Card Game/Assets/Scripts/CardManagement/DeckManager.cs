@@ -30,6 +30,14 @@ public class DeckManager : MonoBehaviour
 	CardData data;
 	Card card;
 
+	[SerializeField]	bool autoShuffle = false;
+
+	private void Start() {
+		if (autoShuffle) {
+			ShuffleDeck();
+		}
+	}
+
 	public void ShuffleDeck() {
 		//only shuffle empty decks?
 		//if (deck.Count > 0)	return;

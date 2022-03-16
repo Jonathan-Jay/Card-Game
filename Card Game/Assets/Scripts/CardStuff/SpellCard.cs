@@ -116,8 +116,12 @@ public class SpellCard : Card
 	{
 		Vector3 targetPos = target.hand.transform.position + Vector3.up * 1f;
 		if (index >= 0) {
-			targetPos = target.field[index].transform.position + Vector3.up * 0.1f
-				+ transform.rotation * (Vector3.back * 0.5f);
+			if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
+				targetPos = target.backLine[index - target.field.Count].transform.position
+					+ Vector3.up * 0.1f + transform.rotation * (Vector3.back * 0.5f);
+			else if (target.field[index].holding)
+				targetPos = target.field[index].transform.position
+					+ Vector3.up * 0.1f + transform.rotation * (Vector3.back * 0.5f);
 		}
 		yield return new WaitForSeconds(delayDelay);
 

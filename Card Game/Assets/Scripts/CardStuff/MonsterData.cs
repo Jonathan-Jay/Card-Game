@@ -17,6 +17,9 @@ public class MonsterData : CardData {
 			if (player.field[i].holding && player.field[i].holding.targetable) {
 				++monsterCount;
 			}
+			if (player.backLine[i].holding && player.backLine[i].holding.targetable) {
+				++monsterCount;
+			}
 		}
 
 		//check if enough monsters to sacrifice

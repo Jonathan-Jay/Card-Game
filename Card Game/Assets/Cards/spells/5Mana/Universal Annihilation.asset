@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Universal Annihilation
   cardArt: {fileID: 2800000, guid: a1c086fc7cba168428c06d6ecc551040, type: 3}
   cost: 5
-  targettingOption: 1
+  targettingOption: 3
   activateOption: 3
   abilityOption: 2
   cardDescription: Destroy all monsters on the board

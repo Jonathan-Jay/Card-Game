@@ -142,6 +142,7 @@ public class SpellData : CardData {
 	static public PlayerData TargetOpposingField(PlayerData current,
 		PlayerData opposing, ref int index, ref RaycastHit hit)
 	{
+		/*
 		List<int> valids = new List<int>();
 		index = -2;
 		for (int i = opposing.field.Count - 1; i >= 0; --i) {
@@ -153,13 +154,37 @@ public class SpellData : CardData {
 			index = valids[Random.Range(0, valids.Count)];
 		}
 
-		return opposing;
+		return opposing;*/
+
+		//check if hitting something
+		if (hit.transform) {
+			//check if holder
+			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+
+			//check if holding a card if it's a holder
+			if (holder != null && holder.holding) {
+
+				//if targettign self, return error code
+				if (holder == current.backLine[index]) {
+					index = -2;
+					return current;
+				}
+				//if targetable and valid field, just use it i guess :shrug:
+				if (holder.holding.targetable && current.field[holder.index] == holder) {
+					index = holder.index;
+					return holder.playerData;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	//return random card on the field
 	static public PlayerData TargetSelfField(PlayerData current,
 		PlayerData opposing, ref int index, ref RaycastHit hit)
 	{
+		/*
 		List<int> valids = new List<int>();
 		index = -2;
 		for (int i = current.field.Count - 1; i >= 0; --i) {
@@ -170,8 +195,30 @@ public class SpellData : CardData {
 		if (valids.Count > 0) {
 			index = valids[Random.Range(0, valids.Count)];
 		}
+		return current;*/
 
-		return current;
+		//check if hitting something
+		if (hit.transform) {
+			//check if holder
+			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+
+			//check if holding a card if it's a holder
+			if (holder != null && holder.holding) {
+
+				//if targettign self, return error code
+				if (holder == current.backLine[index]) {
+					index = -2;
+					return current;
+				}
+				//if targetable and valid field, just use it i guess :shrug:
+				if (holder.holding.targetable && current.field[holder.index] == holder) {
+					index = holder.index;
+					return holder.playerData;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	//return opposing player
@@ -206,7 +253,19 @@ public class SpellData : CardData {
 				}
 				//if targetable, just use it i guess :shrug:
 				if (holder.holding.targetable) {
-					index = holder.index;
+					//check the player, player or opposing?
+					if (holder.playerData == current) {
+						if (current.field[holder.index] == holder)
+							index = holder.index;
+						if (current.backLine[holder.index] == holder)
+							index = holder.index + current.field.Count;
+					}
+					else {
+						if (opposing.field[holder.index] == holder)
+							index = holder.index;
+						if (opposing.backLine[holder.index] == holder)
+							index = holder.index + opposing.field.Count;
+					}
 					return holder.playerData;
 				}
 			}
@@ -230,9 +289,14 @@ public class SpellData : CardData {
 					index = -2;
 					return current;
 				}
+				
 				//if targetable and valid field, just use it i guess :shrug:
-				if (holder.holding.targetable && current.field[holder.index] == holder) {
-					index = holder.index;
+				if (holder.holding.targetable && holder.playerData == current) {
+					if (current.field[holder.index] == holder)
+						index = holder.index;
+					if (current.backLine[holder.index] == holder)
+						index = holder.index + current.field.Count;
+					
 					return holder.playerData;
 				}
 			}
@@ -256,7 +320,11 @@ public class SpellData : CardData {
 				}
 				//if targetable and valid field, just use it i guess :shrug:
 				if (holder.holding.targetable && holder.playerData == opposing) {
-					index = holder.index;
+					if (opposing.field[holder.index] == holder)
+						index = holder.index;
+					if (opposing.backLine[holder.index] == holder)
+						index = holder.index + opposing.field.Count;
+
 					return holder.playerData;
 				}
 			}
@@ -372,11 +440,16 @@ public class SpellData : CardData {
 		//targetting player
 		if (index < 0) {
 			target.TakeDamage(spell.abilityParameter1);
+			return;
 		}
-		else if (target.field[index].holding) {
-			if (target.field[index].holding.targetable)
-				((MonsterCard)target.field[index].holding).TakeDamage(spell.abilityParameter1);
-		}
+
+		MonsterCard card = null;
+		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
+			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
+		else if (target.field[index].holding)
+			card = (MonsterCard)target.field[index].holding;
+		if (card && card.targetable)
+			card.TakeDamage(spell.abilityParameter1);
 	}
 
 	//between abillityParameter1 inclusive and abilityParamter2 inclusive
@@ -385,35 +458,50 @@ public class SpellData : CardData {
 		if (index < 0) {
 			target.TakeDamage(UnityEngine.Random.Range(
 				spell.abilityParameter1, spell.abilityParameter2 + 1));
+			return;
 		}
-		else if (target.field[index].holding) {
-			if (target.field[index].holding.targetable)
-				((MonsterCard)target.field[index].holding).TakeDamage(UnityEngine.Random.Range(
+
+		MonsterCard card = null;
+		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
+			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
+		else if (target.field[index].holding)
+			card = (MonsterCard)target.field[index].holding;
+
+		if (card && card.targetable)
+			card.TakeDamage(UnityEngine.Random.Range(
 					spell.abilityParameter1, spell.abilityParameter2 + 1));
-		}
 	}
 
 	//all you need is kill
 	static public void Kill(PlayerData target, int index, SpellData spell) {
 		if (index < 0) {
 			target.TakeDamage(target.currentHP);
+			return;
 		}
-		else if (target.field[index].holding) {
-			Card card = target.field[index].holding;
-			if (card.targetable)
-				((MonsterCard)card).TakeDamage(((MonsterCard)card).currHealth);
-		}
+
+		MonsterCard card = null;
+		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
+			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
+		else if (target.field[index].holding)
+			card = (MonsterCard)target.field[index].holding;
+		
+		if (card && card.targetable)
+				card.TakeDamage(card.currHealth);
 	}
 
 	//parameter 1 is duration, parameter 2 is hp, parameter 3 is atk
 	static public void Boost(PlayerData target, int index, SpellData spell) {
 		//dont work on players lol
 		if (index < 0)	return;
-		if (target.field[index].holding) {
-			if (target.field[index].holding.targetable)
-				((MonsterCard)target.field[index].holding).Boost(new MonsterCard.TempEffect(
-					spell.abilityParameter1, spell.abilityParameter2, spell.abilityParameter3));
-		}
+
+		MonsterCard card = null;
+		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
+			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
+		else if (target.field[index].holding)
+			card = (MonsterCard)target.field[index].holding;
+		if (card && card.targetable)
+			card.Boost(new MonsterCard.TempEffect(
+				spell.abilityParameter1, spell.abilityParameter2, spell.abilityParameter3));
 	}
 
 	//parameter 1 is mana amount (clamped to 0)

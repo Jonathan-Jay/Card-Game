@@ -345,9 +345,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deckOptions:
-  - amt: 3
+  - amt: 4
     data: {fileID: 11400000, guid: 1e6f8cbad5b198e4ab5612fe261ddec8, type: 2}
-  - amt: 3
+  - amt: 4
     data: {fileID: 11400000, guid: eb03304f94b6b3748b48932e2136c543, type: 2}
   - amt: 3
     data: {fileID: 11400000, guid: c62b9be75672bfc41b7132b39f1cc8c4, type: 2}
@@ -359,7 +359,7 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: a5ba82881812ccf4987223c7f1a3cf45, type: 2}
   - amt: 2
     data: {fileID: 11400000, guid: 723f815ee14b4bc43875754a470bc2b3, type: 2}
-  - amt: 2
+  - amt: 1
     data: {fileID: 11400000, guid: 5e0eef38f742ee342b12f1787a4e99e2, type: 2}
   - amt: 1
     data: {fileID: 11400000, guid: 105e8c260961c634bbac1975439816e8, type: 2}
@@ -369,7 +369,7 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 6d86a2cb952f1114da7642db39a24340, type: 2}
   - amt: 1
     data: {fileID: 11400000, guid: 497c9bf4c1b7a2b488f4a97780f83f7a, type: 2}
-  - amt: 2
+  - amt: 1
     data: {fileID: 11400000, guid: fe3b9b9fab972714d938fbfa548f5815, type: 2}
   - amt: 2
     data: {fileID: 11400000, guid: 5b0c831435bc9aa48bcf0f30fe63d708, type: 2}
@@ -377,7 +377,7 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 4f8763984f2e49b428bf3c8172ae2230, type: 2}
   - amt: 1
     data: {fileID: 11400000, guid: 6357489cb9bb87d44885f33c5629d8af, type: 2}
-  - amt: 3
+  - amt: 2
     data: {fileID: 11400000, guid: 02ae4e3b26463b545bb92ce83e6578db, type: 2}
   - amt: 2
     data: {fileID: 11400000, guid: 487bfb251922f574584ff1c9f3ac8808, type: 2}
@@ -385,6 +385,8 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 7890edb8cfb367a43af2407aa45f67fc, type: 2}
   - amt: 1
     data: {fileID: 11400000, guid: 5c3cbfc52e1a54840981174fe94170f8, type: 2}
+  - amt: 3
+    data: {fileID: 11400000, guid: 428a80920c2bb11469f0852877a130c4, type: 2}
   cardStack: {fileID: 8249296022170754993}
   col: {fileID: 7326191857588110041}
   text: {fileID: 7881451320985533929}
@@ -397,6 +399,7 @@ MonoBehaviour:
   defaultOffset: {x: 0, y: 0.05, z: -0.5}
   defaultRotation: {x: 0, y: 0, z: 180}
   player: {fileID: 0}
+  autoShuffle: 0
 --- !u!1 &8226458776550094626
 GameObject:
   m_ObjectHideFlags: 0

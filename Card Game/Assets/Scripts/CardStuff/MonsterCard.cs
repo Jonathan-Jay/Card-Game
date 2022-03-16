@@ -130,7 +130,12 @@ public class MonsterCard : Card
 			if (index >= 0) {
 				//reject duplicates
 				if (!targets.Contains(index)) {
-					current.field[index].holding.transform.localRotation = Quaternion.Euler(0f, 0f, 180f);
+					if (index >= current.field.Count && current.backLine[index - current.field.Count].holding)
+						current.backLine[index - current.field.Count].holding
+							.transform.localRotation = Quaternion.Euler(0f, 0f, 180f);
+					else if (current.field[index].holding)
+						current.field[index].holding.transform.localRotation =Quaternion.Euler(0f, 0f, 180f);
+					
 					targets.Add(index);
 					--requirement;
 				}
@@ -148,16 +153,25 @@ public class MonsterCard : Card
 		if (requirement < 0) {
 			//revert transforms of selected cards
 			for (int i = 0; i < targets.Count; ++i) {
-				current.field[targets[i]].holding.transform.localRotation = Quaternion.identity;
+				if (index >= current.field.Count && current.backLine[index - current.field.Count].holding)
+					current.backLine[index - current.field.Count].holding
+						.transform.localRotation = Quaternion.identity;
+				else if (current.field[index].holding)
+					current.field[index].holding.transform.localRotation = Quaternion.identity;
 			}
 			Release();
 		}
 		else {
 			//kill all selected cards
-			MonsterCard monster;
+			MonsterCard monster = null;
 			for (int i = 0; i < targets.Count; ++i) {
-				monster = (MonsterCard)current.field[targets[i]].holding;
-				monster.TakeDamage(monster.currHealth);
+				if (targets[i] >= current.field.Count && current.backLine[targets[i] - current.field.Count].holding)
+					monster = (MonsterCard)current.backLine[targets[i] - current.field.Count].holding;
+				else if (current.field[targets[i]].holding)
+					monster = (MonsterCard)current.field[targets[i]].holding;
+				
+				if (monster && monster != this)
+					monster.TakeDamage(monster.currHealth);
 			}
 
 			for (float i = 0; i < 0.25f; i += Time.deltaTime) {
