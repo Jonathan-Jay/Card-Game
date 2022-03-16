@@ -81,6 +81,7 @@ public class SpellData : CardData {
 		Direct,
 		Repeated,
 		Randomized,
+		Everything
 	}
 	static public ActivationFunc GetActivation(ActivationOptions choice) {
 		switch (choice) {
@@ -90,6 +91,8 @@ public class SpellData : CardData {
 				return RepeatedActivation;
 			case ActivationOptions.Randomized:
 				return RandomizedActivation;
+			case ActivationOptions.Everything:
+				return EverythingActivation;
 		}
 	}
 
@@ -99,6 +102,7 @@ public class SpellData : CardData {
 		Kill,
 		Boost,
 		StealMana,
+		DrawCard,
 	}
 	static public AbilityFunc GetAbility(AbilityOptions choice) {
 		switch (choice) {
@@ -112,6 +116,8 @@ public class SpellData : CardData {
 				return Boost;
 			case AbilityOptions.StealMana:
 				return StealMana;
+			case AbilityOptions.DrawCard:
+				return DrawCards;
 		}
 	}
 	#endregion
@@ -194,7 +200,7 @@ public class SpellData : CardData {
 			//check if holding a card if it's a holder
 			if (holder != null && holder.holding) {
 				//if targettign self, return error code
-				if (holder == current.field[index]) {
+				if (holder == current.backLine[index]) {
 					index = -2;
 					return current;
 				}
@@ -215,15 +221,17 @@ public class SpellData : CardData {
 		if (hit.transform) {
 			//check if holder
 			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+			
 			//check if holding a card if it's a holder
 			if (holder != null && holder.holding) {
+				
 				//if targettign self, return error code
-				if (holder == current.field[index]) {
+				if (holder == current.backLine[index]) {
 					index = -2;
 					return current;
 				}
 				//if targetable and valid field, just use it i guess :shrug:
-				if (holder.holding.targetable && holder.playerData == current) {
+				if (holder.holding.targetable && current.field[holder.index] == holder) {
 					index = holder.index;
 					return holder.playerData;
 				}
@@ -242,7 +250,7 @@ public class SpellData : CardData {
 			//check if holding a card if it's a holder
 			if (holder != null && holder.holding) {
 				//if targettign self, return error code
-				if (holder == current.field[index]) {
+				if (holder == current.backLine[index]) {
 					index = -2;
 					return current;
 				}
@@ -293,7 +301,8 @@ public class SpellData : CardData {
 		}
 
 		float delay = 0.25f;
-		for (int i = 1; i <= spell.actionParameter1 && cards > 0;) {
+		int i = 1;
+		for (; i <= spell.actionParameter1 && cards > 0;) {
 			int j = Random.Range(0, target.field.Count);
 			if (target.field[j].holding && target.field[j].holding.targetable) {
 				//ability.Invoke(target, j, spell);
@@ -307,8 +316,53 @@ public class SpellData : CardData {
 
 		if (cards == 0) {
 			//safety
-			caster.ActivationDelay(null, target, index, 0f, 0f, true);
+			caster.ActivationDelay(null, target, index, (i - 1) * delay, 0f, true);
 		}
+	}
+
+	//targets everything, if activation is > 0, kill backrow too
+	static public void EverythingActivation(SpellCard caster, PlayerData target, int index,
+		AbilityFunc ability, SpellData spell)
+	{
+		float delay = 0.1f;
+		int cardCount = 0;
+
+		//target first
+		foreach (CardHolder holder in target.field) {
+			//ability.Invoke(target, index, spell);
+			if (holder.holding && holder.holding.targetable) {
+				caster.ActivationDelay(ability, target, holder.index, cardCount++ * delay, delay, false);
+			}
+		}
+
+		PlayerData opposing = target.field[0].opposingData;
+
+		//then the opponent
+		foreach (CardHolder holder in opposing.field) {
+			//ability.Invoke(target, index, spell);
+			if (holder.holding && holder.holding.targetable) {
+				caster.ActivationDelay(ability, opposing, holder.index, cardCount++ * delay, delay, false);
+			}
+		}
+
+		if (spell.actionParameter1 > 0) {
+			foreach (CardHolder holder in target.backLine) {
+				//ability.Invoke(target, index, spell);
+				if (holder.holding && holder.holding.targetable) {
+					caster.ActivationDelay(ability, target, holder.index, cardCount++ * delay, delay, false);
+				}
+			}
+
+			foreach (CardHolder holder in opposing.backLine) {
+				//ability.Invoke(target, index, spell);
+				if (holder.holding && holder.holding.targetable) {
+					caster.ActivationDelay(ability, opposing, holder.index, cardCount++ * delay, delay, false);
+				}
+			}
+
+		}
+		//get back the spell mode thingy
+		caster.ActivationDelay(null, target, index, cardCount * delay, 0f, true);
 	}
 	#endregion
 
@@ -367,6 +421,13 @@ public class SpellData : CardData {
 		//dont work on cards lol
 		if (index >= 0)	return;
 		target.StealMana(spell.abilityParameter1);
+	}
+
+	//parameter 1 is card amount (clamped to 0)
+	static public void DrawCards(PlayerData target, int index, SpellData spell) {
+		//dont work on cards lol
+		if (index >= 0)	return;
+		target.deck.AutoDrawCards(spell.abilityParameter1, 0.25f, !ServerManager.CheckIfClient(target));
 	}
 #endregion
 

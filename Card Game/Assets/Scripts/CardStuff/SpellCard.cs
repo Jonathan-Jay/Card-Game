@@ -62,7 +62,7 @@ public class SpellCard : Card
 			hit = rayHit;
 		}
 
-		//stop mouse from working immidiately
+		//stop mouse from working immediately
 		player.hand.input.ActivateSpellMode();
 		player.hand.input.clickEvent += UpdateRaycastHit;
 

@@ -82,18 +82,24 @@ public class Mouse : MonoBehaviour {
 		releaseEvent -= ReleaseCard;
 	}
 
-	public void ActivateEssentials()
-	{
+	public void ActivateEssentials() {
 		clickEvent += ClickButton;
 		clickEvent += ClickCard;
 		releaseEvent += ReleaseCard;
 	}
 
-	public void DeActivateEssentials()
-	{
+	public void DeActivateEssentials() {
 		clickEvent -= ClickButton;
 		clickEvent -= ClickCard;
 		releaseEvent -= ReleaseCard;
+	}
+
+	public void ActivateDeck() {
+		clickEvent += ClickDeck;
+	}
+
+	public void DeActivateDeck() {
+		clickEvent -= ClickDeck;
 	}
 
 	public void LinkInteractablesFunc() {
@@ -179,15 +185,7 @@ public class Mouse : MonoBehaviour {
 
 		DeckManager deckTest = hitObj.GetComponent<DeckManager>();
 		if (deckTest != null && deckTest.player == player) {
-			Transform card = deckTest.DrawCard();
-			if (card != null) {
-				card.GetComponent<Rigidbody>().isKinematic = true;
-				card.SetParent(mouseObject, true);
-				card.position += Vector3.up * vertOffset;
-				card.gameObject.layer = ignoredLayer;
-
-				holding = card;
-			}
+			deckTest.FirstDraw(true);
 		}
 	}
 

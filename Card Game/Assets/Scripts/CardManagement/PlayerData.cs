@@ -9,7 +9,8 @@ public class PlayerData : MonoBehaviour {
 	public int currentMana = 1;
 	public int maxMana = 1;
 	public HandManager hand;
-	public List<CardHolder> field = new List<CardHolder>();
+	public List<CardAttacker> field = new List<CardAttacker>();
+	public List<CardMover> backLine = new List<CardMover>();
 	public DeckManager deck;
 	public PressEventButton turnEndButton;
 	public int canDraw = 0;
@@ -30,15 +31,21 @@ public class PlayerData : MonoBehaviour {
 		drawCard?.Invoke();
 	}
 
-	public void DrewCard() {
+	public void DrawCard() {
 		drawCard?.Invoke();
 	}
 
 	//do whatever a player does when their turn ends
-	public void TurnEnd(int maxMana, int cardsPerTurn)
+	public void TurnEnd(int maxMana, int cardsPerTurn, int requiredCards)
 	{
 		IncreaseMaxMana(Mathf.Clamp(++this.maxMana, 0, maxMana));
-		canDraw = cardsPerTurn;
+		canDraw = Mathf.Min(cardsPerTurn, deck.deck.Count);
+		//temporary
+		if (hand.transform.childCount < requiredCards) {
+			canDraw = Mathf.Min(requiredCards - hand.transform.childCount
+				+ cardsPerTurn, deck.deck.Count);
+		}
+		//clamp this
 		drawCard?.Invoke();
 	}
 

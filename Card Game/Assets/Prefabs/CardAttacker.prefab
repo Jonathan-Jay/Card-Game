@@ -92,9 +92,9 @@ GameObject:
   m_Component:
   - component: {fileID: 9108104881741558369}
   - component: {fileID: 9108104881741558372}
-  - component: {fileID: 9108104881741558368}
+  - component: {fileID: 4615599407887757799}
   m_Layer: 0
-  m_Name: CardHolder
+  m_Name: CardAttacker
   m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,7 +128,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.9, y: 0.05, z: 1.1}
   m_Center: {x: 0, y: 0.025, z: 0}
---- !u!114 &9108104881741558368
+--- !u!114 &4615599407887757799
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -137,28 +137,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 9108104881741558373}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab11de1acc38ad149ba7fc873c62b505, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d0b204273b2bd0418278a048780e352, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   holding: {fileID: 0}
-  hasCard: {r: 1, g: 0.390566, b: 0.390566, a: 1}
-  playerTag: 
-  playerData:
-    currentHP: 20
-    maxHP: 20
-    currentMana: 1
-    maxMana: 5
-    field: []
-  opposingData:
-    currentHP: 20
-    maxHP: 20
-    currentMana: 1
-    maxMana: 5
-    field: []
-  index: 0
+  hasCard: {r: 1, g: 0.39215687, b: 0.39215687, a: 1}
+  playerData: {fileID: 0}
+  opposingData: {fileID: 0}
+  index: -1
   floatingHeight: {x: 0, y: 0.075, z: -0.5}
   moveSpeed: 5
   rotSpeed: 10
   slamHeight: {x: 0, y: 0.575, z: -0.5}
   slamSpeed: 10
+  interactableTag: Interactable
   defaultCardLayer: 6

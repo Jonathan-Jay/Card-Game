@@ -6,6 +6,7 @@ using UnityEditor;
 public class SpellDataEditor : Editor
 {
 	static bool lockedDescription = true;
+	static bool unlockedInts = false;
 	SerializedProperty cardArt;
 	SerializedProperty cardName;
 	SerializedProperty cost;
@@ -77,6 +78,8 @@ public class SpellDataEditor : Editor
 			"<color=green>{0}</color> times to ", SpellData.ActivationOptions.Repeated),
 		new ActivationOption("Randomized", "Calls it {0} (actionParameter1) times, hits random opposing cards",
 			"<color=green>{0}</color> times to random ", SpellData.ActivationOptions.Randomized),
+		new ActivationOption("EveryCard", "Hits Every Card, put actionParameter1 > 0 for backrow inclusion",
+			"every card ", SpellData.ActivationOptions.Everything),
 	};
 	#endregion
 	
@@ -108,6 +111,8 @@ public class SpellDataEditor : Editor
 			"Boost hp by <color=red>{3}</color> and attack by <color=red>{4}</color> for <color=green>{2}</color> turns of ", SpellData.AbilityOptions.Boost),
 		new AbilityOption("Remove mana", "Remove {2} (abilityParameter1) mana from the opponent",
 			"Lose <color=yellow>{2}</color> mana ", SpellData.AbilityOptions.StealMana),
+		new AbilityOption("Draw Card", "Target player draws {2} (abilityParameter1) cards",
+			"Draw <color=yellow>{2}</color> cards ", SpellData.AbilityOptions.DrawCard),
 	};
 	#endregion
 
@@ -150,25 +155,49 @@ public class SpellDataEditor : Editor
 		bool dirty = false;
 		int temp;
 
-		temp = actionParameter1.intValue;
-		actionParameter1.intValue = EditorGUILayout.IntSlider("Action Parameter 1", actionParameter1.intValue, 0, 10);
-		dirty = temp != actionParameter1.intValue || dirty;
-		
-		temp = actionParameter2.intValue;
-		actionParameter2.intValue = EditorGUILayout.IntSlider("Action Parameter 2", actionParameter2.intValue, 0, 10);
-		dirty = temp != actionParameter2.intValue || dirty;
+		unlockedInts = EditorGUILayout.Toggle("Unlock Sliders", unlockedInts);
+		if (unlockedInts){
+			temp = actionParameter1.intValue;
+			actionParameter1.intValue = EditorGUILayout.IntField("Action Parameter 1", actionParameter1.intValue);
+			dirty = temp != actionParameter1.intValue || dirty;
 
-		temp = abilityParameter1.intValue;
-		abilityParameter1.intValue = EditorGUILayout.IntSlider("Ability Parameter 1", abilityParameter1.intValue, -10, 10);
-		dirty = temp != abilityParameter1.intValue || dirty;
+			temp = actionParameter2.intValue;
+			actionParameter2.intValue = EditorGUILayout.IntField("Action Parameter 2", actionParameter2.intValue);
+			dirty = temp != actionParameter2.intValue || dirty;
 
-		temp = abilityParameter2.intValue;
-		abilityParameter2.intValue = EditorGUILayout.IntSlider("Ability Parameter 2", abilityParameter2.intValue, -10, 10);
-		dirty = temp != abilityParameter2.intValue || dirty;
+			temp = abilityParameter1.intValue;
+			abilityParameter1.intValue = EditorGUILayout.IntField("Ability Parameter 1", abilityParameter1.intValue);
+			dirty = temp != abilityParameter1.intValue || dirty;
 
-		temp = abilityParameter3.intValue;
-		abilityParameter3.intValue = EditorGUILayout.IntSlider("Ability Parameter 3", abilityParameter3.intValue, -10, 10);
-		dirty = temp != abilityParameter3.intValue || dirty;
+			temp = abilityParameter2.intValue;
+			abilityParameter2.intValue = EditorGUILayout.IntField("Ability Parameter 2", abilityParameter2.intValue);
+			dirty = temp != abilityParameter2.intValue || dirty;
+
+			temp = abilityParameter3.intValue;
+			abilityParameter3.intValue = EditorGUILayout.IntField("Ability Parameter 3", abilityParameter3.intValue);
+			dirty = temp != abilityParameter3.intValue || dirty;
+		}
+		else {
+			temp = actionParameter1.intValue;
+			actionParameter1.intValue = EditorGUILayout.IntSlider("Action Parameter 1", actionParameter1.intValue, 0, 10);
+			dirty = temp != actionParameter1.intValue || dirty;
+
+			temp = actionParameter2.intValue;
+			actionParameter2.intValue = EditorGUILayout.IntSlider("Action Parameter 2", actionParameter2.intValue, 0, 10);
+			dirty = temp != actionParameter2.intValue || dirty;
+
+			temp = abilityParameter1.intValue;
+			abilityParameter1.intValue = EditorGUILayout.IntSlider("Ability Parameter 1", abilityParameter1.intValue, -10, 10);
+			dirty = temp != abilityParameter1.intValue || dirty;
+
+			temp = abilityParameter2.intValue;
+			abilityParameter2.intValue = EditorGUILayout.IntSlider("Ability Parameter 2", abilityParameter2.intValue, -10, 10);
+			dirty = temp != abilityParameter2.intValue || dirty;
+
+			temp = abilityParameter3.intValue;
+			abilityParameter3.intValue = EditorGUILayout.IntSlider("Ability Parameter 3", abilityParameter3.intValue, -10, 10);
+			dirty = temp != abilityParameter3.intValue || dirty;
+		}
 
 		EditorGUILayout.LabelField("<b>Description:</b>", richText);
 		++EditorGUI.indentLevel;

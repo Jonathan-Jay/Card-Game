@@ -9,48 +9,48 @@ public class CardHolder : MonoBehaviour
 	Color originalCol;
 	public PlayerData playerData;
 	public PlayerData opposingData;
-	public int index;
+	public int index = -1;
 	public Vector3 floatingHeight = Vector3.up * 0.1f;
 	public float moveSpeed = 1f;
 	public float rotSpeed = 1f;
 	public Vector3 slamHeight = Vector3.up * 0.1f;
 	public float slamSpeed = 10f;
 	public string interactableTag= "Interactable";
-	public int defaultCardLayer;
+	public int defaultCardLayer = 6;
 
 	void Start() {
 		originalCol = GetComponentInChildren<MeshRenderer>().material.color;
 	}
 
 	//damage to player
-    public int DoUpdate()
-    {
-		int dmg = 0;
-		//all targetables are monsters for now
-        if (holding != null && holding.targetable) {
-			//assuming only direct attacks
-			MonsterCard target = (MonsterCard)opposingData.field[index].holding;
-			
-			//can directly attack the opponent if target is empty
-			dmg = ((MonsterCard)holding).Attack(target);
-		}
-		return dmg;
-    }
+    public virtual int DoUpdate() {
+		return 0;
+	}
 
 	//returns true on sucess
-	public bool PutCard(Card card)
+	public virtual bool PutCard(Card card)
 	{
 		//check if holding smt already, if valid player, and cost
-		if (holding != null || card.player != playerData || !card.data.CheckCost(playerData)) {	return false;	}
+		if (holding != null || card.player != playerData) {	return false;	}
+
+		//if moved
+		bool newCard = true;
+		if (card.placement != null) {
+			card.Release();
+			newCard = false;
+		}
+		//else it's a newly placed card, so check cost
+		else if (!card.data.CheckCost(playerData)) {
+			return false;
+		}
 
 		//also allow other player to see the card, send a message to the server to set data
-
 		card.transform.SetParent(transform, true);
 		card.placement = this;
 		card.tag = playerData.playerTag;
 		holding = card;
 		GetComponentInChildren<MeshRenderer>().material.color = hasCard;
-		StartCoroutine("CardTransition");
+		StartCoroutine(CardTransition(newCard));
 
 		return true;
 	}
@@ -64,7 +64,7 @@ public class CardHolder : MonoBehaviour
 		GetComponentInChildren<MeshRenderer>().material.color = originalCol;
 	}
 
-	IEnumerator CardTransition() {
+	public virtual IEnumerator CardTransition(bool callPlace) {
 		playerData.hand.input.ActivateAnimationMode();
 
 		Transform cardTrans = holding.transform;
@@ -87,7 +87,8 @@ public class CardHolder : MonoBehaviour
 		//final fix in case
 		if (holding != null) {
 			//now valid
-			holding.OnPlace(playerData, opposingData);
+			if (callPlace)
+				holding.OnPlace(playerData, opposingData);
 			cardTrans.localPosition = floatingHeight;
 		}
 

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a4e61e0c6f5bc408eb48ca961bc9b5, type: 3}
+  m_Name: Universal Annihilation
+  m_EditorClassIdentifier: 
+  cardName: Universal Annihilation
+  cardArt: {fileID: 2800000, guid: a1c086fc7cba168428c06d6ecc551040, type: 3}
+  cost: 5
+  targettingOption: 1
+  activateOption: 3
+  abilityOption: 2
+  cardDescription: Destroy all monsters on the board
+  actionParameter1: 0
+  actionParameter2: 0
+  abilityParameter1: 0
+  abilityParameter2: 0
+  abilityParameter3: 0

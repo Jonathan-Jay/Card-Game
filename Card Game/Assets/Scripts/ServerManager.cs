@@ -29,14 +29,6 @@ public class ServerManager : MonoBehaviour
 		p1mouse.ActivateAll();
 		p2mouse.ActivateAll();
 		/*/
-		if (p1turn) {
-			p1mouse.ActivateAll();
-			p2mouse.ActivateEssentials();
-		}
-		else {
-			p1mouse.ActivateEssentials();
-			p2mouse.ActivateAll();
-		}
 		game.turnEnded += TurnEndPlayerChange;
 		//*/
 	}
@@ -79,6 +71,24 @@ public class ServerManager : MonoBehaviour
 	IEnumerator DelayedStart() {
 		yield return new WaitForSeconds(2f);
 		game.StartGame(p1turn, true, false);
+		if (p1turn) {
+			p2mouse.ActivateEssentials();
+			if (game.player1.canDraw > 0) {
+				p1mouse.ActivateDeck();
+			}
+			else {
+				p1mouse.ActivateAll();
+			}
+		}
+		else {
+			p1mouse.ActivateEssentials();
+			if (game.player2.canDraw > 0) {
+				p2mouse.ActivateDeck();
+			}
+			else {
+				p2mouse.ActivateAll();
+			}
+		}
 	}
 
     // Update is called once per frame
@@ -114,11 +124,16 @@ public class ServerManager : MonoBehaviour
 			p1turn = false;
 			p1mouse.DeActivateAll();
 			p1mouse.ActivateEssentials();
+			
 			game.player1.turnEndButton.enabled = false;
 			p1bell.material.color = Color.grey;
 
 			p2mouse.DeActivateEssentials();
-			p2mouse.ActivateAll();
+			if (game.player2.canDraw > 0)
+				p2mouse.ActivateDeck();
+			else
+				p2mouse.ActivateAll();
+
 			game.player2.turnEndButton.enabled = true;
 			p2bell.material.color = defaultBellCol;
 
@@ -135,7 +150,10 @@ public class ServerManager : MonoBehaviour
 		else {
 			p1turn = true;
 			p1mouse.DeActivateEssentials();
-			p1mouse.ActivateAll();
+			if (game.player1.canDraw > 0)
+				p1mouse.ActivateDeck();
+			else
+				p1mouse.ActivateAll();
 			game.player1.turnEndButton.enabled = true;
 			p1bell.material.color = defaultBellCol;
 
@@ -154,5 +172,9 @@ public class ServerManager : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	static public bool CheckIfClient(PlayerData player) {
+		return false;
 	}
 }

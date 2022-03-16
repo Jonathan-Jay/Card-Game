@@ -38,9 +38,14 @@ public class MonsterCard : Card
 		base.SetData(newData);
 		targetable = true;
 
-		currAttack = ((MonsterData)data).attack;
+		if (((MonsterData)data).random) {
+			currAttack = currHealth = int.MaxValue;
+		}
+		else {
+			currAttack = ((MonsterData)data).attack;
+			currHealth = ((MonsterData)data).health;
+		}
 		attackMesh.color = Color.black;
-		currHealth = ((MonsterData)data).health;
 		healthMesh.color = Color.black;
 	}
 
@@ -50,9 +55,16 @@ public class MonsterCard : Card
 
 		base.RenderFace();
 
-		//manually do it to not reset colours
-		attackMesh.text = Mathf.Max(currAttack, 0).ToString();
-		healthMesh.text = currHealth.ToString();
+		//randomized right now
+		if (currAttack == int.MaxValue) {
+			attackMesh.text = "?";
+			healthMesh.text = "?";
+		}
+		else {
+			//manually do it to not reset colours
+			attackMesh.text = Mathf.Max(currAttack, 0).ToString();
+			healthMesh.text = currHealth.ToString();
+		}
 
 		//SetAttack(((MonsterData)data).attack, Color.black);
 		//SetHealth(((MonsterData)data).health, Color.black);
@@ -70,6 +82,13 @@ public class MonsterCard : Card
 
 	public override void OnPlace(PlayerData current, PlayerData opposing)
 	{
+		//calc stats
+		MonsterData monData = (MonsterData)data;
+		if (currAttack == int.MaxValue) {
+			SetAttack(Random.Range(monData.attack, monData.attackRMax), Color.black);
+			SetHealth(Random.Range(monData.health, monData.healthRMax), Color.black);
+		}
+
 		//render face
 		base.OnPlace(current, opposing);
 
@@ -208,7 +227,10 @@ public class MonsterCard : Card
 				(currAttack > monData.attack ? Color.green : Color.red));
 		}
 		if (newHealth != currHealth) {
-			SetHealth(newHealth, newHealth == monData.health ? Color.black :
+			//don't let them go below max
+			newHealth = Mathf.Max(monData.health, newHealth);
+
+			SetHealth( newHealth, newHealth == monData.health ? Color.black :
 				(currHealth > monData.health ? Color.green : Color.red));
 			if (newHealth <= 0) {
 				StartCoroutine("Death");
@@ -222,13 +244,19 @@ public class MonsterCard : Card
 	public void SetAttack(int newValue, Color colour) {
 		currAttack = newValue;
 		//don't allow negative attack
-		attackMesh.text = Mathf.Max(0, currAttack).ToString();
+		if (currAttack < 99)
+			attackMesh.text = Mathf.Max(0, currAttack).ToString();
+		else
+			attackMesh.text = "∞";
 		attackMesh.color = colour;
 	}
 
 	public void SetHealth(int newValue, Color colour) {
 		currHealth = newValue;
-		healthMesh.text = currHealth.ToString();
+		if (currHealth < 99)
+			healthMesh.text = currHealth.ToString();
+		else
+			healthMesh.text = "∞";
 		healthMesh.color = colour;
 	}
 

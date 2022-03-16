@@ -6,7 +6,8 @@ public class GameController : MonoBehaviour
 {	
 	public int rowCount;
 	[SerializeField] bool generateField = true;
-	[SerializeField] CardHolder cardHolderPrefab;
+	[SerializeField] CardHolder cardAttackerPrefab;
+	[SerializeField] CardHolder cardMoverPrefab;
 	[SerializeField] PressEventButton turnEndButtonPrefab;
 	[SerializeField] Vector3 bellPos = Vector3.left;
 	[SerializeField] DeckManager deckPrefab;
@@ -15,11 +16,13 @@ public class GameController : MonoBehaviour
 	[SerializeField] Vector3 playerListenerPos = Vector3.right;
 	[SerializeField] float horizontalSeperation;
 	[SerializeField] float verticalSeperation;
+	[SerializeField] float moverSeperation;
 
 	public int startingHandSize = 4;
 	public int startingMana = 1;
 	public int maxMana = 5;
 	public int cardsPerTurn = 1;
+	public int minCardsInHand = 3;
 	public PlayerData player1;
 	public PlayerData player2;
 	public event System.Action turnEnded;
@@ -61,13 +64,27 @@ public class GameController : MonoBehaviour
 			player1.TakeDamage(dmg);
 	}
 
+	bool firstturn = true;
+
 	//return damage taken by opposing player
 	int Doturn(PlayerData current) {
 		int total = 0;
+		//move cards
+		foreach (CardHolder tile in current.backLine) {
+			tile.DoUpdate();
+		}
+
+		if (!firstturn) {
+
+		//attack cards
 		foreach (CardHolder tile in current.field) {
 			total += tile.DoUpdate();
 		}
-		current.TurnEnd(maxMana, cardsPerTurn);
+
+
+		}	else firstturn = false;
+
+		current.TurnEnd(maxMana, cardsPerTurn, minCardsInHand);
 
 		turnEnded?.Invoke();
 
@@ -148,24 +165,47 @@ public class GameController : MonoBehaviour
 
 		for (int i = 0; i < rowCount; ++i) {
 			//instantiated to have matching row count
-			temp = Instantiate(cardHolderPrefab.gameObject, transform).transform;
+			temp = Instantiate(cardAttackerPrefab.gameObject, transform).transform;
 			temp.localPosition = offset;
 			temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
 			//temp.gameObject.tag = "Player2";
-			player2.field.Add(temp.GetComponent<CardHolder>());
+			player2.field.Add(temp.GetComponent<CardAttacker>());
 			player2.field[i].index = i;
 			player2.field[i].playerData = player2;
 			player2.field[i].opposingData = player1;
+
+			//instantiated to have matching row count
+			temp = Instantiate(cardMoverPrefab.gameObject, transform).transform;
+			temp.localPosition = offset + Vector3.forward * moverSeperation;
+			temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
+			//temp.gameObject.tag = "Player2";
+			player2.backLine.Add(temp.GetComponent<CardMover>());
+			player2.backLine[i].index = i;
+			player2.backLine[i].playerData = player2;
+			player2.backLine[i].opposingData = player1;
+			player2.backLine[i].moveTo = player2.field[i];
 			offset.z *= -1f;
 
-			temp = Instantiate(cardHolderPrefab.gameObject, transform).transform;
+
+			//player 1
+			temp = Instantiate(cardAttackerPrefab.gameObject, transform).transform;
 			temp.localPosition = offset;
 			temp.localRotation = Quaternion.identity;
 			//temp.gameObject.tag = "Player1";
-			player1.field.Add(temp.GetComponent<CardHolder>());
+			player1.field.Add(temp.GetComponent<CardAttacker>());
 			player1.field[i].index = i;
 			player1.field[i].playerData = player1;
 			player1.field[i].opposingData = player2;
+
+			temp = Instantiate(cardMoverPrefab.gameObject, transform).transform;
+			temp.localPosition = offset + Vector3.back * moverSeperation;
+			temp.localRotation = Quaternion.identity;
+			//temp.gameObject.tag = "Player1";
+			player1.backLine.Add(temp.GetComponent<CardMover>());
+			player1.backLine[i].index = i;
+			player1.backLine[i].playerData = player1;
+			player1.backLine[i].opposingData = player2;
+			player1.backLine[i].moveTo = player1.field[i];
 			offset.z *= -1f;
 			offset.x += horizontalSeperation;
 		}

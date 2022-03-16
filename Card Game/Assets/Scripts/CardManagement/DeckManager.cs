@@ -11,9 +11,10 @@ public class DeckManager : MonoBehaviour
 	}
 
 	public CardDataMultiplier[] deckOptions = new CardDataMultiplier[0];
-	Stack<int> deck = new Stack<int>();
+	public Stack<int> deck = new Stack<int>();
 	[SerializeField]	Transform cardStack;
 	[SerializeField]	BoxCollider col;
+	[SerializeField]	TMPro.TMP_Text text;
 	[SerializeField]	float cardHeight;
 
 	public Card cardPrefab;
@@ -56,18 +57,20 @@ public class DeckManager : MonoBehaviour
 		cardStack.localScale = Vector3.one + Vector3.down * (1f - cardHeight * deck.Count);
 		col.size = col.size + col.size.y * Vector3.down + Vector3.up * cardHeight * deck.Count;
 		col.center = Vector3.up * cardHeight * deck.Count * 0.5f;
+		text.transform.localPosition = Vector3.up * (cardHeight * deck.Count + 0.025f);
+		text.text = deck.Count.ToString();
 	}
 
     public Transform DrawCard(bool renderFace = true, bool faceDown = false, bool ignoreDrawLimit = false) {
 		//dont draw if empty
 		if (deck.Count == 0)	return null;
-		//if not ignoreing draw limit, check canDraw
+		//if not ignoring draw limit, check canDraw
 		if (!ignoreDrawLimit) {
 			if (player.canDraw == 0)	return null;
 
 			--player.canDraw;
 			//do drawCard thing
-			player.DrewCard();
+			player.DrawCard();
 		}
 
 		/*if (deckOptions.Count == 0)	return null;
@@ -93,7 +96,9 @@ public class DeckManager : MonoBehaviour
 			cardStack.localScale = Vector3.one + Vector3.down * (1f - cardHeight * deck.Count);
 			col.size = col.size + col.size.y * Vector3.down + Vector3.up * cardHeight * deck.Count;
 			col.center = Vector3.up * cardHeight * deck.Count * 0.5f;
+			text.transform.localPosition = Vector3.up * (cardHeight * deck.Count + 0.025f);
 		}
+		text.text = deck.Count.ToString();
 
 		Vector3 pos = transform.position;
 		Quaternion rot = transform.rotation;
@@ -129,18 +134,30 @@ public class DeckManager : MonoBehaviour
 		return temp.transform;
 	}
 
+	WaitForSeconds pointFive = new WaitForSeconds(0.5f);
+	public void FirstDraw(bool renderFace) {
+		if (player.canDraw == 0)	return;
+
+		//give ability to click stuff
+		player.hand.input.DeActivateDeck();
+		player.hand.input.ActivateAll();
+
+		if (deck.Count == 0)	return;
+		StartCoroutine(AutomaticallyDrawCards(player.canDraw, pointFive, false, renderFace));
+	}
+
 	//automatically adds cards to the hand
 	public void AutoDrawCards(int amt, float delay, bool renderFace = true) {
 		if (deck.Count == 0)	return;
 		//add cards to hand
-		StartCoroutine(AutomaticallyDrawCards(amt, new WaitForSeconds(delay), renderFace));
+		StartCoroutine(AutomaticallyDrawCards(amt, new WaitForSeconds(delay), true, renderFace));
 	}
 
-	IEnumerator AutomaticallyDrawCards(int amt, WaitForSeconds delay, bool renderFace) {
+	IEnumerator AutomaticallyDrawCards(int amt, WaitForSeconds delay, bool ignoreDrawLimit, bool renderFace) {
 		Transform trans;
 		for (int i = 0; i < amt; ++i) {
 			//always ignore drawLimit and draw cards facing down
-			trans = DrawCard(renderFace, true, true);
+			trans = DrawCard(renderFace, true, ignoreDrawLimit);
 			//just in case
 			if (trans) {
 				trans.GetComponent<Card>().CallBackCard();
