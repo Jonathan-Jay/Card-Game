@@ -51,23 +51,25 @@ public class Client : MonoBehaviour
 
 	[SerializeField]	TMPro.TMP_InputField textChat;
 	public void SendTextChatMessage() {
-		byte[] msg = System.Text.ASCIIEncoding.ASCII.GetBytes(textChat.text);
+		byte[] msg = System.Text.ASCIIEncoding.ASCII.GetBytes("MSG" + textChat.text);
 		client.SendTo(msg, server);
 		textChat.text = "";
 	}
 
 	private void OnDestroy() {
 		//release the resource
+		client.SendTo(Encoding.ASCII.GetBytes("LAP"), server);
 		client.Shutdown(SocketShutdown.Both);
 		client.Close();
 	}
 
+	[SerializeField]	TextChat chat;
 	int recv;
 	private void Update() {
 		try {
 			recv = client.Receive(buffer);
 			if (recv > 0) {
-				Debug.Log(Encoding.ASCII.GetString(buffer, 0, recv));
+				chat.UpdateChat(Encoding.ASCII.GetString(buffer, 3, recv));
 			}
 		}
 		catch (SocketException sock) {

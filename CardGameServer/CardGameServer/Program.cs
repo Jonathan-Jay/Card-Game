@@ -6,6 +6,7 @@ using System.Net.Sockets;
 
 public class SynServer
 {
+	const int msgCodeSize = 3;
 	public class Player
 	{
 		public Socket handler;
@@ -94,24 +95,33 @@ public class SynServer
 
 		int recv;
 		//listen to all players in the lobby
-		foreach (Player player in serverLobby.players) {
-			//get data, if empty, we can ignore
+		for (int i = 0; i < serverLobby.players.Count;) {
+			Player player = serverLobby.players[i];
+
 			try {
-				recv = player.handler.Receive(buffer);
+				recv = player.handler.Receive(buffer) - msgCodeSize;
 				if (recv > 0) {
 					//do something with it
 					//Console.Write(ASCIIEncoding.ASCII.GetString(buffer, 0, recv));
+					string code = Encoding.ASCII.GetString(buffer, 0, msgCodeSize);
+					if (code == "MSG") {
+						//create message
+						byte[] start = Encoding.ASCII.GetBytes("MSG" + player.username + ": ");
+						byte[] message = new byte[start.Length + recv];
+						Buffer.BlockCopy(start, 0, message, 0, start.Length);
+						Buffer.BlockCopy(buffer, msgCodeSize, message, start.Length, recv);
 
-					//create message
-					byte[] start = Encoding.ASCII.GetBytes(player.username + ": ");
-					byte[] message = new byte[start.Length + recv];
-					Buffer.BlockCopy(start, 0, message, 0, start.Length);
-					Buffer.BlockCopy(buffer, 0, message, start.Length, recv);
-
-					foreach (Player other in serverLobby.players) {
-						//ignore self
-						if (other == player) continue;
-						player.handler.Send(message);
+						foreach (Player other in serverLobby.players) {
+							//ignore self
+							//if (other == player) continue;
+							player.handler.Send(message);
+						}
+					}
+					else if (code == "LAP") {
+						//left app?
+						Console.WriteLine(player.username + " left the server");
+						serverLobby.players.RemoveAt(i);
+						continue;
 					}
 				}
 			}
@@ -124,6 +134,7 @@ public class SynServer
 			catch (Exception e) {
 				Console.WriteLine(e.ToString());
 			}
+			++i;
 		}
 
 		return true;
