@@ -27,6 +27,7 @@ public class Client : MonoBehaviour
             {
             	//attempted a connection
                 client.Connect(server);
+				client.Blocking = false;
             }
             catch (ArgumentNullException argExc)
             {
@@ -59,5 +60,20 @@ public class Client : MonoBehaviour
 		//release the resource
 		client.Shutdown(SocketShutdown.Both);
 		client.Close();
+	}
+
+	int recv;
+	private void Update() {
+		try {
+			recv = client.Receive(buffer);
+			if (recv > 0) {
+				Debug.Log(Encoding.ASCII.GetString(buffer, 0, recv));
+			}
+		}
+		catch (SocketException sock) {
+			if (sock.SocketErrorCode != SocketError.WouldBlock) {
+				Debug.Log(sock.ToString());
+			}
+		}
 	}
 }

@@ -6,13 +6,15 @@ using System.Net.Sockets;
 
 public class SynServer
 {
-	public struct Player
+	public class Player
 	{
 		public Socket handler;
+		public EndPoint remoteEP;
 		public string username;
 		public string status;
 		public Player(Socket handler, string username) {
 			this.handler = handler;
+			this.remoteEP = (EndPoint)handler.RemoteEndPoint;
 			this.username = username;
 			this.status = "New";
 		}
@@ -39,6 +41,9 @@ public class SynServer
 	static List<Lobby> lobbies = new List<Lobby>();
 
 
+	static string GetName() {
+		return "Joe";
+	}
 
 	public static void StartServer(int maxPlayers, IPAddress ip) {
 		IPEndPoint localEP = new IPEndPoint(ip, 42069);
@@ -69,8 +74,8 @@ public class SynServer
 			IPEndPoint clientEP = (IPEndPoint)tempHandler.RemoteEndPoint;
 			//Print Client info (IP and PORT)
 			Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
-
-			serverLobby.players.Add(new Player(tempHandler, ""));
+			tempHandler.Blocking = false;
+			serverLobby.players.Add(new Player(tempHandler, GetName()));
 		}
 		catch (SocketException sockExcep) {
 			//if error isn't blocking related, send
@@ -91,10 +96,33 @@ public class SynServer
 		//listen to all players in the lobby
 		foreach (Player player in serverLobby.players) {
 			//get data, if empty, we can ignore
-			recv = player.handler.Receive(buffer);
-			if (recv > 0) {
-				//do something with it
-				Console.Write(ASCIIEncoding.ASCII.GetString(buffer));
+			try {
+				recv = player.handler.Receive(buffer);
+				if (recv > 0) {
+					//do something with it
+					//Console.Write(ASCIIEncoding.ASCII.GetString(buffer, 0, recv));
+
+					//create message
+					byte[] start = Encoding.ASCII.GetBytes(player.username + ": ");
+					byte[] message = new byte[start.Length + recv];
+					Buffer.BlockCopy(start, 0, message, 0, start.Length);
+					Buffer.BlockCopy(buffer, 0, message, start.Length, recv);
+
+					foreach (Player other in serverLobby.players) {
+						//ignore self
+						if (other == player) continue;
+						player.handler.Send(message);
+					}
+				}
+			}
+			catch (SocketException sockExcep) {
+				//we can ignore this one
+				if (sockExcep.SocketErrorCode != SocketError.WouldBlock) {
+					Console.WriteLine(sockExcep.ToString());
+				}
+			}
+			catch (Exception e) {
+				Console.WriteLine(e.ToString());
 			}
 		}
 
