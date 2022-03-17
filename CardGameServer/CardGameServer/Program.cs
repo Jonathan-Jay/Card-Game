@@ -7,7 +7,7 @@ using System.Net.Sockets;
 public class SynServer
 {
 	const int msgCodeSize = 3;
-	static int sleepLength = 10;
+	static int sleepLength = 30;
 	static byte[] dirtyMsg;
 	static byte[] startMsg;
 
@@ -361,6 +361,7 @@ public class SynServer
 				System.Threading.Thread.Sleep(sleepLength);
 				//send lobby list
 				foreach (Player player in serverLobby.players) {
+					System.Threading.Thread.Sleep(sleepLength);
 					player.handler.SendTo(Encoding.ASCII.GetBytes("LIN"
 						+ lobbies[i].playerCount + "$" + i + lobbies[i].name), player.remoteEP);
 				}
@@ -369,6 +370,7 @@ public class SynServer
 				System.Threading.Thread.Sleep(sleepLength);
 				//send player data
 				foreach (Player player in serverLobby.players) {
+					System.Threading.Thread.Sleep(sleepLength);
 					player.handler.SendTo(Encoding.ASCII.GetBytes("PIN"
 						+ other.status + "$" + other.username), player.remoteEP);
 				}
