@@ -9,7 +9,7 @@ public class ServerManager : MonoBehaviour
 	public Mouse p1mouse;
 	private Camera p2cam;
 	public Mouse p2mouse;
-	public bool localMultiplayer = false;
+	public static bool localMultiplayer = false;
 	public System.Action updateFunc;
 
 	//store the current turn

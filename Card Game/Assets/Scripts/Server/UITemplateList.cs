@@ -14,12 +14,19 @@ public class UITemplateList : MonoBehaviour
 
     public void CreateProfile(string data) {
 		string test = data.Substring(data.IndexOf('$') + 1);
-		if (!usernames.Contains(test)) {
-			//add it
-			usernames.Add(test);
-			int index = profiles.Count;
-			profiles.Add(Instantiate(prefab, offset * index, Quaternion.identity, transform));
-			profiles[index].SetData(test, data.Substring(0, data.IndexOf('$')));
+		//add it
+		usernames.Add(test);
+		int index = profiles.Count;
+		profiles.Add(Instantiate(prefab, transform));
+		((RectTransform)profiles[index].transform).localPosition = offset * (index + 0.5f);
+		profiles[index].SetData(test, data.Substring(0, data.IndexOf('$')));
+	}
+
+	public void Clear() {
+		usernames.Clear();
+		while (profiles.Count > 0) {
+			Destroy(profiles[0].gameObject);
+			profiles.RemoveAt(0);
 		}
 	}
 

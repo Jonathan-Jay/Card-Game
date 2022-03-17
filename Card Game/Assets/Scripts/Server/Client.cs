@@ -29,6 +29,10 @@ public class Client : MonoBehaviour
 	[SerializeField] TMPro.TMP_Text lobbyError;
 	[SerializeField] TextChat chat;
 	[SerializeField] CameraController cam;
+	[SerializeField] UITemplateList lobbyList;
+	[SerializeField] UITemplateList playerList;
+	bool inLobby = false;
+	[SerializeField] UITemplateList inLobbyPlayerList;
 	int recv;
 
 	private void Start() {
@@ -51,7 +55,8 @@ public class Client : MonoBehaviour
 		//dont allow empty
 		if (ipInput.text == "")	return;
 
-		StartCoroutine(ConnectionAttempt(ipInput.text));
+		if (!connecting)
+			StartCoroutine(ConnectionAttempt(ipInput.text));
 	}
 
 	public void LeaveServer() {
@@ -185,6 +190,10 @@ public class Client : MonoBehaviour
 		client.SendTo(Encoding.ASCII.GetBytes("LLB"), server);
 	}
 
+	public static void StartGame() {
+		client.SendTo(Encoding.ASCII.GetBytes("SRT"), server);
+	}
+
 	public static void Close() {
 		if (!canStart)	return;
 
@@ -213,6 +222,29 @@ public class Client : MonoBehaviour
 					username = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
 					usernameText.text = username;
 				}
+				else if (code == "PIN") {
+					//update all the players
+					string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
+
+					if (inLobby)
+						inLobbyPlayerList.CreateProfile(message);
+					else
+						playerList.CreateProfile(message);
+				}
+				else if (code == "LIN") {
+					string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
+
+					lobbyList.CreateProfile(message);
+				}
+				else if (code == "DTY") {
+					if (inLobby) {
+						inLobbyPlayerList.Clear();
+					}
+					else {
+						playerList.Clear();
+						lobbyList.Clear();
+					}
+				}
 				else if (code == "CLB") {
 					string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
 					//these are error codes
@@ -224,16 +256,25 @@ public class Client : MonoBehaviour
 					lobbyName.text = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
 
 					//if joining a lobby, move the camera up one if in index 1
-					if (cam.index == 1)
+					if (cam.index == 1) {
 						cam.IncrementIndex(false);
+						inLobby = true;
+					}
 				}
 				else if (code == "LLB") {
 					//leave lobby, so reset name
 					lobbyName.text = "";
 
 					//if leaving lobby, decrement camera back to index 1
-					if (cam.index == 2)
+					if (cam.index == 2) {
 						cam.DecrementIndex(false);
+						inLobby = false;
+					}
+				}
+				else if (code == "SRT") {
+					//load game
+					ServerManager.localMultiplayer = false;
+					SceneController.ChangeScene("SampleScene");
 				}
 			}
 		}

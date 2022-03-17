@@ -5,11 +5,11 @@ using TMPro;
 
 public class PlayerProfile : UITemplate
 {
-	TMP_Text username;
-	TMP_Text status;
+	[SerializeField] TMP_Text username;
+	[SerializeField] TMP_Text status;
 
     public override void SetData(string username, string status) {
-		this.status.text = username;
-		this.username.text = status;
+		this.username.text = username;
+		this.status.text = status;
 	}
 }
