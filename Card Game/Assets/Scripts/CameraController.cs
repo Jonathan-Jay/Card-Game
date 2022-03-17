@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+	public int index {get; private set;} = 0;
 	[SerializeField]	List<Transform> posOptions = new List<Transform>();
-	[SerializeField]	int index = 0;
 	[SerializeField]	float moveSpeed = 2f;
 	[SerializeField]	float rotSpeed = 3f;
 	Transform targetTrans;

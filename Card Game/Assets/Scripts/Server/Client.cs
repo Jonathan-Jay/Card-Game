@@ -25,7 +25,10 @@ public class Client : MonoBehaviour
 	[SerializeField] UnityEngine.UI.Button joinServerButton;
 	[SerializeField] UnityEngine.UI.Button leaveServerButton;
 	[SerializeField] TMPro.TMP_InputField textChat;
+	[SerializeField] TMPro.TMP_Text lobbyName;
+	[SerializeField] TMPro.TMP_Text lobbyError;
 	[SerializeField] TextChat chat;
+	[SerializeField] CameraController cam;
 	int recv;
 
 	private void Start() {
@@ -78,8 +81,9 @@ public class Client : MonoBehaviour
             client = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 			client.Blocking = false;
 		}
-		catch (Exception e) {
-			Debug.Log(e.ToString());
+		catch (Exception) {
+			//Debug.Log(e.ToString());
+			ipInput.text = "";
 			ipError.text = "Inputed ip Invalid";
 			connecting = false;
 		}
@@ -91,10 +95,15 @@ public class Client : MonoBehaviour
 		}
 		catch (SocketException SockExc) {
 			if (SockExc.SocketErrorCode != SocketError.WouldBlock) {
-				Debug.Log(SockExc.ToString());
+				//Debug.Log(SockExc.ToString());
+				ipInput.text = "";
 				ipError.text = "Inputed ip Invalid";
 				connecting = false;
 			}
+		}
+		catch (Exception e) {
+			Debug.Log(e.ToString());
+			connecting = false;
 		}
 
 		//if broke
@@ -162,11 +171,27 @@ public class Client : MonoBehaviour
 		client.SendTo(Encoding.ASCII.GetBytes("CNM" + username.text), server);
 	}
 
+	public static void CreateLobby(TMPro.TMP_InputField input) {
+		if (input.text == "")	return;
+
+		client.SendTo(Encoding.ASCII.GetBytes("CLB" + input.text), server);
+	}
+
+	public static void JoinLobby(int index) {
+		client.SendTo(Encoding.ASCII.GetBytes("JLB" + index), server);
+	}
+
+	public static void LeaveLobby() {
+		client.SendTo(Encoding.ASCII.GetBytes("LLB"), server);
+	}
+
 	public static void Close() {
 		if (!canStart)	return;
 
-		//release the resource
+		//make it stall
+		client.Blocking = true;
 		client.SendTo(Encoding.ASCII.GetBytes("LAP"), server);
+		//release the resource
 		client.Shutdown(SocketShutdown.Both);
 		client.Close();
 	}
@@ -187,6 +212,28 @@ public class Client : MonoBehaviour
 					//changed username
 					username = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
 					usernameText.text = username;
+				}
+				else if (code == "CLB") {
+					string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
+					//these are error codes
+					lobbyError.text = message;
+					//the join lobby code will come later
+				}
+				else if (code == "JLB") {
+					//lobby data will be sent later, just change lobby name for now
+					lobbyName.text = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
+
+					//if joining a lobby, move the camera up one if in index 1
+					if (cam.index == 1)
+						cam.IncrementIndex(false);
+				}
+				else if (code == "LLB") {
+					//leave lobby, so reset name
+					lobbyName.text = "";
+
+					//if leaving lobby, decrement camera back to index 1
+					if (cam.index == 2)
+						cam.DecrementIndex(false);
 				}
 			}
 		}
