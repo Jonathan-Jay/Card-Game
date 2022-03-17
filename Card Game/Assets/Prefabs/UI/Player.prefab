@@ -360,3 +360,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   username: {fileID: 7132661517413995511}
   status: {fileID: 1548356284575025209}
+  bg: {fileID: 8195490420951692189}
+  lobbyCol: {r: 0, g: 0, b: 1, a: 1}

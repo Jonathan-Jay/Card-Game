@@ -8,8 +8,10 @@ using System.Net.Sockets;
 
 public class Client : MonoBehaviour
 {
+	public string notificationColour = "yellow";
 	public const int msgCodeSize = 3;
-    public static byte[] buffer = new byte[512];
+	public const char terminator = '\r';
+    public static byte[] recBuffer = new byte[512];
 	public static Socket client;
 	public static IPEndPoint server;
 	public static string username {get; private set;} = "";
@@ -122,9 +124,22 @@ public class Client : MonoBehaviour
 		for (float counter = 0; counter < waitDuration; counter += Time.deltaTime) {
         	try {
 				//because client.Connected don't work lol
-				recv = client.Receive(buffer) - msgCodeSize;
-				if (recv >= 0) {
-					username = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
+				recv = client.Receive(recBuffer);
+				if (recv > 0) {
+					//do the first test manually
+					username = Encoding.ASCII.GetString(recBuffer, 0, recv);
+
+					//send it whatever might be after the name
+					int index = username.IndexOf(terminator);
+					if (index > 0) {
+						byte[] testMessage = new byte[recv - index - 1];
+						Buffer.BlockCopy(recBuffer, index + 1, testMessage, 0, testMessage.Length);
+
+						TestMessage(testMessage, testMessage.Length);
+
+						//then get the real username
+						username = username.Substring(0, index);
+					}
 					usernameText.text = username;
 				}
 				connected = true;
@@ -159,10 +174,6 @@ public class Client : MonoBehaviour
 		}
 		connecting = false;
     }
-
-	public static void SendMessage(byte[] byteMsg) {
-		client.SendTo(byteMsg, server);
-	}
 
 	public void SendTextChatMessage() {
 		byte[] msg = Encoding.ASCII.GetBytes("MSG" + textChat.text);
@@ -210,78 +221,112 @@ public class Client : MonoBehaviour
 		if (!canStart)	return;
 
 		try {
-			recv = client.Receive(buffer) - msgCodeSize;
-			if (recv >= 0) {
-				//get code
-				string code = Encoding.ASCII.GetString(buffer, 0, msgCodeSize);
-				if (code == "MSG") {
-					chat.UpdateChat(Encoding.ASCII.GetString(buffer, msgCodeSize, recv));
-				}
-				else if (code == "CNM") {
-					//changed username
-					username = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
-					usernameText.text = username;
-				}
-				else if (code == "PIN") {
-					//update all the players
-					string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
-
-					if (inLobby)
-						inLobbyPlayerList.CreateProfile(message);
-					else
-						playerList.CreateProfile(message);
-				}
-				else if (code == "LIN") {
-					string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
-
-					lobbyList.CreateProfile(message);
-				}
-				else if (code == "DTY") {
-					if (inLobby) {
-						inLobbyPlayerList.Clear();
-					}
-					else {
-						playerList.Clear();
-						lobbyList.Clear();
-					}
-				}
-				else if (code == "CLB") {
-					string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
-					//these are error codes
-					lobbyError.text = message;
-					//the join lobby code will come later
-				}
-				else if (code == "JLB") {
-					//lobby data will be sent later, just change lobby name for now
-					lobbyName.text = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
-
-					//if joining a lobby, move the camera up one if in index 1
-					if (cam.index == 1) {
-						cam.IncrementIndex(false);
-						inLobby = true;
-					}
-				}
-				else if (code == "LLB") {
-					//leave lobby, so reset name
-					lobbyName.text = "";
-
-					//if leaving lobby, decrement camera back to index 1
-					if (cam.index == 2) {
-						cam.DecrementIndex(false);
-						inLobby = false;
-					}
-				}
-				else if (code == "SRT") {
-					//load game
-					ServerManager.localMultiplayer = false;
-					SceneController.ChangeScene("SampleScene");
-				}
+			recv = client.Receive(recBuffer);
+			if (recv > 0) {
+				TestMessage(recBuffer, recv);
 			}
 		}
 		catch (SocketException sock) {
 			if (sock.SocketErrorCode != SocketError.WouldBlock) {
 				Debug.Log(sock.ToString());
 			}
+		}
+	}
+
+	//apparently not necessary
+	//string textBuffer = "";
+
+	void TestMessage(byte[] buffer, int size) {
+		//textBuffer += message;
+		string textBuffer = Encoding.ASCII.GetString(buffer, 0, size);
+		
+		int index = textBuffer.IndexOf(terminator);
+		//in cases of overflow
+		while (index > 0) {
+			//check if words
+			ParseMessage(textBuffer.Substring(0, 3),
+				Encoding.ASCII.GetBytes(textBuffer.Substring(0, index)), index - msgCodeSize);
+
+			//get rid of everything
+			textBuffer = textBuffer.Substring(index + 1);
+			index = textBuffer.IndexOf(terminator);
+		}
+	}
+
+	void ParseMessage(string code, byte[] buffer, int size) {
+		//get code
+		if (code == "MSG") {
+			chat.UpdateChat(Encoding.ASCII.GetString(buffer, msgCodeSize, size));
+		}
+		else if (code == "NTF") {
+			chat.UpdateChat("<color=" + notificationColour + ">"
+				+ Encoding.ASCII.GetString(buffer, msgCodeSize, size) + "</color>");
+		}
+		else if (code == "CNM") {
+			//changed username
+			username = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+			usernameText.text = username;
+		}
+		else if (code == "PIN") {
+			//update all the players
+			string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+
+			if (inLobby) {
+				inLobbyPlayerList.CreateProfile(message);
+			}
+			else
+				playerList.CreateProfile(message);
+		}
+		else if (code == "LIN") {
+			string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+
+			lobbyList.CreateProfile(message);
+		}
+		else if (code == "DTY") {
+			if (inLobby) {
+				inLobbyPlayerList.Clear();
+			}
+			else {
+				playerList.Clear();
+				lobbyList.Clear();
+			}
+		}
+		else if (code == "CLB") {
+			string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+			//these are error codes
+			lobbyError.text = message;
+			//the join lobby code will come later
+		}
+		else if (code == "JLB") {
+			//lobby data will be sent later, just change lobby name for now
+			lobbyName.text = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+
+			//if joining a lobby, move the camera up one if in index 1
+			inLobby = true;
+			while (cam.index != 2) {
+				if (cam.index < 2)
+					cam.IncrementIndex(false);
+				else
+					cam.DecrementIndex(false);
+			}
+		}
+		else if (code == "LLB") {
+			//leave lobby, so reset name
+			lobbyName.text = "";
+
+			//if leaving lobby, decrement camera back to index 1
+			inLobby = false;
+			while (cam.index != 1) {
+				if (cam.index > 1)
+					cam.DecrementIndex(false);
+				else
+					cam.IncrementIndex(false);
+			}
+		}
+		else if (code == "SRT") {
+			//load game
+			ServerManager.localMultiplayer = false;
+			SceneController.ChangeScene("SampleScene");
 		}
 	}
 }

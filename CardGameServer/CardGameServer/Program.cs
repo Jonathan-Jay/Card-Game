@@ -6,11 +6,13 @@ using System.Net.Sockets;
 
 public class SynServer
 {
-	const int msgCodeSize = 4;
-	const char terminator = '\0';
-	static int sleepLength = 0;
+	const int msgCodeSize = 3;
+	const char terminator = '\r';
+	const char spliter = '\t';
+	//static int sleepLength = 0;
 	static byte[] dirtyMsg;
 	static byte[] startMsg;
+	static byte[] leftLBMsg;
 
 	public class Player
 	{
@@ -25,7 +27,6 @@ public class SynServer
 			this.status = "New";
 		}
 	}
-
 	public class Lobby
 	{
 		//keep so we send updates to the correct people
@@ -34,6 +35,7 @@ public class SynServer
 		public string name;
 		public string password;
 		public int playerCount = 0;
+		public bool inGame = false;
 		public Lobby(string name, string password = "") {
 			players = new List<Player>();
 			this.name = name;
@@ -73,23 +75,26 @@ public class SynServer
 			return false;
 		}
 
-		dirtyMsg = Encoding.ASCII.GetBytes(terminator + "DTY");
-		startMsg = Encoding.ASCII.GetBytes(terminator + "SRT");
+		dirtyMsg = Encoding.ASCII.GetBytes("DTY" + terminator);
+		startMsg = Encoding.ASCII.GetBytes("SRT" + terminator);
+		leftLBMsg = Encoding.ASCII.GetBytes("LLB" + terminator);
 		return true;
 	}
 
 	public static bool StandardTest(string code, Player player, Lobby lobby, int recv, ref bool dirty) {
-		if (code == terminator + "MSG") {
-			if (player.status != "chatting") {
-				player.status = "chatting";
+		if (code == "MSG") {
+			if (lobby == serverLobby && player.status != "Chatting") {
+				player.status = "Chatting";
 				dirty = true;
 			}
 
 			//create message
-			byte[] start = Encoding.ASCII.GetBytes("MSG" + player.username + ": ");
-			byte[] message = new byte[start.Length + recv];
-			Buffer.BlockCopy(start, 0, message, 0, start.Length);
-			Buffer.BlockCopy(buffer, msgCodeSize, message, start.Length, recv);
+			//byte[] start = Encoding.ASCII.GetBytes("MSG" + player.username + ": " + terminator);
+			//byte[] message = new byte[start.Length + recv];
+			//Buffer.BlockCopy(start, 0, message, 0, start.Length);
+			//Buffer.BlockCopy(buffer, msgCodeSize, message, start.Length, recv);
+			byte[] message = Encoding.ASCII.GetBytes("MSG" + player.username + ": "
+				+ Encoding.ASCII.GetString(buffer, msgCodeSize, recv) + terminator);
 
 			foreach (Player other in lobby.players) {
 				//don't ignore self
@@ -99,11 +104,22 @@ public class SynServer
 
 			return true;
 		}
-		else if (code == terminator + "CNM") {
+		else if (code == "CNM") {
 			string name = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
 			if (name != player.username) {
+				player.handler.SendTo(Encoding.ASCII.GetBytes("CNM"
+					+ name + terminator), player.remoteEP);
+
+				byte[] message = Encoding.ASCII.GetBytes("NTF" + player.username
+					+ " changed their name to " + name + terminator);
+
+				foreach (Player other in lobby.players) {
+					//don't ignore self
+					//if (other == player) continue;
+					other.handler.SendTo(message, other.remoteEP);
+				}
 				player.username = name;
-				player.handler.SendTo(Encoding.ASCII.GetBytes(terminator + "CNM" + name), player.remoteEP);
+
 				dirty = true;
 			}
 
@@ -129,22 +145,17 @@ public class SynServer
 			tempHandler.Blocking = false;
 			string defaultName = GetName();
 
-			tempHandler.SendTo(Encoding.ASCII.GetBytes(terminator + "MSG" + defaultName), clientEP);
+			tempHandler.SendTo(Encoding.ASCII.GetBytes(defaultName + terminator), clientEP);
 			Player player = new Player(tempHandler, defaultName);
 			serverLobby.players.Add(player);
 
-			byte[] join = Encoding.ASCII.GetBytes(terminator + "MSG" + defaultName + " joined the server");
+			byte[] join = Encoding.ASCII.GetBytes("NTF" + defaultName
+					+ " joined the server" + terminator);
 			foreach (Player other in serverLobby.players) {
 				//send to all players that user joined
-				if (player == other) continue;
+				//if (player == other) continue;
 				other.handler.SendTo(join, other.remoteEP);
 			}
-			//send garbage to slow it down or smt?
-			System.Threading.Thread.Sleep(sleepLength);
-			tempHandler.SendTo(join, clientEP);
-			System.Threading.Thread.Sleep(sleepLength * 2);
-			tempHandler.SendTo(dirtyMsg, clientEP);
-			System.Threading.Thread.Sleep(sleepLength);
 		}
 		catch (SocketException sockExcep) {
 			//if error isn't blocking related, send
@@ -177,12 +188,13 @@ public class SynServer
 					if (StandardTest(code, player, serverLobby, recv, ref dirty)) {
 						//means it got completed
 					}
-					else if (code == terminator + "CLB") {
+					else if (code == "CLB") {
 						string name = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
 						//create a lobby with these stats if possible
 						if (lobbies.Count >= maxLobbies) {
 							//send error code or smt
-							player.handler.SendTo(Encoding.ASCII.GetBytes(terminator + "CLBMax Number Of Lobbies"), player.remoteEP);
+							player.handler.SendTo(Encoding.ASCII.GetBytes(
+								"CLBMax Number Of Lobbies" + terminator), player.remoteEP);
 						}
 						else {
 							//create lobby if name avaible, then signal player to join it
@@ -191,49 +203,68 @@ public class SynServer
 								if (lobbies[l].name == name) {
 									//invalid, dont let them
 									exists = true;
-									player.handler.SendTo(Encoding.ASCII.GetBytes(terminator + "CLBLobby already exists"), player.remoteEP);
+									player.handler.SendTo(Encoding.ASCII.GetBytes(
+										"CLBLobby already exists" + terminator), player.remoteEP);
 									break;
 								}
 							}
 							if (!exists) {
 								int index = lobbies.Count;
 								lobbies.Add(new Lobby(name));
-								dirty = true;
 
-								player.handler.SendTo(Encoding.ASCII.GetBytes(terminator + "JLB"
-									+ name), player.remoteEP);
+								player.handler.SendTo(Encoding.ASCII.GetBytes("JLB"
+									+ name + terminator), player.remoteEP);
 
 								//make the player join the lobby
 								serverLobby.players.RemoveAt(i);
 								lobbies[index].players.Add(player);
-								player.status = "In Lobby";
+
+								byte[] join = Encoding.ASCII.GetBytes("NTF" + player.username
+									+ " joined the lobby" + terminator);
+
+								foreach (Player other in lobbies[index].players) {
+									//send to all players that user left
+									other.handler.SendTo(join, other.remoteEP);
+								}
+
+								player.status = "In Lobby: " + name;
+								dirty = true;
 								continue;
 							}
 						}
 					}
-					else if (code == terminator + "JLB") {
+					else if (code == "JLB") {
 						string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
 						if (char.IsDigit(message[0])) {
 							//make them join the lobby if it's valid
 							int index = int.Parse(message.Substring(0));
 							if (index < lobbies.Count) {
 								//they don't need the index, the index doesn't really matter
-								player.handler.SendTo(Encoding.ASCII.GetBytes(terminator + "JLB"
-									+ lobbies[index].name), player.remoteEP);
-
-								dirty = true;
+								player.handler.SendTo(Encoding.ASCII.GetBytes("JLB"
+									+ lobbies[index].name + terminator), player.remoteEP);
 
 								serverLobby.players.RemoveAt(i);
 								lobbies[index].players.Add(player);
-								player.status = "In Lobby";
+
+								byte[] join = Encoding.ASCII.GetBytes("NTF" + player.username
+									+ " joined the lobby" + terminator);
+
+								foreach (Player other in lobbies[index].players) {
+									//send to all players that user left
+									other.handler.SendTo(join, other.remoteEP);
+								}
+
+								player.status = "In Lobby: " + lobbies[index].name;
+								dirty = true;
 								continue;
 							}
 						}
 							}
-					else if (code == terminator + "LAP") {
+					else if (code == "LAP") {
 						//left app?
 						Console.WriteLine(player.username + " left the server");
-						byte[] left = Encoding.ASCII.GetBytes(terminator + "MSG" + player.username + " left the server");
+						byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
+							+ " left the server" + terminator);
 
 						serverLobby.players.RemoveAt(i);
 						foreach (Player other in serverLobby.players) {
@@ -275,33 +306,47 @@ public class SynServer
 						if (StandardTest(code, player, lobby, recv, ref ldirty)) {
 							//maybe will have a use idk
 						}
-						else if (code == terminator + "SRT") {
+						else if (code == "SRT") {
+							lobby.inGame = true;
 							//starting game, send all players into game, can also probably ignore dirty tags
 							foreach (Player other in lobby.players) {
 								other.status = "Gaming";
+								//other.status = "In Game";
 								other.handler.SendTo(startMsg, other.remoteEP);
 							}
 							ldirty = false;
 						}
-						else if (code == terminator + "LLB") {
+						else if (code == "LLB") {
 							//left the lobby, move them back
 							serverLobby.players.Add(player);
 							lobby.players.RemoveAt(i);
+							//send to all people in the lobby
+							if (lobby.players.Count > 0) {
+								byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
+									+ " left the lobby" + terminator);
+
+								foreach (Player other in lobby.players) {
+									//send to all players that user left
+									other.handler.SendTo(left, other.remoteEP);
+								}
+							}
 							//send them the fact that they did
-							player.handler.SendTo(Encoding.ASCII.GetBytes(terminator + "LLB"), player.remoteEP);
+							player.handler.SendTo(leftLBMsg, player.remoteEP);
+
+							player.status = "Waiting";
 							continue;
 						}
-						else if (code == terminator + "LAP") {
+						else if (code == "LAP") {
 							//left app?
 							Console.WriteLine(player.username + " left the server");
-							byte[] left = Encoding.ASCII.GetBytes(terminator + "MSG" + player.username + " left the server");
+							byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
+								+ " left the server" + terminator);
 
 							lobby.players.RemoveAt(i);
 							foreach (Player other in lobby.players) {
 								//send to all players that user left
 								other.handler.SendTo(left, other.remoteEP);
 							}
-							player.status = "Waiting";
 							ldirty = true;
 							continue;
 						}
@@ -331,21 +376,27 @@ public class SynServer
 			//if the player number changed or dirty
 			if (ldirty || lobby.playerCount != lobby.players.Count) {
 				lobby.playerCount = lobby.players.Count;
-				Console.WriteLine("Dirty " + lobby.name);
 
-				System.Threading.Thread.Sleep(sleepLength * 2);
+				//assume we need the firty flag always
 				foreach (Player player in lobby.players) {
 					player.handler.SendTo(dirtyMsg, player.remoteEP);
 				}
-				foreach (Player other in lobby.players) {
-					//update playerlist in the lobby
-					System.Threading.Thread.Sleep(sleepLength);
-					foreach (Player player in lobby.players) {
-						player.handler.SendTo(Encoding.ASCII.GetBytes(terminator + "PIN"
-							+ other.status + "$" + other.username), player.remoteEP);
-					}
+				if (lobby.inGame) {
+					Console.WriteLine("Dirty Game " + lobby.name);
 				}
-				dirty = true;
+				else {
+					Console.WriteLine("Dirty " + lobby.name);
+					foreach (Player other in lobby.players) {
+						byte[] message = Encoding.ASCII.GetBytes("PIN" + other.status
+							+ spliter + other.username + terminator);
+						//update playerlist in the lobby
+						foreach (Player player in lobby.players) {
+							player.handler.SendTo(message, player.remoteEP);
+						}
+					}
+					//only change lobby if the players themselves changed
+					dirty = true;
+				}
 				ldirty = false;
 			}
 			++j;
@@ -359,26 +410,31 @@ public class SynServer
 			Console.WriteLine("Dirty server");
 			serverLobby.playerCount = serverLobby.players.Count;
 
-			System.Threading.Thread.Sleep(sleepLength * 2);
 			foreach (Player player in serverLobby.players) {
 				player.handler.SendTo(dirtyMsg, player.remoteEP);
 			}
-			for (int i = 0; i < lobbies.Count; ++i) {
-				System.Threading.Thread.Sleep(sleepLength);
-				//send lobby list
-				foreach (Player player in serverLobby.players) {
-					System.Threading.Thread.Sleep(sleepLength);
-					player.handler.SendTo(Encoding.ASCII.GetBytes(terminator + "LIN"
-						+ lobbies[i].playerCount + "$" + i + lobbies[i].name), player.remoteEP);
-				}
-			}
 			foreach (Player other in serverLobby.players) {
-				System.Threading.Thread.Sleep(sleepLength);
+				byte[] message = Encoding.ASCII.GetBytes("PIN"
+					+ other.status + spliter + other.username + terminator);
 				//send player data
 				foreach (Player player in serverLobby.players) {
-					System.Threading.Thread.Sleep(sleepLength);
-					player.handler.SendTo(Encoding.ASCII.GetBytes(terminator + "PIN"
-						+ other.status + "$" + other.username), player.remoteEP);
+					player.handler.SendTo(message, player.remoteEP);
+				}
+			}
+			for (int i = 0; i < lobbies.Count; ++i) {
+				foreach (Player other in lobbies[i].players) {
+					byte[] pmsg = Encoding.ASCII.GetBytes("PIN"
+						+ other.status + spliter + other.username + terminator);
+					//send player data
+					foreach (Player player in serverLobby.players) {
+						player.handler.SendTo(pmsg, player.remoteEP);
+					}
+				}
+				byte[] message = Encoding.ASCII.GetBytes("LIN" + lobbies[i].playerCount
+					+ spliter + i.ToString() + lobbies[i].name + terminator);
+				//send lobby list
+				foreach (Player player in serverLobby.players) {
+					player.handler.SendTo(message, player.remoteEP);
 				}
 			}
 			dirty = false;

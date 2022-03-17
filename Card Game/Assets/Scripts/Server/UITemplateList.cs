@@ -7,19 +7,20 @@ public class UITemplate : MonoBehaviour {
 }
 public class UITemplateList : MonoBehaviour
 {
+	const char spliter = '\t';
 	[SerializeField] UITemplate prefab;
 	List<string> usernames = new List<string>();
 	List<UITemplate> profiles = new List<UITemplate>();
 	[SerializeField] Vector3 offset = Vector3.down * 55f;
 
     public void CreateProfile(string data) {
-		string test = data.Substring(data.IndexOf('$') + 1);
+		string test = data.Substring(data.IndexOf(spliter) + 1);
 		//add it
 		usernames.Add(test);
 		int index = profiles.Count;
 		profiles.Add(Instantiate(prefab, transform));
 		((RectTransform)profiles[index].transform).localPosition = offset * (index + 0.5f);
-		profiles[index].SetData(test, data.Substring(0, data.IndexOf('$')));
+		profiles[index].SetData(test, data.Substring(0, data.IndexOf(spliter)));
 	}
 
 	public void Clear() {
@@ -31,7 +32,7 @@ public class UITemplateList : MonoBehaviour
 	}
 
 	public void RemoveProfile(string data) {
-		string test = data.Substring(data.IndexOf('$') + 1);
+		string test = data.Substring(data.IndexOf(spliter) + 1);
 		if (usernames.Contains(test)) {
 			//remove it
 			int index = usernames.IndexOf(test);
