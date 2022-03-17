@@ -63,7 +63,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: -736938290813285100, guid: ec8d1d09bc41f5e4f8443fc3c0ddc111, type: 3}
-  - {fileID: 2100000, guid: c51804cf320770f43853aaa0df3949c2, type: 2}
+  - {fileID: 2100000, guid: 12e7009549f2db447879e6e7e0a3b315, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -133,8 +133,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placement: {fileID: 0}
   data: {fileID: 0}
-  hand: {fileID: 0}
-  targettable: 0
+  player: {fileID: 0}
+  renderingFace: 0
+  targetable: 0
   frontFace: {fileID: 2137671615821512857}
   nameMesh: {fileID: 6128835198636157550}
   costMesh: {fileID: 8249663661552242437}
