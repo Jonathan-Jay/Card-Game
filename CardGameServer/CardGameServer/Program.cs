@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
@@ -205,6 +205,7 @@ public class SynServer
 								//make the player join the lobby
 								serverLobby.players.RemoveAt(i);
 								lobbies[index].players.Add(player);
+								player.status = "In Lobby";
 								continue;
 							}
 						}
@@ -217,7 +218,7 @@ public class SynServer
 							if (index < lobbies.Count) {
 								serverLobby.players.RemoveAt(i);
 								lobbies[index].players.Add(player);
-								dirty = true;
+								player.status = "In Lobby";
 
 								//they don't need the index, the index doesn't really matter
 								player.handler.SendTo(Encoding.ASCII.GetBytes("JLB"
@@ -274,6 +275,7 @@ public class SynServer
 						else if (code == "SRT") {
 							//starting game, send all players into game, can also probably ignore dirty tags
 							foreach (Player other in lobby.players) {
+								other.status = "Gaming";
 								other.handler.SendTo(startMsg, other.remoteEP);
 							}
 							ldirty = false;
@@ -296,6 +298,7 @@ public class SynServer
 								//send to all players that user left
 								other.handler.SendTo(left, other.remoteEP);
 							}
+							player.status = "Waiting";
 							ldirty = true;
 							continue;
 						}
