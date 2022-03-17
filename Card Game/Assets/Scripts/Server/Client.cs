@@ -35,6 +35,12 @@ public class Client : MonoBehaviour
 			if (joinOnlineButton)
 				joinOnlineButton.SetActive(false);
 		}
+		else {
+			leaveServerButton.gameObject.SetActive(true);
+			chatCanvas.SetActive(true);
+			if (joinOnlineButton)
+				joinOnlineButton.SetActive(true);
+		}
 	}
 
 	public void TryConnect() 
