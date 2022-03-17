@@ -50,7 +50,7 @@ public class CardHolder : MonoBehaviour
 		card.tag = playerData.playerTag;
 		holding = card;
 		GetComponentInChildren<MeshRenderer>().material.color = hasCard;
-		StartCoroutine(CardTransition(newCard));
+		StartCoroutine(CardTransition(newCard, newCard && card.data.cost > 0));
 
 		return true;
 	}
@@ -64,8 +64,15 @@ public class CardHolder : MonoBehaviour
 		GetComponentInChildren<MeshRenderer>().material.color = originalCol;
 	}
 
-	public virtual IEnumerator CardTransition(bool callPlace) {
-		playerData.hand.input.ActivateAnimationMode();
+	public virtual IEnumerator CardTransition(bool callPlace, bool disabledAnimationMode) {
+		//so that you cant double place sacrifice cards
+		if (disabledAnimationMode) {
+			//we need to unlink it
+			playerData.hand.input.holding = null;
+			playerData.hand.input.ActivateSpellMode();
+		}
+		else
+			playerData.hand.input.ActivateAnimationMode();
 
 		Transform cardTrans = holding.transform;
 		while (holding != null) {
@@ -93,6 +100,9 @@ public class CardHolder : MonoBehaviour
 		}
 
 		yield return new WaitForSeconds(0.25f);
-		playerData.hand.input.DeactivateAnimationMode();
+		if (disabledAnimationMode)
+			playerData.hand.input.DeactivateSpellMode();
+		else
+			playerData.hand.input.DeactivateAnimationMode();
 	}
 }

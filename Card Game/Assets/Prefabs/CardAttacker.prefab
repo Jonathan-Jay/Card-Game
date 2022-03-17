@@ -146,9 +146,10 @@ MonoBehaviour:
   opposingData: {fileID: 0}
   index: -1
   floatingHeight: {x: 0, y: 0.075, z: -0.5}
-  moveSpeed: 5
+  moveSpeed: 10
   rotSpeed: 10
   slamHeight: {x: 0, y: 0.575, z: -0.5}
-  slamSpeed: 10
+  slamSpeed: 20
   interactableTag: Interactable
   defaultCardLayer: 6
+  canDirectlyPut: 0

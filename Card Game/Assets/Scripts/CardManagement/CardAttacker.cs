@@ -34,7 +34,7 @@ public class CardAttacker : CardHolder
 		return false;
 	}
 
-	public override IEnumerator CardTransition(bool callPlace)
+	public override IEnumerator CardTransition(bool callPlace, bool disabledAnimationMode)
 	{
 		holding.GetComponent<Rigidbody>().isKinematic = true;
 		holding.gameObject.layer = playerData.hand.input.ignoredLayer;

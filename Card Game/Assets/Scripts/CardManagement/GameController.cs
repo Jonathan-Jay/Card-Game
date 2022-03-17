@@ -75,14 +75,13 @@ public class GameController : MonoBehaviour
 		}
 
 		if (!firstturn) {
-
-		//attack cards
-		foreach (CardHolder tile in current.field) {
-			total += tile.DoUpdate();
+			//attack cards
+			foreach (CardHolder tile in current.field) {
+				total += tile.DoUpdate();
+			}
 		}
+		else firstturn = false;
 
-
-		}	else firstturn = false;
 
 		current.TurnEnd(maxMana, cardsPerTurn, minCardsInHand);
 

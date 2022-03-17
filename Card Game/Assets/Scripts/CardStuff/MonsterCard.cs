@@ -55,15 +55,15 @@ public class MonsterCard : Card
 
 		base.RenderFace();
 
-		//randomized right now
-		if (currAttack == int.MaxValue) {
-			attackMesh.text = "?";
-			healthMesh.text = "?";
-		}
-		else {
+		//randomized is stored like this
+		if (currAttack != int.MaxValue) {
 			//manually do it to not reset colours
 			attackMesh.text = Mathf.Max(currAttack, 0).ToString();
 			healthMesh.text = currHealth.ToString();
+		}
+		else {
+			attackMesh.text = "?";
+			healthMesh.text = "?";
 		}
 
 		//SetAttack(((MonsterData)data).attack, Color.black);
@@ -82,13 +82,6 @@ public class MonsterCard : Card
 
 	public override void OnPlace(PlayerData current, PlayerData opposing)
 	{
-		//calc stats
-		MonsterData monData = (MonsterData)data;
-		if (currAttack == int.MaxValue) {
-			SetAttack(Random.Range(monData.attack, monData.attackRMax), Color.black);
-			SetHealth(Random.Range(monData.health, monData.healthRMax), Color.black);
-		}
-
 		//render face
 		base.OnPlace(current, opposing);
 
@@ -179,6 +172,14 @@ public class MonsterCard : Card
 				yield return eof;
 			}
 			transform.localPosition = placement.floatingHeight;
+
+			//set the stats
+			//calc stats
+			if (currAttack == int.MaxValue) {
+				MonsterData monData = (MonsterData)data;
+				SetAttack(Random.Range(monData.attack, monData.attackRMax), Color.black);
+				SetHealth(Random.Range(monData.health, monData.healthRMax), Color.black);
+			}
 		}
 
 		//give controls back whether or not it succeeded
@@ -221,8 +222,14 @@ public class MonsterCard : Card
 		}
 
 		//handle all boosts after attacking
-		if (boosts.Count == 0) return dmg;
+		UpdateBoosts();
 
+		return dmg;
+	}
+
+	public void UpdateBoosts() {
+		if (boosts.Count == 0) return;
+		
 		MonsterData monData = (MonsterData)data;
 		int newAttack = currAttack;
 		int newHealth = currHealth;
@@ -246,12 +253,12 @@ public class MonsterCard : Card
 
 			SetHealth( newHealth, newHealth == monData.health ? Color.black :
 				(currHealth > monData.health ? Color.green : Color.red));
-			if (newHealth <= 0) {
-				StartCoroutine("Death");
-			}
+			
+			//doesn't happen
+			//if (newHealth <= 0) {
+			//	StartCoroutine("Death");
+			//}
 		}
-
-		return dmg;
 	}
 
 	//also resets colour
