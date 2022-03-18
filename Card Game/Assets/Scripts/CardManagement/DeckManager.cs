@@ -32,7 +32,9 @@ public class DeckManager : MonoBehaviour
 
 	[SerializeField]	bool autoShuffle = false;
 
+	AudioQueue audioPlayer;
 	private void Start() {
+		audioPlayer = GetComponent<AudioQueue>();
 		if (autoShuffle) {
 			ShuffleDeck();
 		}
@@ -139,10 +141,13 @@ public class DeckManager : MonoBehaviour
 		data = null;
 		card = null;
 
+		//play sound
+		audioPlayer?.Play();
+
 		return temp.transform;
 	}
 
-	WaitForSeconds pointFive = new WaitForSeconds(0.5f);
+	static WaitForSeconds pointFive = new WaitForSeconds(0.5f);
 	public void FirstDraw(bool renderFace) {
 		if (player.canDraw == 0)	return;
 
@@ -167,9 +172,9 @@ public class DeckManager : MonoBehaviour
 			//always ignore drawLimit and draw cards facing down
 			trans = DrawCard(renderFace, true, ignoreDrawLimit);
 			//just in case
-			if (trans) {
-				trans.GetComponent<Card>().CallBackCard();
-			}
+			//if (trans) {
+				trans?.GetComponent<Card>().CallBackCard();
+			//}
 			//break if empty deck
 			if (deck.Count == 0) break;
 

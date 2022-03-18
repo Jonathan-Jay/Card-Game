@@ -63,5 +63,8 @@ public class CardAttacker : CardHolder
 				holding.OnPlace(playerData, opposingData);
 			cardTrans.localPosition = floatingHeight;
 		}
+
+		//play the sound
+		audioPlayer?.Play();
 	}
 }
