@@ -6,7 +6,7 @@ using UnityEditor;
 public class SpellDataEditor : Editor
 {
 	static bool lockedDescription = true;
-	static bool unlockedInts = false;
+	static bool unlockedInts = true;
 	SerializedProperty cardArt;
 	SerializedProperty cardName;
 	SerializedProperty cost;
