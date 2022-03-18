@@ -16,4 +16,18 @@ public class AudioQueue : MonoBehaviour
 		sounds[index].Play();
 		index = (index + 1) % sounds.Count;
 	}
+
+	private void OnEnable() {
+		PressEventButton test = GetComponent<PressEventButton>();
+		if (test) {
+			test.pressed += Play;
+		}
+	}
+	
+	private void OnDisable() {
+		PressEventButton test = GetComponent<PressEventButton>();
+		if (test) {
+			test.pressed -= Play;
+		}
+	}
 }
