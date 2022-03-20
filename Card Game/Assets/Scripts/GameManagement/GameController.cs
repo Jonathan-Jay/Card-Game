@@ -27,7 +27,9 @@ public class GameController : MonoBehaviour
 	public PlayerData player2;
 	public event System.Action turnEnded;
 
+	static public bool firstTurn = true;
     void Awake() {
+		firstTurn = true;
 		if (generateField)
         	Generate();
     }
@@ -60,7 +62,6 @@ public class GameController : MonoBehaviour
 		StartCoroutine(Doturn(player2, player1));
 	}
 
-	bool firstturn = true;
 	WaitForSeconds turnDelay = new WaitForSeconds(0.25f);
 
 	//return damage taken by opposing player
@@ -84,7 +85,7 @@ public class GameController : MonoBehaviour
 			temp = null;
 		}
 
-		if (!firstturn) {
+		if (!firstTurn) {
 			if (counter > 0) {
 				//extra delay if there were moved cards
 				yield return turnDelay;
@@ -106,7 +107,7 @@ public class GameController : MonoBehaviour
 				temp = null;
 			}
 		}
-		else firstturn = false;
+		else firstTurn = false;
 
 		if (counter > 0) {
 			//extra delay

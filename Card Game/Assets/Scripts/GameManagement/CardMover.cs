@@ -8,8 +8,9 @@ public class CardMover : CardHolder
 
 	public override void DoUpdate() {
 		if (holding && holding.targetable && moveTo) {
-			//do update to boosts
-			((MonsterCard)holding).UpdateBoosts();
+			//do update to boosts if first turn only
+			if (GameController.firstTurn)
+				((MonsterCard)holding).UpdateBoosts();
 
 			if (!moveTo.holding) {
 				moveTo.PutCard(holding);
