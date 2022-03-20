@@ -27,9 +27,11 @@ public class CardHolder : MonoBehaviour
 		originalCol = GetComponentInChildren<MeshRenderer>().material.color;
 	}
 
-	//damage to player
-    public virtual int DoUpdate() {
-		return 0;
+	//normal holders only update boosts
+    public virtual void DoUpdate() {
+		if (holding && holding.targetable) {
+			((MonsterCard)holding).UpdateBoosts();
+		}
 	}
 
 	//returns true on sucess

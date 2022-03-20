@@ -5,19 +5,16 @@ using UnityEngine;
 //helps shorten things
 public delegate PlayerData TargettingFunc(PlayerData current, PlayerData opposing,
 	ref int index, ref UnityEngine.RaycastHit hit);
-public delegate void ActivationFunc(SpellCard caster, PlayerData target, int index, AbilityFunc ability, SpellData spell);
+public delegate void ActivationFunc(SpellCard caster, PlayerData target, int index, SpellData spell);
 public delegate void AbilityFunc(PlayerData target, int index, SpellData spell);
 
 [CreateAssetMenu(fileName = "Spell", menuName = "CardData/SpellData", order = 0)]
 public class SpellData : CardData {
 	public TargettingFunc targetting;
-	[HideInInspector]
 	public TargettingOptions targettingOption;
 	public ActivationFunc activate;
-	[HideInInspector]
 	public ActivationOptions activateOption;
 	public AbilityFunc ability;
-	[HideInInspector]
 	public AbilityOptions abilityOption;
 	public string cardDescription = "I Forgor :Skull:";
 	public int actionParameter1;
@@ -25,10 +22,13 @@ public class SpellData : CardData {
 	public int abilityParameter1;
 	public int abilityParameter2;
 	public int abilityParameter3;
+	public SpellEffect effect;
 
 	public override bool CheckCost(PlayerData player) {
 		return player.ReduceMana(cost);
 	}
+
+	//set the spell funcs, makes things a little cleaner
 	public override void Init() {
 		targetting = GetTargetting(targettingOption);
 		activate = GetActivation(activateOption);
@@ -38,7 +38,7 @@ public class SpellData : CardData {
 	//if target is self, this should be null
 	public void CastSpell(SpellCard caster, PlayerData target, int index) {
 		//select the target
-		activate.Invoke(caster, target, index, ability, this);
+		activate.Invoke(caster, target, index, this);
 	}
 
 	/*
@@ -335,29 +335,23 @@ public class SpellData : CardData {
 
 	#region ActivationOptions
 	//just calls the ability once on the card target or player if index < 0
-	static public void DirectActivation(SpellCard caster, PlayerData target, int index,
-		AbilityFunc ability, SpellData spell)
-	{
+	static public void DirectActivation(SpellCard caster, PlayerData target, int index, SpellData spell) {
 		//ability.Invoke(target, index, spell);
-		float delay = 0.5f;
-		caster.ActivationDelay(ability, target, index, 0f, delay, true);
+		Instantiate(spell.effect).PerformEffect(caster, target, index, 0);
+		caster.SelfDestruct(spell.effect.GetCardDeathDelay(1));
 	}
 
 	//call the ability actionParameter1 times
-	static public void RepeatedActivation(SpellCard caster, PlayerData target, int index,
-		AbilityFunc ability, SpellData spell)
-	{
-		float delay = 0.25f;
-		for (int i = 1; i <= spell.actionParameter1; ++i) {
+	static public void RepeatedActivation(SpellCard caster, PlayerData target, int index, SpellData spell) {
+		for (int i = 0; i < spell.actionParameter1; ++i) {
 			//ability.Invoke(target, index, spell);
-			caster.ActivationDelay(ability, target, index, (i - 1) * delay, delay, i == spell.actionParameter1);
+			Instantiate(spell.effect).PerformEffect(caster, target, index, i);
 		}
+		caster.SelfDestruct(spell.effect.GetCardDeathDelay(spell.actionParameter1));
 	}
 
 	//target a random card actionParameter1 times
-	static public void RandomizedActivation(SpellCard caster, PlayerData target, int index,
-		AbilityFunc ability, SpellData spell)
-	{
+	static public void RandomizedActivation(SpellCard caster, PlayerData target, int index, SpellData spell) {
 		//doesn't work if targetting player
 		if (index < 0)	return;
 
@@ -368,13 +362,12 @@ public class SpellData : CardData {
 				++cards;
 		}
 
-		float delay = 0.25f;
-		int i = 1;
-		for (; i <= spell.actionParameter1 && cards > 0;) {
+		int i = 0;
+		for (; i < spell.actionParameter1 && cards > 0;) {
 			int j = Random.Range(0, target.field.Count);
 			if (target.field[j].holding && target.field[j].holding.targetable) {
 				//ability.Invoke(target, j, spell);
-				caster.ActivationDelay(ability, target, j, (i - 1) * delay, delay, i == spell.actionParameter1);
+				Instantiate(spell.effect).PerformEffect(caster, target, j, i);
 				if (!target.field[j].holding) {
 					--cards;
 				}
@@ -382,24 +375,19 @@ public class SpellData : CardData {
 			}
 		}
 
-		if (cards == 0) {
-			//safety
-			caster.ActivationDelay(null, target, index, (i - 1) * delay, 0f, true);
-		}
+		//kill the card
+		caster.SelfDestruct(spell.effect.GetCardDeathDelay(i));
 	}
 
 	//targets everything, if activation is > 0, kill backrow too
-	static public void EverythingActivation(SpellCard caster, PlayerData target, int index,
-		AbilityFunc ability, SpellData spell)
-	{
-		float delay = 0.1f;
+	static public void EverythingActivation(SpellCard caster, PlayerData target, int index, SpellData spell) {
 		int cardCount = 0;
 
 		//target first
 		foreach (CardHolder holder in target.field) {
 			//ability.Invoke(target, index, spell);
 			if (holder.holding && holder.holding.targetable) {
-				caster.ActivationDelay(ability, target, holder.index, cardCount++ * delay, delay, false);
+				Instantiate(spell.effect).PerformEffect(caster, target, holder.index, cardCount++);
 			}
 		}
 
@@ -409,7 +397,7 @@ public class SpellData : CardData {
 		foreach (CardHolder holder in opposing.field) {
 			//ability.Invoke(target, index, spell);
 			if (holder.holding && holder.holding.targetable) {
-				caster.ActivationDelay(ability, opposing, holder.index, cardCount++ * delay, delay, false);
+				Instantiate(spell.effect).PerformEffect(caster, opposing, holder.index, cardCount++);
 			}
 		}
 
@@ -417,20 +405,20 @@ public class SpellData : CardData {
 			foreach (CardHolder holder in target.backLine) {
 				//ability.Invoke(target, index, spell);
 				if (holder.holding && holder.holding.targetable) {
-					caster.ActivationDelay(ability, target, holder.index, cardCount++ * delay, delay, false);
+					Instantiate(spell.effect).PerformEffect(caster, target, holder.index, cardCount++);
 				}
 			}
 
 			foreach (CardHolder holder in opposing.backLine) {
 				//ability.Invoke(target, index, spell);
 				if (holder.holding && holder.holding.targetable) {
-					caster.ActivationDelay(ability, opposing, holder.index, cardCount++ * delay, delay, false);
+					Instantiate(spell.effect).PerformEffect(caster, opposing, holder.index, cardCount++);
 				}
 			}
 
 		}
 		//get back the spell mode thingy
-		caster.ActivationDelay(null, target, index, cardCount * delay, 0f, true);
+		caster.SelfDestruct(spell.effect.GetCardDeathDelay(cardCount));
 	}
 	#endregion
 
@@ -444,12 +432,22 @@ public class SpellData : CardData {
 		}
 
 		MonsterCard card = null;
-		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
+		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding) {
 			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
-		else if (target.field[index].holding)
+			if (card && card.targetable)
+				card.TakeDamage(spell.abilityParameter1);
+		}
+		else if (target.field[index].holding) {
 			card = (MonsterCard)target.field[index].holding;
-		if (card && card.targetable)
-			card.TakeDamage(spell.abilityParameter1);
+			if (card && card.targetable) {
+				card.TakeDamage(spell.abilityParameter1);
+
+				//if it killed the card, move backline
+				if (!card.placement) {
+					target.backLine[index].DoUpdate();
+				}
+			}
+		}
 	}
 
 	//between abillityParameter1 inclusive and abilityParamter2 inclusive
@@ -462,14 +460,25 @@ public class SpellData : CardData {
 		}
 
 		MonsterCard card = null;
-		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
+		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding) {
 			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
-		else if (target.field[index].holding)
+			if (card && card.targetable)
+				card.TakeDamage(UnityEngine.Random.Range(
+						spell.abilityParameter1, spell.abilityParameter2 + 1));
+		}
+		else if (target.field[index].holding) {
 			card = (MonsterCard)target.field[index].holding;
+			if (card && card.targetable) {
+				card.TakeDamage(UnityEngine.Random.Range(
+						spell.abilityParameter1, spell.abilityParameter2 + 1));
 
-		if (card && card.targetable)
-			card.TakeDamage(UnityEngine.Random.Range(
-					spell.abilityParameter1, spell.abilityParameter2 + 1));
+				//if it killed the card, move backline
+				if (!card.placement) {
+					target.backLine[index].DoUpdate();
+				}
+			}
+		}
+
 	}
 
 	//all you need is kill
@@ -480,13 +489,23 @@ public class SpellData : CardData {
 		}
 
 		MonsterCard card = null;
-		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
+		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding) {
 			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
-		else if (target.field[index].holding)
-			card = (MonsterCard)target.field[index].holding;
-		
-		if (card && card.targetable)
+			if (card && card.targetable)
 				card.TakeDamage(card.currHealth);
+		}
+		else if (target.field[index].holding) {
+			card = (MonsterCard)target.field[index].holding;
+			if (card && card.targetable) {
+				card.TakeDamage(card.currHealth);
+						
+				//if it killed the card, move backline
+				if (!card.placement) {
+					target.backLine[index].DoUpdate();
+				}
+			}
+		}
+		
 	}
 
 	//parameter 1 is duration, parameter 2 is hp, parameter 3 is atk
@@ -495,13 +514,24 @@ public class SpellData : CardData {
 		if (index < 0)	return;
 
 		MonsterCard card = null;
-		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
+		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding) {
 			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
-		else if (target.field[index].holding)
+			if (card && card.targetable)
+				card.Boost(new MonsterCard.TempEffect(
+					spell.abilityParameter1, spell.abilityParameter2, spell.abilityParameter3));
+		}
+		else if (target.field[index].holding) {
 			card = (MonsterCard)target.field[index].holding;
-		if (card && card.targetable)
-			card.Boost(new MonsterCard.TempEffect(
-				spell.abilityParameter1, spell.abilityParameter2, spell.abilityParameter3));
+			if (card && card.targetable) {
+				card.Boost(new MonsterCard.TempEffect(
+					spell.abilityParameter1, spell.abilityParameter2, spell.abilityParameter3));
+						
+				//if it killed the card, move backline, yes boosts can kill
+				if (!card.placement) {
+					target.backLine[index].DoUpdate();
+				}
+			}
+		}
 	}
 
 	//parameter 1 is mana amount (clamped to 0)

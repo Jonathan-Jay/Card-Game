@@ -6,12 +6,14 @@ public class CardMover : CardHolder
 {
 	public CardHolder moveTo;
 
-	public override int DoUpdate() {
-		if (holding && moveTo) {
+	public override void DoUpdate() {
+		if (holding && holding.targetable && moveTo) {
 			if (!moveTo.holding) {
 				moveTo.PutCard(holding);
 			}
+
+			//do update to boosts
+			((MonsterCard)holding).UpdateBoosts();
 		}
-		return 0;
 	}
 }

@@ -5,28 +5,18 @@ using UnityEngine;
 public class CardAttacker : CardHolder
 {
 	public bool canDirectlyPut = false;
-	public override int DoUpdate()
-	{
-		int dmg = 0;
+	public override void DoUpdate() {
 		//all targetables are monsters for now
-		if (holding != null && holding.targetable)
-		{
+		if (holding && holding.targetable) {
 			//assuming only direct attacks
 			MonsterCard target = (MonsterCard)opposingData.field[index].holding;
 
-			//can directly attack the opponent if target is empty
-			dmg = ((MonsterCard)holding).Attack(target);
-
-			//if target was killed
-			if (target && !target.placement) {
-				opposingData.backLine[index].DoUpdate();
-			}
+			//can directly attack the opponent if target is empty, also updates boosts
+			((MonsterCard)holding).Attack(target, opposingData);
 		}
-		return dmg;
 	}
 
-	public override bool PutCard(Card card)
-	{
+	public override bool PutCard(Card card) {
 		//either allowed to put or moving
 		if (canDirectlyPut || card.placement) {
 			return base.PutCard(card);
@@ -34,8 +24,7 @@ public class CardAttacker : CardHolder
 		return false;
 	}
 
-	public override IEnumerator CardTransition(bool callPlace, bool disabledAnimationMode)
-	{
+	public override IEnumerator CardTransition(bool callPlace, bool disabledAnimationMode) {
 		holding.GetComponent<Rigidbody>().isKinematic = true;
 		holding.gameObject.layer = playerData.hand.input.ignoredLayer;
 

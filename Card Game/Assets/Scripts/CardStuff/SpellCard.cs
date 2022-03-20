@@ -22,8 +22,7 @@ public class SpellCard : Card
 		base.SetData(newData);
 	}
 
-	public override void RenderFace()
-	{
+	public override void RenderFace() {
 		if (renderingFace || !data)	return;
 
 		//dont do it cause render cost differently
@@ -42,8 +41,7 @@ public class SpellCard : Card
 		descriptionMesh.text = ((SpellData)data).cardDescription;
 	}
 
-	public override void HideFace()
-	{
+	public override void HideFace() {
 		if (!renderingFace)	return;
 
 		base.HideFace();
@@ -52,7 +50,8 @@ public class SpellCard : Card
 	}
 
 	public override void OnPlace(PlayerData current, PlayerData opposing) {
-		RenderFace();
+		//don't render face until it's placed
+		//RenderFace();
 		StartCoroutine(CastSpell(current, opposing));
 	}
 
@@ -101,42 +100,20 @@ public class SpellCard : Card
 			yield break;
 		}
 
+		//now we can render the face
+		RenderFace();
 		//cast spell should take card of this
 		((SpellData)data).CastSpell(this, target, newIndex);
 	}
 
-	public void ActivationDelay(AbilityFunc ability, PlayerData target, int index,
-		float delayDelay, float delay, bool endSpellMode)
-	{
-		StartCoroutine(DelayedCasting(ability, target, index, (SpellData)data, delayDelay, delay, endSpellMode));
+	public void SelfDestruct(float delay) {
+		StartCoroutine(DelayedDeath(delay));
 	}
 
-	IEnumerator DelayedCasting(AbilityFunc ability, PlayerData target, int index,
-		SpellData spell, float delayDelay, float delay, bool endSpellMode)
-	{
-		Vector3 targetPos = target.hand.transform.position + Vector3.up * 1f;
-		if (index >= 0) {
-			if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
-				targetPos = target.backLine[index - target.field.Count].transform.position
-					+ Vector3.up * 0.1f + transform.rotation * (Vector3.back * 0.5f);
-			else if (target.field[index].holding)
-				targetPos = target.field[index].transform.position
-					+ Vector3.up * 0.1f + transform.rotation * (Vector3.back * 0.5f);
-		}
-		yield return new WaitForSeconds(delayDelay);
-
-		float oneOverDelay = 1f/delay;
-		for (float i = 0; i < delay; i += Time.deltaTime) {
-			transform.position = Vector3.Lerp(transform.position, targetPos,
-				Mathf.SmoothStep(0f, 1f, oneOverDelay * i));
-			yield return eof;
-		}
-
-		ability?.Invoke(target, index, spell);
-
-		if (endSpellMode) {
-			player.hand.input.DeactivateSpellMode();
-			StartCoroutine("Death");
-		}
+	IEnumerator DelayedDeath(float delay) {
+		yield return new WaitForSeconds(delay);
+		
+		player.hand.input.DeactivateSpellMode();
+		StartCoroutine("Death");
 	}
 }

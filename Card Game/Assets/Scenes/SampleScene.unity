@@ -1010,6 +1010,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentCam: {fileID: 963194227}
   ray: {fileID: 1861237419}
+--- !u!23 &1656380053 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2137671615821512857, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
+  m_PrefabInstance: {fileID: 1793946186}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1793946186
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1178,6 +1183,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aec004c86216d544da4c876592d2e548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1950923598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950923596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d46c5142953bcf642876e2fd0a23931e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placement: {fileID: 0}
+  data: {fileID: 0}
+  player: {fileID: 0}
+  renderingFace: 0
+  targetable: 0
+  frontFace: {fileID: 1656380053}
+  nameMesh: {fileID: 0}
+  costMesh: {fileID: 0}
 --- !u!1 &2091945311
 GameObject:
   m_ObjectHideFlags: 0

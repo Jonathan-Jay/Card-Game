@@ -49,8 +49,7 @@ public class MonsterCard : Card
 		healthMesh.color = Color.black;
 	}
 
-	public override void RenderFace()
-	{
+	public override void RenderFace() {
 		if (renderingFace || !data)	return;
 
 		base.RenderFace();
@@ -70,8 +69,7 @@ public class MonsterCard : Card
 		//SetHealth(((MonsterData)data).health, Color.black);
 	}
 
-	public override void HideFace()
-	{
+	public override void HideFace() {
 		if (!renderingFace)	return;
 
 		base.HideFace();
@@ -80,15 +78,18 @@ public class MonsterCard : Card
 		attackMesh.text = "";
 	}
 
-	public override void OnPlace(PlayerData current, PlayerData opposing)
-	{
+	public override void OnPlace(PlayerData current, PlayerData opposing) {
 		//render face
-		base.OnPlace(current, opposing);
+		//base.OnPlace(current, opposing);
 
 		//perform cost check if cost is not zero
 		if (data.cost > 0) {
 			//Ask for sacrifices
 			StartCoroutine(CheckCost(current, opposing));
+		}
+		else {
+			//always render free placed cards
+			RenderFace();
 		}
 	}
 
@@ -154,6 +155,7 @@ public class MonsterCard : Card
 			}
 			Release();
 		}
+		//success
 		else {
 			//kill all selected cards
 			MonsterCard monster = null;
@@ -167,11 +169,15 @@ public class MonsterCard : Card
 					monster.TakeDamage(monster.currHealth);
 			}
 
+			//fix position
 			for (float i = 0; i < 0.25f; i += Time.deltaTime) {
 				transform.localPosition += Vector3.back * Time.deltaTime;
 				yield return eof;
 			}
 			transform.localPosition = placement.floatingHeight;
+
+			//render face
+			RenderFace();
 
 			//set the stats
 			//calc stats
@@ -206,25 +212,66 @@ public class MonsterCard : Card
 	}
 
 	//returns overkill, also handles temporary effects
-	public int Attack(MonsterCard target) {
-		int dmg = 0;
+	public void Attack(MonsterCard target, PlayerData opposing) {
 		//dont attack if negative attacks
 		if (currAttack > 0)	{
 			//if not attacking anything, attacking player directly
 			if (target == null) {
-				dmg = currAttack;
+				void DealDamage() {
+					//attack the player
+					opposing.TakeDamage(currAttack);
+
+					//handle all boosts after attacking
+					UpdateBoosts();
+				}
+				StartCoroutine(AttackAnim(
+					opposing.hand.transform.position + Vector3.up * 0.5f, 15f,
+					placement.floatingHeight, 10f, DealDamage
+				));
 			}
 			else {
+				void DealDamage() {
+					//can do overkill damage easily by adding playerdata target
+					target.TakeDamage(currAttack);
+
+					//if target was killed
+					if (!target.placement) {
+						//move the backline up if it exists
+						opposing.backLine[placement.index].DoUpdate();
+					}
+
+					//handle all boosts after attacking
+					UpdateBoosts();
+				}
+				StartCoroutine(AttackAnim(
+					target.transform.position + target.transform.rotation * Vector3.forward * 1.5f, 5f,
+					placement.floatingHeight, 3f, DealDamage
+
+				));
+
 				//can do this if overkill damage
 				//dmg =
-				target.TakeDamage(currAttack);
+				//target.TakeDamage(currAttack);
 			}
 		}
+	}
 
-		//handle all boosts after attacking
-		UpdateBoosts();
+	IEnumerator AttackAnim(Vector3 targetPos, float attackSpeed,
+		Vector3 returnPos, float returnSpeed, System.Action attack)
+	{
+		while (transform.position != targetPos) {
+			transform.position = Vector3.MoveTowards(transform.position, targetPos,
+				attackSpeed * Time.deltaTime);
+			yield return eof;
+		}
 
-		return dmg;
+		attack.Invoke();
+
+		while (transform.localPosition != returnPos) {
+			transform.localPosition = Vector3.MoveTowards(transform.localPosition, returnPos,
+				returnSpeed * Time.deltaTime);
+			yield return eof;
+		}
 	}
 
 	public void UpdateBoosts() {

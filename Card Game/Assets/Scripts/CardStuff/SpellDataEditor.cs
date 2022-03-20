@@ -19,6 +19,7 @@ public class SpellDataEditor : Editor
 	SerializedProperty targetting;
 	SerializedProperty activate;
 	SerializedProperty ability;
+	SerializedProperty effect;
 
 	#region TargettingOptions
 	struct TargettingOption {
@@ -130,6 +131,8 @@ public class SpellDataEditor : Editor
 		targetting = this.serializedObject.FindProperty("targettingOption");
 		activate = this.serializedObject.FindProperty("activateOption");
 		ability = this.serializedObject.FindProperty("abilityOption");
+
+		effect = this.serializedObject.FindProperty("effect");
 	}
 
 	public override void OnInspectorGUI()
@@ -246,6 +249,10 @@ public class SpellDataEditor : Editor
 		EditorGUILayout.LabelField("Name: <b>" + targettingOptions[targetting.enumValueIndex].name + "</b>", richText);
 		EditorGUILayout.LabelField(targettingOptions[targetting.enumValueIndex].description);
 		--EditorGUI.indentLevel;
+		EditorGUILayout.Space();
+
+		//prefab entry
+		EditorGUILayout.PropertyField(effect);
 
 		if (dirty && !lockedDescription) {
 			//change description

@@ -54,40 +54,84 @@ public class GameController : MonoBehaviour
 	}
 
 	void DoPlayer1Turn() {
-		int dmg = Doturn(player1);
-		if (dmg != 0)
-			player2.TakeDamage(dmg);
+		StartCoroutine(Doturn(player1, player2));
 	}
 	void DoPlayer2Turn() {
-		int dmg = Doturn(player2);
-		if (dmg != 0)
-			player1.TakeDamage(dmg);
+		StartCoroutine(Doturn(player2, player1));
 	}
 
 	bool firstturn = true;
+	WaitForSeconds turnDelay = new WaitForSeconds(0.25f);
 
 	//return damage taken by opposing player
-	int Doturn(PlayerData current) {
-		int total = 0;
+	IEnumerator Doturn(PlayerData current, PlayerData opposing) {
+		current.hand.input.DeActivateAll();
+
+		MonsterCard temp = null;
+		int counter = 0;
 		//move cards
 		foreach (CardHolder tile in current.backLine) {
+			if (tile.holding && tile.holding.targetable)
+				temp = (MonsterCard)tile.holding;
+
 			tile.DoUpdate();
+
+			//only delay if was holding a card
+			if (temp && !tile.holding) {
+				++counter;
+				yield return turnDelay;
+			}
+			temp = null;
 		}
 
 		if (!firstturn) {
+			if (counter > 0) {
+				//extra delay if there were moved cards
+				yield return turnDelay;
+				counter = 0;
+			}
+
 			//attack cards
 			foreach (CardHolder tile in current.field) {
-				total += tile.DoUpdate();
+				if (tile.holding && tile.holding.targetable)
+					temp = (MonsterCard)tile.holding;
+
+				tile.DoUpdate();
+
+				//only delay if has a card and can attack
+				if (temp && temp.currAttack > 0) {
+					++counter;
+					yield return turnDelay;
+				}
+				temp = null;
 			}
 		}
 		else firstturn = false;
 
+		if (counter > 0) {
+			//extra delay
+			yield return turnDelay;
+		}
 
 		current.TurnEnd(maxMana, cardsPerTurn, minCardsInHand);
 
-		turnEnded?.Invoke();
+		//perform boost update for defending cards
+		foreach(CardHolder tile in opposing.field) {
+			temp = (MonsterCard)tile.holding;
+			if (temp && temp.targetable) {
+				temp.UpdateBoosts();
+			}
+		}
+		foreach(CardHolder tile in opposing.backLine) {
+			temp = (MonsterCard)tile.holding;
+			if (temp && temp.targetable) {
+				temp.UpdateBoosts();
+			}
+		}
 
-		return total;
+		current.hand.input.ActivateAll();
+
+		turnEnded?.Invoke();
 	}
 
 	//display current turn?
