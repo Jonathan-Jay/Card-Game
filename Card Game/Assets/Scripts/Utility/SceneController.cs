@@ -10,4 +10,8 @@ public class SceneController : MonoBehaviour
 	static public void ChangeScene(string sceneName) {
 		SceneManager.LoadScene(sceneName);
 	}
+
+	static public void StartGame() {
+		SceneManager.LoadScene(Client.gameSceneName);
+	}
 }

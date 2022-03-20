@@ -10,7 +10,8 @@ public class ReturnToMenu : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(exitKey)) {
-			SceneController.ChangeScene("Main Menu");
+			//SceneController.ChangeScene("Main Menu");
+			Client.ExitGame();
 		}
     }
 }

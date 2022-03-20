@@ -589,6 +589,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 30469780}
   m_CullTransparentMesh: 1
+--- !u!1 &146790434
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 146790435}
+  m_Layer: 5
+  m_Name: LocalButtons
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &146790435
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146790434}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 903753969}
+  m_Father: {fileID: 1419361809}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &175499973
 GameObject:
   m_ObjectHideFlags: 0
@@ -3023,17 +3059,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903753968}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2140018380}
-  m_Father: {fileID: 1419361809}
-  m_RootOrder: 1
+  m_Father: {fileID: 146790435}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -251, y: 207}
+  m_AnchoredPosition: {x: 389.00006, y: -153}
   m_SizeDelta: {x: 621.1, y: 178.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &903753970
@@ -3082,8 +3118,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1049465399}
         m_TargetAssemblyTypeName: SceneController, Assembly-CSharp
-        m_MethodName: ChangeScene
-        m_Mode: 5
+        m_MethodName: StartGame
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3895,6 +3931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0404443b57b1f2a4cbf220a46b6f0dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  index: 0
   posOptions:
   - {fileID: 518288844}
   - {fileID: 1654144821}
@@ -4811,7 +4848,7 @@ RectTransform:
   m_LocalScale: {x: 0.010000002, y: 0.01, z: 0.010000002}
   m_Children:
   - {fileID: 246758852}
-  - {fileID: 903753969}
+  - {fileID: 146790435}
   - {fileID: 1698754706}
   - {fileID: 1032928026}
   - {fileID: 1411113765}
@@ -6837,11 +6874,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf038b9977b9c134dbb2a1563fc332b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  notificationColour: yellow
   usernameText: {fileID: 7719684053436593973}
   ipError: {fileID: 587211055}
   ipInput: {fileID: 1613802944}
   waitDuration: 3
   chatCanvas: {fileID: 1277335994}
+  localGameButtons: {fileID: 146790434}
   joinOnlineButton: {fileID: 1698754705}
   joinServerButton: {fileID: 1040445203}
   leaveServerButton: {fileID: 1615631481}

@@ -12,6 +12,7 @@ public class SynServer
 	//static int sleepLength = 0;
 	static byte[] dirtyMsg;
 	static byte[] startMsg;
+	static byte[] exitMsg;
 	static byte[] leftLBMsg;
 
 	public class Player
@@ -78,6 +79,7 @@ public class SynServer
 		dirtyMsg = Encoding.ASCII.GetBytes("DTY" + terminator);
 		startMsg = Encoding.ASCII.GetBytes("SRT" + terminator);
 		leftLBMsg = Encoding.ASCII.GetBytes("LLB" + terminator);
+		exitMsg = Encoding.ASCII.GetBytes("EXT" + terminator);
 		return true;
 	}
 
@@ -313,6 +315,15 @@ public class SynServer
 								other.status = "Gaming";
 								//other.status = "In Game";
 								other.handler.SendTo(startMsg, other.remoteEP);
+							}
+							ldirty = false;
+						}
+						else if (code == "EXT") {
+							lobby.inGame = false;
+							//exiting game, send them back
+							foreach (Player other in lobby.players) {
+								other.status = "In Lobby: " + lobby.name;
+								other.handler.SendTo(exitMsg, other.remoteEP);
 							}
 							ldirty = false;
 						}

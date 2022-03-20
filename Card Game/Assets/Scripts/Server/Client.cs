@@ -8,6 +8,7 @@ using System.Net.Sockets;
 
 public class Client : MonoBehaviour
 {
+	public const string gameSceneName = "GameScene";
 	public string notificationColour = "yellow";
 	public const int msgCodeSize = 3;
 	public const char terminator = '\r';
@@ -22,7 +23,10 @@ public class Client : MonoBehaviour
 	public float waitDuration = 5f;
 	bool connecting = false;
 	public static bool canStart { get; private set;} = false;
+	public static bool inGame { get; private set;} = false;
+	static bool inLobby = false;
 	[SerializeField] GameObject chatCanvas;
+	[SerializeField] GameObject localGameButtons;
 	[SerializeField] GameObject joinOnlineButton;
 	[SerializeField] UnityEngine.UI.Button joinServerButton;
 	[SerializeField] UnityEngine.UI.Button leaveServerButton;
@@ -33,22 +37,26 @@ public class Client : MonoBehaviour
 	[SerializeField] CameraController cam;
 	[SerializeField] UITemplateList lobbyList;
 	[SerializeField] UITemplateList playerList;
-	bool inLobby = false;
 	[SerializeField] UITemplateList inLobbyPlayerList;
 	int recv;
 
 	private void Start() {
+		//not online yet
 		if (!canStart) {
+			localGameButtons.SetActive(true);
 			leaveServerButton.gameObject.SetActive(false);
 			chatCanvas.SetActive(false);
 			if (joinOnlineButton)
 				joinOnlineButton.SetActive(false);
 		}
+		//is online
 		else {
+			localGameButtons.SetActive(false);
 			leaveServerButton.gameObject.SetActive(true);
 			chatCanvas.SetActive(true);
 			if (joinOnlineButton)
 				joinOnlineButton.SetActive(true);
+			ipInput.text = server.Address.ToString();
 		}
 	}
 
@@ -202,7 +210,21 @@ public class Client : MonoBehaviour
 	}
 
 	public static void StartGame() {
-		client.SendTo(Encoding.ASCII.GetBytes("SRT"), server);
+		if (!inGame) {
+			client.SendTo(Encoding.ASCII.GetBytes("SRT"), server);
+		}
+	}
+
+	public static void ExitGame() {
+		if (canStart) {
+			if (inGame)
+				client.SendTo(Encoding.ASCII.GetBytes("EXT"), server);
+		}
+		else {
+			//if not online, treat like normal
+			ServerManager.localMultiplayer = true;
+			SceneController.ChangeScene("Main Menu");
+		}
 	}
 
 	public static void Close() {
@@ -262,6 +284,9 @@ public class Client : MonoBehaviour
 			chat.UpdateChat("<color=" + notificationColour + ">"
 				+ Encoding.ASCII.GetString(buffer, msgCodeSize, size) + "</color>");
 		}
+		
+		//possibly move these all into a not in game section
+		//could also be in a seperate class, or at least moving the above to seperate classes
 		else if (code == "CNM") {
 			//changed username
 			username = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
@@ -325,8 +350,17 @@ public class Client : MonoBehaviour
 		}
 		else if (code == "SRT") {
 			//load game
+			inGame = true;
 			ServerManager.localMultiplayer = false;
-			SceneController.ChangeScene("SampleScene");
+			SceneController.ChangeScene(gameSceneName);
+		}
+		
+		//probably wont happen in this code, so maybe we'll need to move it
+		else if (code == "EXT") {
+			//load menu and reset multiplayer flag
+			inGame = false;
+			ServerManager.localMultiplayer = true;
+			SceneController.ChangeScene("Main Menu");
 		}
 	}
 }
