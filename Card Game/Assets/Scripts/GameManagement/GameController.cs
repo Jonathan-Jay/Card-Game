@@ -27,9 +27,7 @@ public class GameController : MonoBehaviour
 	public PlayerData player2;
 	public event System.Action turnEnded;
 
-	static public bool firstTurn = true;
     void Awake() {
-		firstTurn = true;
 		if (generateField)
         	Generate();
     }
@@ -62,6 +60,7 @@ public class GameController : MonoBehaviour
 		StartCoroutine(Doturn(player2, player1));
 	}
 
+	bool firstTurn = true;
 	WaitForSeconds turnDelay = new WaitForSeconds(0.25f);
 
 	//return damage taken by opposing player
@@ -107,14 +106,21 @@ public class GameController : MonoBehaviour
 				temp = null;
 			}
 		}
-		else firstTurn = false;
+		else {
+			firstTurn = false;
+			//update boosts without attacking
+			foreach (CardHolder tile in current.field) {
+				temp = (MonsterCard)tile.holding;
+				if (temp && temp.targetable) {
+					temp.UpdateBoosts();
+				}
+			}
+		}
 
 		if (counter > 0) {
 			//extra delay
 			yield return turnDelay;
 		}
-
-		current.TurnEnd(maxMana, cardsPerTurn, minCardsInHand);
 
 		//perform boost update for defending cards
 		foreach(CardHolder tile in opposing.field) {
@@ -130,9 +136,16 @@ public class GameController : MonoBehaviour
 			}
 		}
 
+		current.TurnEnd(maxMana, cardsPerTurn, minCardsInHand);
 		current.hand.input.ActivateAll();
 
-		turnEnded?.Invoke();
+		//possibly deactivate if the player won
+		//if (opposing.currentHP > 0) {
+			turnEnded?.Invoke();
+		//}
+		//else {
+			//what happens when a player wins
+		//}
 	}
 
 	//display current turn?

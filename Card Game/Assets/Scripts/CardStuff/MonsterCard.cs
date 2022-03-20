@@ -254,6 +254,10 @@ public class MonsterCard : Card
 				//target.TakeDamage(currAttack);
 			}
 		}
+		//only update boosts
+		else {
+			UpdateBoosts();
+		}
 	}
 
 	IEnumerator AttackAnim(Vector3 targetPos, float attackSpeed,
