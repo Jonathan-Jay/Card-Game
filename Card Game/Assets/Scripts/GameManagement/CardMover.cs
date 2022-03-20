@@ -8,12 +8,12 @@ public class CardMover : CardHolder
 
 	public override void DoUpdate() {
 		if (holding && holding.targetable && moveTo) {
+			//do update to boosts
+			((MonsterCard)holding).UpdateBoosts();
+
 			if (!moveTo.holding) {
 				moveTo.PutCard(holding);
 			}
-
-			//do update to boosts
-			((MonsterCard)holding).UpdateBoosts();
 		}
 	}
 }
