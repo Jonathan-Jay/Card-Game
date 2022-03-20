@@ -44,14 +44,28 @@ public class PlayerData : MonoBehaviour {
 	//do whatever a player does when their turn ends
 	public void TurnEnd(int maxMana, int cardsPerTurn, int requiredCards) {
 		IncreaseMaxMana(Mathf.Clamp(++this.maxMana, 0, maxMana));
+		
+		//we do this even if the deck is empty in case the player bugs the game out
 		canDraw = Mathf.Min(cardsPerTurn, deck.deck.Count);
+
 		//temporary
 		if (hand.transform.childCount < requiredCards) {
 			canDraw = Mathf.Min(requiredCards - hand.transform.childCount
 				+ cardsPerTurn, deck.deck.Count);
 		}
+
 		//clamp this
 		drawCard?.Invoke();
+	}
+
+	//returns true if they died
+	public bool FatigueCheck(int fatigueDmg) {
+		if (canDraw == 0) {
+			TakeDamage(fatigueDmg);
+
+			return currentHP <= 0;
+		}
+		return false;
 	}
 
 	//works when inverted

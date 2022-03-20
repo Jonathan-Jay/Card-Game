@@ -23,14 +23,6 @@ public class ServerManager : MonoBehaviour
 	private void Awake() {
 		p1cam = p1mouse.GetComponent<Camera>();
 		p2cam = p2mouse.GetComponent<Camera>();
-		
-		//give them all the power
-		/*
-		p1mouse.ActivateAll();
-		p2mouse.ActivateAll();
-		/*/
-		game.turnEnded += TurnEndPlayerChange;
-		//*/
 	}
 
 	//late inits
@@ -62,6 +54,9 @@ public class ServerManager : MonoBehaviour
 
 		if (localMultiplayer) {
 			updateFunc = LocalMulti;
+			//this one is local only as it hides faces
+			game.turnEnded += TurnEndPlayerChange;
+			
 			//show all cards
 			//game.StartGame(p1turn, true, true);
 			StartCoroutine(DelayedStart());

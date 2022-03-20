@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
 	public int maxMana = 5;
 	public int cardsPerTurn = 1;
 	public int minCardsInHand = 3;
+	public int fatigueDmg = 1;
 	public PlayerData player1;
 	public PlayerData player2;
 	public event System.Action turnEnded;
@@ -62,6 +63,7 @@ public class GameController : MonoBehaviour
 
 	bool firstTurn = true;
 	WaitForSeconds turnDelay = new WaitForSeconds(0.25f);
+	WaitForSeconds phaseDelay = new WaitForSeconds(0.5f);
 
 	//return damage taken by opposing player
 	IEnumerator Doturn(PlayerData current, PlayerData opposing) {
@@ -87,7 +89,7 @@ public class GameController : MonoBehaviour
 		if (!firstTurn) {
 			if (counter > 0) {
 				//extra delay if there were moved cards
-				yield return turnDelay;
+				yield return phaseDelay;
 				counter = 0;
 			}
 
@@ -119,7 +121,7 @@ public class GameController : MonoBehaviour
 
 		if (counter > 0) {
 			//extra delay
-			yield return turnDelay;
+			yield return phaseDelay;
 		}
 
 		//perform boost update for defending cards
@@ -145,7 +147,13 @@ public class GameController : MonoBehaviour
 		//}
 		//else {
 			//what happens when a player wins
+			//yield break;
 		//}
+
+		//check the fatigue of the current player
+		if (opposing.FatigueCheck(fatigueDmg)) {
+			//what happens if opponent dies on first turn
+		}
 	}
 
 	//display current turn?
