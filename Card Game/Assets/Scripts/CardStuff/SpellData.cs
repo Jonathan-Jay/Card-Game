@@ -432,10 +432,12 @@ public class SpellData : CardData {
 		}
 
 		MonsterCard card = null;
-		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding) {
-			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
-			if (card && card.targetable)
-				card.TakeDamage(spell.abilityParameter1);
+		if (index >= target.field.Count) {
+			if(target.backLine[index - target.field.Count].holding) {
+				card = (MonsterCard)target.backLine[index - target.field.Count].holding;
+				if (card && card.targetable)
+					card.TakeDamage(spell.abilityParameter1);
+			}
 		}
 		else if (target.field[index].holding) {
 			card = (MonsterCard)target.field[index].holding;
@@ -460,11 +462,13 @@ public class SpellData : CardData {
 		}
 
 		MonsterCard card = null;
-		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding) {
-			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
-			if (card && card.targetable)
-				card.TakeDamage(UnityEngine.Random.Range(
+		if (index >= target.field.Count) {
+			if(target.backLine[index - target.field.Count].holding) {
+				card = (MonsterCard)target.backLine[index - target.field.Count].holding;
+				if (card && card.targetable)
+					card.TakeDamage(UnityEngine.Random.Range(
 						spell.abilityParameter1, spell.abilityParameter2 + 1));
+			}
 		}
 		else if (target.field[index].holding) {
 			card = (MonsterCard)target.field[index].holding;
@@ -489,10 +493,12 @@ public class SpellData : CardData {
 		}
 
 		MonsterCard card = null;
-		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding) {
-			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
-			if (card && card.targetable)
-				card.TakeDamage(card.currHealth);
+		if (index >= target.field.Count) {
+			if(target.backLine[index - target.field.Count].holding) {
+				card = (MonsterCard)target.backLine[index - target.field.Count].holding;
+				if (card && card.targetable)
+					card.TakeDamage(card.currHealth);
+			}
 		}
 		else if (target.field[index].holding) {
 			card = (MonsterCard)target.field[index].holding;
@@ -514,11 +520,13 @@ public class SpellData : CardData {
 		if (index < 0)	return;
 
 		MonsterCard card = null;
-		if (index >= target.field.Count && target.backLine[index - target.field.Count].holding) {
-			card = (MonsterCard)target.backLine[index - target.field.Count].holding;
-			if (card && card.targetable)
-				card.Boost(new MonsterCard.TempEffect(
-					spell.abilityParameter1, spell.abilityParameter2, spell.abilityParameter3));
+		if (index >= target.field.Count) {
+			if(target.backLine[index - target.field.Count].holding) {
+				card = (MonsterCard)target.backLine[index - target.field.Count].holding;
+				if (card && card.targetable)
+					card.Boost(new MonsterCard.TempEffect(
+						spell.abilityParameter1, spell.abilityParameter2, spell.abilityParameter3));
+			}
 		}
 		else if (target.field[index].holding) {
 			card = (MonsterCard)target.field[index].holding;
