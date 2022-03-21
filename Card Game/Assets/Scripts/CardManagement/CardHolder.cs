@@ -18,6 +18,11 @@ public class CardHolder : MonoBehaviour
 	public string interactableTag= "Interactable";
 	public int defaultCardLayer = 6;
 
+	protected AudioQueue audioPlayer;
+	private void Awake() {
+		audioPlayer = GetComponent<AudioQueue>();
+	}
+
 	void Start() {
 		originalCol = GetComponentInChildren<MeshRenderer>().material.color;
 	}
@@ -98,6 +103,9 @@ public class CardHolder : MonoBehaviour
 				holding.OnPlace(playerData, opposingData);
 			cardTrans.localPosition = floatingHeight;
 		}
+
+		//play the sound
+		audioPlayer?.Play();
 
 		yield return new WaitForSeconds(0.25f);
 		if (disabledAnimationMode)

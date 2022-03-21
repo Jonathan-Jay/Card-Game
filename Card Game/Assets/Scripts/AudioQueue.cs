@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class AudioQueue : MonoBehaviour
 {
-	List<AudioSource> sounds = new List<AudioSource>();
+	[SerializeField] List<AudioSource> sounds = new List<AudioSource>();
 	private void Start() {
-		foreach (AudioSource source in GetComponents<AudioSource>()) {
-			sounds.Add(source);
+		//only fill if not manually assigned
+		if (sounds.Count == 0) {
+			foreach (AudioSource source in GetComponents<AudioSource>()) {
+				sounds.Add(source);
+			}
 		}
 	}
 
