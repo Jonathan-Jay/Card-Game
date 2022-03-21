@@ -17,76 +17,78 @@ public class Client : MonoBehaviour
 	public static IPEndPoint server;
 	public static string username {get; private set;} = "";
 
-	[SerializeField] TMPro.TMP_Text usernameText;
-	[SerializeField] TMPro.TMP_Text ipError;
-	[SerializeField] TMPro.TMP_InputField ipInput;
 	public float waitDuration = 5f;
 	bool connecting = false;
 	public static bool canStart { get; private set;} = false;
 	public static bool inGame { get; private set;} = false;
+	static string lobbyName = "";
 	static bool inLobby = false;
+	[SerializeField] TMPro.TMP_Text usernameText;
 	[SerializeField] GameObject chatCanvas;
-	[SerializeField] GameObject localGameButtons;
-	[SerializeField] GameObject joinOnlineButton;
-	[SerializeField] UnityEngine.UI.Button joinServerButton;
-	[SerializeField] UnityEngine.UI.Button leaveServerButton;
 	[SerializeField] TMPro.TMP_InputField textChat;
-	[SerializeField] TMPro.TMP_Text lobbyName;
-	[SerializeField] TMPro.TMP_Text lobbyError;
 	[SerializeField] TextChat chat;
-	[SerializeField] CameraController cam;
-	[SerializeField] UITemplateList lobbyList;
-	[SerializeField] UITemplateList playerList;
-	[SerializeField] UITemplateList inLobbyPlayerList;
 	int recv;
+
+	//true if connected, false if not
+	public event Action<bool> connectedEvent;
+	//bool for if functioning, second for failure message
+	public event Action<bool, string> connectingEvent;
+	public event Action leaveServerEvent;
+	//true for currently in lobby
+	public event Action<bool, string> updatePlayerList;
+	public event Action<string> updateLobbyList;
+	public event Action dirty;
+	public event Action<string> lobbyError;
+	//true if in lobby, string for lobby name
+	public event Action<bool, string> joinedLobby;
 
 	private void Start() {
 		//not online yet
 		if (!canStart) {
-			localGameButtons.SetActive(true);
-			leaveServerButton.gameObject.SetActive(false);
 			chatCanvas.SetActive(false);
-			if (joinOnlineButton)
-				joinOnlineButton.SetActive(false);
+			//connected event
+			connectedEvent?.Invoke(false);
 		}
 		//is online
 		else {
-			localGameButtons.SetActive(false);
-			leaveServerButton.gameObject.SetActive(true);
+			usernameText.text = username;
+
 			chatCanvas.SetActive(true);
-			if (joinOnlineButton)
-				joinOnlineButton.SetActive(true);
-			ipInput.text = server.Address.ToString();
+			//disconnected event
+			connectedEvent?.Invoke(true);
 		}
-	}
 
-	public void TryConnect() 
-    {
-		//dont allow empty
-		if (ipInput.text == "")	return;
-
-		if (!connecting)
-			StartCoroutine(ConnectionAttempt(ipInput.text));
+		//send to lobby if in a lobby already
+		if (inLobby) {
+			joinedLobby?.Invoke(inLobby, lobbyName);
+			//refresh list somehow
+			client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
+		}
 	}
 
 	public void LeaveServer() {
 		if (!canStart)	return;
 
+		leaveServerEvent?.Invoke();
+		
 		usernameText.text = "";
-		joinOnlineButton.SetActive(false);
-		leaveServerButton.gameObject.SetActive(false);
-		joinServerButton.gameObject.SetActive(true);
-		ipInput.interactable = true;
-		ipError.text = "Left";
 		if (chatCanvas.activeInHierarchy)
 			chatCanvas.SetActive(false);
 		Close();
 		canStart = false;
 	}
 
+	public void TryConnect(string ip) {
+		if (!connecting)
+			StartCoroutine(ConnectionAttempt(ip));
+	}
+
 	IEnumerator ConnectionAttempt(string ipText) {
 		connecting = true;
-		ipError.text = "Connecting...";
+
+		//maybe we'll need
+		//connectingEvent?.Invoke(true, "Connecting...");
+
         //Setup our end point (server)
         try {
             //IPAddress ip = Dns.GetHostAddresses("mail.bigpond.com")[0];
@@ -98,26 +100,28 @@ public class Client : MonoBehaviour
 		}
 		catch (Exception) {
 			//Debug.Log(e.ToString());
-			ipInput.text = "";
-			ipError.text = "Inputed ip Invalid";
+			connectingEvent?.Invoke(false, "Inputed ip Invalid");
+
 			connecting = false;
 		}
 
 		//if broke
 		if (!connecting)	yield break;
+
 		try {
 			client.Connect(server);
 		}
 		catch (SocketException SockExc) {
 			if (SockExc.SocketErrorCode != SocketError.WouldBlock) {
 				//Debug.Log(SockExc.ToString());
-				ipInput.text = "";
-				ipError.text = "Inputed ip Invalid";
+				connectingEvent?.Invoke(false, "Inputed ip Invalid");
+
 				connecting = false;
 			}
 		}
 		catch (Exception e) {
 			Debug.Log(e.ToString());
+
 			connecting = false;
 		}
 
@@ -125,8 +129,7 @@ public class Client : MonoBehaviour
 		if (!connecting)	yield break;
 
 		//enough time has passed we can turn these off
-		ipInput.interactable = false;
-		joinServerButton.interactable = false;
+		connectingEvent?.Invoke(true, "Connecting...");
 
 		bool connected = false;
 		for (float counter = 0; counter < waitDuration; counter += Time.deltaTime) {
@@ -163,21 +166,20 @@ public class Client : MonoBehaviour
 			yield return new WaitForEndOfFrame();
 		}
 
-		joinServerButton.interactable = true;
+		//joinServerButton.interactable = true;
 		if (connected) {
+			connectingEvent?.Invoke(true, "Connected");
+			connectedEvent?.Invoke(true);
+
 			//connected is true
-			ipError.text = "Connected";
 			chatCanvas.SetActive(true);
-			joinOnlineButton.SetActive(true);
-			leaveServerButton.gameObject.SetActive(true);
-			joinServerButton.gameObject.SetActive(false);
 
 			yield return new WaitForEndOfFrame();
 			canStart = true;
 		}
 		else {
-			ipError.text = "Failed";
-			ipInput.interactable = true;
+			connectingEvent?.Invoke(false, "Failed");
+
 			client = null;
 		}
 		connecting = false;
@@ -294,59 +296,39 @@ public class Client : MonoBehaviour
 		}
 		else if (code == "PIN") {
 			//update all the players
-			string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
-
-			if (inLobby) {
-				inLobbyPlayerList.CreateProfile(message);
-			}
-			else
-				playerList.CreateProfile(message);
+			//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+			//updatePlayerList?.Invoke(inLobby, message);
+			updatePlayerList?.Invoke(inLobby, Encoding.ASCII.GetString(buffer, msgCodeSize, size));
 		}
 		else if (code == "LIN") {
-			string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+			//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
 
-			lobbyList.CreateProfile(message);
+			updateLobbyList?.Invoke(Encoding.ASCII.GetString(buffer, msgCodeSize, size));
 		}
 		else if (code == "DTY") {
-			if (inLobby) {
-				inLobbyPlayerList.Clear();
-			}
-			else {
-				playerList.Clear();
-				lobbyList.Clear();
-			}
+			dirty?.Invoke();
 		}
 		else if (code == "CLB") {
-			string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+			//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
 			//these are error codes
-			lobbyError.text = message;
+			lobbyError?.Invoke(Encoding.ASCII.GetString(buffer, msgCodeSize, size));
 			//the join lobby code will come later
 		}
 		else if (code == "JLB") {
-			//lobby data will be sent later, just change lobby name for now
-			lobbyName.text = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
-
-			//if joining a lobby, move the camera up one if in index 1
+			//if joining a lobby
 			inLobby = true;
-			while (cam.index != 2) {
-				if (cam.index < 2)
-					cam.IncrementIndex(false);
-				else
-					cam.DecrementIndex(false);
-			}
+
+			lobbyName = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+
+			joinedLobby?.Invoke(inLobby, lobbyName);
 		}
 		else if (code == "LLB") {
-			//leave lobby, so reset name
-			lobbyName.text = "";
-
 			//if leaving lobby, decrement camera back to index 1
 			inLobby = false;
-			while (cam.index != 1) {
-				if (cam.index > 1)
-					cam.DecrementIndex(false);
-				else
-					cam.IncrementIndex(false);
-			}
+
+			lobbyName = "";
+
+			joinedLobby?.Invoke(inLobby, lobbyName);
 		}
 		else if (code == "SRT") {
 			//load game
@@ -362,5 +344,9 @@ public class Client : MonoBehaviour
 			ServerManager.localMultiplayer = true;
 			SceneController.ChangeScene("Main Menu");
 		}
+	}
+
+	private void OnApplicationQuit() {
+		Close();
 	}
 }

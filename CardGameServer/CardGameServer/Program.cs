@@ -10,6 +10,7 @@ public class SynServer
 	const char terminator = '\r';
 	const char spliter = '\t';
 	//static int sleepLength = 0;
+	//static byte[] pingMsg;
 	static byte[] dirtyMsg;
 	static byte[] startMsg;
 	static byte[] exitMsg;
@@ -35,14 +36,40 @@ public class SynServer
 		//cause why not
 		public string name;
 		public string password;
+
+		//from: https://docs.microsoft.com/en-us/dotnet/api/system.threading.timer?view=net-6.0
+		public System.Threading.Timer counter;
 		public int playerCount = 0;
 		public bool inGame = false;
 		public Lobby(string name, string password = "") {
 			players = new List<Player>();
 			this.name = name;
 			this.password = password;
+			//30 second delay
+			//counter = new System.Threading.Timer(Ping, players, 30000, 30000);
+			//5 for testing
+			//counter = new System.Threading.Timer(Ping, players, 5000, 5000);
 		}
+
+		//~Lobby() {
+			//Console.WriteLine("Killed the timer");
+			//counter.Dispose();
+		//}
+
+		//void Ping(Object test) {
+			//Console.WriteLine("Pinged: " + name);
+			//go through each player and ping
+			//foreach (Player player in players) {
+				//try {
+					//player.handler.Send(pingMsg);
+				//}
+				//catch (Exception) {
+					//just catch it
+				//}
+			//}
+		//}
 	}
+	
 	static byte[] buffer = new byte[512];
 	static Socket server;
 	//when checking new players
@@ -76,6 +103,7 @@ public class SynServer
 			return false;
 		}
 
+		//pingMsg = Encoding.ASCII.GetBytes(terminator.ToString());
 		dirtyMsg = Encoding.ASCII.GetBytes("DTY" + terminator);
 		startMsg = Encoding.ASCII.GetBytes("SRT" + terminator);
 		leftLBMsg = Encoding.ASCII.GetBytes("LLB" + terminator);
@@ -127,7 +155,10 @@ public class SynServer
 
 			return true;
 		}
-
+		else if (code == "DTY") {
+			//player wants to get refreshed
+			dirty = true;
+		}
 		return false;
 	}
 
@@ -281,7 +312,23 @@ public class SynServer
 			catch (SocketException sockExcep) {
 				//we can ignore this one
 				if (sockExcep.SocketErrorCode != SocketError.WouldBlock) {
-					Console.WriteLine(sockExcep.ToString());
+					if (sockExcep.SocketErrorCode == SocketError.ConnectionAborted) {
+						//make the player leave
+						Console.WriteLine(player.username + " lost connection");
+						byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
+							+ " left the server" + terminator);
+
+						serverLobby.players.RemoveAt(i);
+						foreach (Player other in serverLobby.players) {
+							//send to all players that user left
+							other.handler.SendTo(left, other.remoteEP);
+						}
+						dirty = true;
+						continue;
+					}
+					else {
+						Console.WriteLine(sockExcep.ToString());
+					}
 				}
 			}
 			catch (Exception e) {
@@ -366,7 +413,23 @@ public class SynServer
 				catch (SocketException sockExcep) {
 					//we can ignore this one
 					if (sockExcep.SocketErrorCode != SocketError.WouldBlock) {
-						Console.WriteLine(sockExcep.ToString());
+						if (sockExcep.SocketErrorCode == SocketError.ConnectionAborted) {
+							//make the player leave
+							Console.WriteLine(player.username + " lost connection");
+							byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
+								+ " left the server" + terminator);
+
+							lobby.players.RemoveAt(i);
+							foreach (Player other in lobby.players) {
+								//send to all players that user left
+								other.handler.SendTo(left, other.remoteEP);
+							}
+							dirty = true;
+							continue;
+						}
+						else {
+							Console.WriteLine(sockExcep.ToString());
+						}
 					}
 				}
 				catch (Exception e) {
