@@ -17,6 +17,7 @@ public class DisableSelf : MonoBehaviour
 
 	IEnumerator Wait(float length) {
 		button.interactable = false;
+		//play the sound
 		yield return new WaitForSeconds(length);
 		button.interactable = true;
 	}
