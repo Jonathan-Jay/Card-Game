@@ -11,13 +11,8 @@ GameObject:
   - component: {fileID: 4233657037377689131}
   - component: {fileID: 4233657037377689133}
   - component: {fileID: 4233657037377689130}
-<<<<<<< Updated upstream
-  - component: {fileID: 449921163191364196}
-  - component: {fileID: 268567206448982506}
-=======
   - component: {fileID: 4608818802814927524}
   - component: {fileID: 5393965479983645814}
->>>>>>> Stashed changes
   m_Layer: 0
   m_Name: Bell
   m_TagString: Interactable
@@ -66,11 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-<<<<<<< Updated upstream
---- !u!114 &449921163191364196
-=======
 --- !u!114 &4608818802814927524
->>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -82,11 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1cbfa52de400247a5fb13ce3919589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< Updated upstream
---- !u!82 &268567206448982506
-=======
 --- !u!82 &5393965479983645814
->>>>>>> Stashed changes
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
