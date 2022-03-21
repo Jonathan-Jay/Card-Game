@@ -50,6 +50,19 @@ public class Mouse : MonoBehaviour {
 		ignore = val;
 	}
 
+	public void DelayedEnableInput(float delay) {
+		StartCoroutine(DelayedIgnoreSetter(true, delay));
+	}
+
+	public void DelayedIgnoreInput(bool val, float delay = 0.25f) {
+		StartCoroutine(DelayedIgnoreSetter(val, delay));
+	}
+
+	IEnumerator DelayedIgnoreSetter(bool val, float delay) {
+		yield return new WaitForSeconds(delay);
+		ignore = val;
+	}
+
     // Update is called once per frame
     void Update() {
 		if (disabled || ignore)	return;
@@ -177,7 +190,8 @@ public class Mouse : MonoBehaviour {
 		if (cardTest != null && cardTest.player == player) {
 			hit.rigidbody.isKinematic = true;
 			cardTest.transform.SetParent(mouseObject, true);
-			cardTest.transform.position += Vector3.up * vertOffset;
+			//cardTest.transform.position += Vector3.up * vertOffset;
+			cardTest.transform.localPosition = Vector3.up * vertOffset;
 			cardTest.gameObject.layer = ignoredLayer;
 
 			holding = cardTest.transform;

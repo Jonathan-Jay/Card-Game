@@ -17,7 +17,6 @@ public class DeckManager : MonoBehaviour
 	[SerializeField]	TMPro.TMP_Text text;
 	[SerializeField]	float cardHeight;
 
-	public Card cardPrefab;
 	public MonsterCard monsterPrefab;
 	public SpellCard spellPrefab;
 	[SerializeField]	Vector3 spawnOffset = Vector3.up * 0.1f;
@@ -128,7 +127,11 @@ public class DeckManager : MonoBehaviour
 			temp = Instantiate(spellPrefab.gameObject, pos, rot);
 		}
 		else {
-			temp = Instantiate(cardPrefab.gameObject, pos, rot);
+			//invalid
+			card = null;
+			data = null;
+
+			return null;
 		}
 		card = temp.GetComponent<Card>();
 		card.SetData(data);

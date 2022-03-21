@@ -553,7 +553,9 @@ public class SpellData : CardData {
 	static public void DrawCards(PlayerData target, int index, SpellData spell) {
 		//dont work on cards lol
 		if (index >= 0)	return;
-		target.deck.AutoDrawCards(spell.abilityParameter1, 0.25f, !ServerManager.CheckIfClient(target));
+		
+		//render if client matches
+		target.deck.AutoDrawCards(spell.abilityParameter1, 0.25f, ServerManager.CheckIfClient(target));
 	}
 #endregion
 

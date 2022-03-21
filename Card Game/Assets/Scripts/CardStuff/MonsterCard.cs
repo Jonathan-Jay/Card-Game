@@ -61,8 +61,8 @@ public class MonsterCard : Card
 			healthMesh.text = currHealth.ToString();
 		}
 		else {
-			attackMesh.text = "?/" + ((MonsterData)data).attackRMax;
-			healthMesh.text = "?/" + ((MonsterData)data).healthRMax;
+			attackMesh.text = "?";
+			healthMesh.text = "?";
 		}
 
 		//SetAttack(((MonsterData)data).attack, Color.black);
