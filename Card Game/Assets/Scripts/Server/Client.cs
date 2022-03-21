@@ -72,6 +72,7 @@ public class Client : MonoBehaviour
 		leaveServerEvent?.Invoke();
 		
 		usernameText.text = "";
+		chat.UpdateChat("<color=red>Left The Server</color>");
 		if (chatCanvas.activeInHierarchy)
 			chatCanvas.SetActive(false);
 		Close();

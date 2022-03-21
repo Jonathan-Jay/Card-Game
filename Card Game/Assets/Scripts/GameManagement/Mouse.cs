@@ -45,9 +45,14 @@ public class Mouse : MonoBehaviour {
 
 	public Transform holding = null;
 
+	bool ignore = false;
+	public void IgnoreInput(bool val) {
+		ignore = val;
+	}
+
     // Update is called once per frame
     void Update() {
-		if (disabled)	return;
+		if (disabled || ignore)	return;
 
         Ray rayInfo = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit rayHitInfo;

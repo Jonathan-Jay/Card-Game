@@ -1,3 +1,5 @@
+#define PRINT_TO_CONSOLE
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -173,8 +175,12 @@ public class SynServer
 			tempHandler = server.Accept();
 
 			IPEndPoint clientEP = (IPEndPoint)tempHandler.RemoteEndPoint;
+
+			#if PRINT_TO_CONSOLE
 			//Print Client info (IP and PORT)
 			Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
+			#endif
+
 			tempHandler.Blocking = false;
 			string defaultName = GetName();
 
@@ -217,7 +223,11 @@ public class SynServer
 					//do something with it
 					//Console.Write(ASCIIEncoding.ASCII.GetString(buffer, 0, recv));
 					string code = Encoding.ASCII.GetString(buffer, 0, msgCodeSize);
+
+					#if PRINT_TO_CONSOLE
 					Console.WriteLine(code);
+					#endif
+
 					if (StandardTest(code, player, serverLobby, recv, ref dirty)) {
 						//means it got completed
 					}
@@ -295,7 +305,10 @@ public class SynServer
 							}
 					else if (code == "LAP") {
 						//left app?
+						#if PRINT_TO_CONSOLE
 						Console.WriteLine(player.username + " left the server");
+						#endif
+
 						byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 							+ " left the server" + terminator);
 
@@ -314,7 +327,10 @@ public class SynServer
 				if (sockExcep.SocketErrorCode != SocketError.WouldBlock) {
 					if (sockExcep.SocketErrorCode == SocketError.ConnectionAborted) {
 						//make the player leave
+						#if PRINT_TO_CONSOLE
 						Console.WriteLine(player.username + " lost connection");
+						#endif
+
 						byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 							+ " left the server" + terminator);
 
@@ -351,7 +367,11 @@ public class SynServer
 					if (recv >= 0) {
 						//do something with it
 						string code = Encoding.ASCII.GetString(buffer, 0, msgCodeSize);
+
+						#if PRINT_TO_CONSOLE
 						Console.WriteLine(code + " " + lobby.name);
+						#endif
+
 						if (StandardTest(code, player, lobby, recv, ref ldirty)) {
 							//maybe will have a use idk
 						}
@@ -396,7 +416,10 @@ public class SynServer
 						}
 						else if (code == "LAP") {
 							//left app?
+							#if PRINT_TO_CONSOLE
 							Console.WriteLine(player.username + " left the server");
+							#endif
+
 							byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 								+ " left the server" + terminator);
 
@@ -415,7 +438,10 @@ public class SynServer
 					if (sockExcep.SocketErrorCode != SocketError.WouldBlock) {
 						if (sockExcep.SocketErrorCode == SocketError.ConnectionAborted) {
 							//make the player leave
+							#if PRINT_TO_CONSOLE
 							Console.WriteLine(player.username + " lost connection");
+							#endif
+
 							byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 								+ " left the server" + terminator);
 
@@ -441,7 +467,10 @@ public class SynServer
 			//check for players that left and stuff
 			if (lobby.players.Count == 0) {
 				//all players left, close the lobby
+				#if PRINT_TO_CONSOLE
 				Console.WriteLine("Lobby " + lobby.name + " deleted");
+				#endif
+
 				lobbies.RemoveAt(j);
 				dirty = true;
 				continue;
@@ -456,10 +485,15 @@ public class SynServer
 					player.handler.SendTo(dirtyMsg, player.remoteEP);
 				}
 				if (lobby.inGame) {
+					#if PRINT_TO_CONSOLE
 					Console.WriteLine("Dirty Game " + lobby.name);
+					#endif
 				}
 				else {
+					#if PRINT_TO_CONSOLE
 					Console.WriteLine("Dirty " + lobby.name);
+					#endif
+
 					foreach (Player other in lobby.players) {
 						byte[] message = Encoding.ASCII.GetBytes("PIN" + other.status
 							+ spliter + other.username + terminator);
@@ -481,7 +515,10 @@ public class SynServer
 			//sleep for a moment
 			//System.Threading.Thread.Sleep(10);
 
+			#if PRINT_TO_CONSOLE
 			Console.WriteLine("Dirty server");
+			#endif
+
 			serverLobby.playerCount = serverLobby.players.Count;
 
 			foreach (Player player in serverLobby.players) {
