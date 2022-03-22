@@ -137,6 +137,8 @@ public class DeckManager : MonoBehaviour
 		card.SetData(data);
 		card.player = player;
 
+		player.AddCard(card);
+
 		if (renderFace) {
 			card.RenderFace();
 		}

@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1490228981855059248}
   m_LocalRotation: {x: 0.6087614, y: -0, z: -0, w: 0.79335344}
-  m_LocalPosition: {x: 0, y: 2.5, z: -1.5}
+  m_LocalPosition: {x: 0, y: 4.5, z: -1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1490228982075256586}
@@ -91,6 +91,7 @@ MonoBehaviour:
   deck: {fileID: 0}
   turnEndButton: {fileID: 0}
   canDraw: 0
+  cardsHeld: []
   damageAudioPlayer: {fileID: 0}
   healAudioPlayer: {fileID: 0}
 --- !u!1 &1490228982155700937
@@ -280,7 +281,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1490228982326011806}
   m_LocalRotation: {x: -0.29237175, y: -0, z: -0, w: 0.9563048}
-  m_LocalPosition: {x: 0, y: 0, z: -3.5}
+  m_LocalPosition: {x: 0, y: 0.5, z: -3.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1490228982075256586}
@@ -299,7 +300,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 1490228982155700941}
-  doHover: 0
+  doHover: 1
+  doSplay: 0
+  SplayDegree: 15
+  splaySelectEmptiness: 3
+  splaySelectIndex: -1
 --- !u!114 &1490228982326011793
 MonoBehaviour:
   m_ObjectHideFlags: 0

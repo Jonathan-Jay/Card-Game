@@ -57,6 +57,7 @@ public class CardHolder : MonoBehaviour
 		card.tag = playerData.playerTag;
 		holding = card;
 		GetComponentInChildren<MeshRenderer>().material.color = hasCard;
+
 		StartCoroutine(CardTransition(newCard, newCard && card.data.cost > 0));
 
 		return true;

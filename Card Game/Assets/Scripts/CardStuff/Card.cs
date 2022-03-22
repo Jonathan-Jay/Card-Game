@@ -61,8 +61,11 @@ public class Card : MonoBehaviour
 	}
 
 	public virtual void OnPlace(PlayerData current, PlayerData opposing) {
-		//don't allow default cards to survive
+		//render most cards
 		RenderFace();
+		
+		//also remove from hand
+		current.RemoveCard(this);
 	}
 
 	public void Release() {
@@ -77,9 +80,9 @@ public class Card : MonoBehaviour
 	}
 
 	public void CallBackCard() {
+		//put in hand
 		if (transform.parent != player.hand.transform) {
-			transform.SetParent(player.hand.transform, true);
-			StartCoroutine(ReturnToHand());
+			player.hand.ReturnCardToHand(transform);
 		}
 	}
 
@@ -90,59 +93,5 @@ public class Card : MonoBehaviour
 			yield return eof;
 		}
 		Destroy(gameObject);
-	}
-
-	IEnumerator ReturnToHand() {
-		gameObject.layer = player.hand.input.ignoredLayer;
-
-		float returnSpeed = 2f;
-		float returnRotSpeed = 135f;
-		GetComponent<Rigidbody>().isKinematic = true;
-
-		//return the card to the hand, do somethign proper next time
-		int numInHands = player.hand.transform.childCount;
-		Vector3 targetPos = Vector3.left * 1.2f + Vector3.forward * 0.3f;
-		while (numInHands > 5) {
-			targetPos += Vector3.back * 0.2f + Vector3.up * 0.1f;
-			numInHands -= 5;
-		}
-		targetPos += Vector3.right * numInHands * 0.4f;
-		//Quaternion targetRot = Quaternion.identity;
-		Quaternion targetRot = Quaternion.Euler(0f, 0f, 10f);
-
-		while (transform.parent == player.hand.transform)
-		{
-			if (Vector3.Distance(transform.localPosition, targetPos) > 0.1f) {
-				transform.localPosition = Vector3.Lerp(transform.localPosition, targetPos,
-					returnSpeed * Time.deltaTime);
-			}
-			else {
-				transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPos,
-					0.25f * Time.deltaTime);
-			}
-
-			if (transform.localRotation != targetRot) {
-			//if (Quaternion.Angle(transform.localRotation, targetRot) > 1f) {
-			//	transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRot,
-			//		returnSpeed * Time.deltaTime);
-			//}
-			//else {
-				transform.localRotation = Quaternion.RotateTowards(transform.localRotation, targetRot,
-					returnRotSpeed * Time.deltaTime);
-			}
-
-			if (transform.localPosition == targetPos && transform.localRotation == targetRot){
-				break;
-			}
-			yield return eof;
-		}
-
-		//ensure transform is good
-		if (transform.parent == player.hand.transform) {
-			transform.localPosition = targetPos;
-			transform.localRotation = targetRot;
-		}
-
-		gameObject.layer = player.hand.input.cardLayer;
 	}
 }

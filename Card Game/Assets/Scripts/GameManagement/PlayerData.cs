@@ -15,6 +15,8 @@ public class PlayerData : MonoBehaviour {
 	public PressEventButton turnEndButton;
 	public int canDraw = 0;
 
+	[SerializeField] List<Card> cardsHeld;
+
 	//sends old value
 	public event System.Action<int> healthUpdated;
 	//sends old value
@@ -37,6 +39,13 @@ public class PlayerData : MonoBehaviour {
 		drawCard?.Invoke();
 	}
 
+	public void AddCard(Card card) {
+		cardsHeld.Add(card);
+	}
+	public void RemoveCard(Card card) {
+		cardsHeld.Remove(card);
+	}
+
 	public void DrawCard() {
 		drawCard?.Invoke();
 	}
@@ -48,10 +57,9 @@ public class PlayerData : MonoBehaviour {
 		//we do this even if the deck is empty in case the player bugs the game out
 		canDraw = Mathf.Min(cardsPerTurn, deck.deck.Count);
 
-		//temporary
-		if (hand.transform.childCount < requiredCards) {
-			canDraw = Mathf.Min(requiredCards - hand.transform.childCount
-				+ cardsPerTurn, deck.deck.Count);
+		//we store the owned cards in cardsheld
+		if (cardsHeld.Count < requiredCards) {
+			canDraw = Mathf.Min(requiredCards - cardsHeld.Count + cardsPerTurn, deck.deck.Count);
 		}
 
 		//clamp this

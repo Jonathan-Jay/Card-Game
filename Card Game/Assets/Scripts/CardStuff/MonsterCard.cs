@@ -98,7 +98,8 @@ public class MonsterCard : Card
 		}
 		else {
 			//always render free placed cards
-			RenderFace();
+			//can also instantly remove
+			base.OnPlace(null, null);
 		}
 	}
 
@@ -185,8 +186,8 @@ public class MonsterCard : Card
 			}
 			transform.localPosition = placement.floatingHeight;
 
-			//render face
-			RenderFace();
+			//remove card after paying cost, dont need parameters
+			base.OnPlace(null, null);
 
 			//set the stats
 			//calc stats

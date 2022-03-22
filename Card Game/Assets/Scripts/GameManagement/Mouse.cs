@@ -176,15 +176,14 @@ public class Mouse : MonoBehaviour {
 		if (!hitObj.CompareTag("Interactable"))	return;
 
 		Card cardTest = hitObj.GetComponent<Card>();
-		if (cardTest != null && cardTest.player == player) {
-			hit.rigidbody.isKinematic = true;
-			cardTest.transform.SetParent(mouseObject, true);
-			//cardTest.transform.position += Vector3.up * vertOffset;
-			cardTest.transform.localPosition = Vector3.up * vertOffset;
-			cardTest.gameObject.layer = ignoredLayer;
+		if (cardTest == null || cardTest.player != player) return;
 
-			holding = cardTest.transform;
-		}
+		hit.rigidbody.isKinematic = true;
+		cardTest.transform.SetParent(mouseObject, true);
+		cardTest.transform.localPosition = Vector3.up * vertOffset;
+		cardTest.gameObject.layer = ignoredLayer;
+
+		holding = cardTest.transform;
 	}
 
 	/*
