@@ -7,7 +7,9 @@ public class HandManager : MonoBehaviour
 	public Mouse input;
 	public bool doHover = false;
 	public bool doSplay = false;
-	public float SplayDegree = 15f;
+	public float totalSplayDegree = 90f;
+	public float hoverHeight = 0.1f;
+	float SplayDegree = 15f;
 	public int splaySelectEmptiness = 3;
 	public int splaySelectIndex = -1;
 
@@ -51,6 +53,9 @@ public class HandManager : MonoBehaviour
 		int extraCards = splaySelectEmptiness * 2;
 		int extraCardsHalf = splaySelectEmptiness;
 		int effectiveChildCount = transform.childCount + (splaySelectIndex >= 0 ? extraCards : 0);
+
+		SplayDegree = totalSplayDegree / effectiveChildCount;
+
 		float temp = 0.5f * SplayDegree * (effectiveChildCount - 1);
 
         for (int i = 0; i < effectiveChildCount; ++i) {
@@ -58,11 +63,21 @@ public class HandManager : MonoBehaviour
 				continue;
 
 			int effectedCard = i;
-			if (splaySelectIndex >= 0 && i == splaySelectIndex + extraCardsHalf) effectedCard -= extraCardsHalf;
-			if (splaySelectIndex >= 0 && i > splaySelectIndex + extraCardsHalf) effectedCard -= extraCards;
+			Vector3 basePos = Vector3.back;
+			float tilt = -10f;
+			if (splaySelectIndex >= 0 && i == splaySelectIndex + extraCardsHalf) {
+				effectedCard -= extraCardsHalf;
+				basePos += Vector3.up * hoverHeight;
+				tilt = 0f;
+			}
+			else {
+				if (splaySelectIndex >= 0 && i > splaySelectIndex + extraCardsHalf) {
+					effectedCard -= extraCards;
+				}
+			}
 
-			transform.GetChild(effectedCard).localPosition = Vector3.back + Quaternion.AngleAxis(SplayDegree * i - temp, Vector3.up) * Vector3.forward;
-			transform.GetChild(effectedCard).localRotation = Quaternion.Euler(0f, SplayDegree * i - temp, -10f);
+			transform.GetChild(effectedCard).localPosition = basePos + Quaternion.AngleAxis(SplayDegree * i - temp, Vector3.up) * Vector3.forward;
+			transform.GetChild(effectedCard).localRotation = Quaternion.Euler(0f, SplayDegree * i - temp, tilt);
 		}
 	}
 

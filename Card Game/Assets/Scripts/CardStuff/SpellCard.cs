@@ -101,7 +101,7 @@ public class SpellCard : Card
 		}
 
 		//now we can render the face
-		base.OnPlace(null, null);
+		base.OnPlace(current, opposing);
 		
 		//cast spell should take card of this
 		((SpellData)data).CastSpell(this, target, newIndex);

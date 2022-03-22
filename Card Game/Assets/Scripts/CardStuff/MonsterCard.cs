@@ -99,7 +99,7 @@ public class MonsterCard : Card
 		else {
 			//always render free placed cards
 			//can also instantly remove
-			base.OnPlace(null, null);
+			base.OnPlace(current, opposing);
 		}
 	}
 
@@ -186,8 +186,8 @@ public class MonsterCard : Card
 			}
 			transform.localPosition = placement.floatingHeight;
 
-			//remove card after paying cost, dont need parameters
-			base.OnPlace(null, null);
+			//remove card after paying cost
+			base.OnPlace(current, opposing);
 
 			//set the stats
 			//calc stats
