@@ -412,7 +412,7 @@ public class SynServer
 
 						#if PRINT_TO_CONSOLE
 						Console.WriteLine(code + " " + lobby.name);
-#endif
+						#endif
 
 						if (StandardTest(code, player, lobby, recv, ref ldirty)) {
 							//maybe will have a use idk
@@ -421,8 +421,8 @@ public class SynServer
 							if (code == "SRT") {
 								//make sure it's a valid start, and it's a player attempting
 								//valid if both players assigned and a player attempted to start the game
-								//if (lobby.player1 >= 0 && lobby.player2 >= 0 &&
-									//(lobby.player1 == player.id || lobby.player2 == player.id))
+								if (lobby.player1 >= 0 && lobby.player2 >= 0 &&
+									(lobby.player1 == player.id || lobby.player2 == player.id))
 								{
 									lobby.inGame = true;
 									//starting game, send all players into game, can also probably ignore dirty tags
@@ -511,10 +511,10 @@ public class SynServer
 								//maybe we dont do this...
 							}
 							else if (code == "EXT") {
-								lobby.inGame = false;
-
 								//if player, make everyone quit
 								if (lobby.player1 == player.id && lobby.player2 == player.id) {
+									lobby.inGame = false;
+
 									//exiting game, send them back
 									foreach (Player other in lobby.players) {
 										//if they already exited, dont bother

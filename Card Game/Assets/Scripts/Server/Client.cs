@@ -341,6 +341,8 @@ public class Client : MonoBehaviour
 
 			joinedLobby?.Invoke(inLobby, lobbyName);
 		}
+		
+		//can happen in gameplay
 		else if (code == "LLB") {
 			//if leaving lobby, decrement camera back to index 1
 			inLobby = false;
@@ -349,6 +351,8 @@ public class Client : MonoBehaviour
 
 			joinedLobby?.Invoke(inLobby, lobbyName);
 		}
+		
+		//shouldnt happen in gameplay, etc.
 		else if (code == "SRT") {
 			//format is player1id/player2id
 			string ids = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
@@ -363,12 +367,14 @@ public class Client : MonoBehaviour
 			SceneController.ChangeScene(gameSceneName);
 		}
 		
-		//probably wont happen in this code, so maybe we'll need to move it
+		//consider seperating once we add gameplay loop
 		else if (code == "EXT") {
 			//load menu and reset multiplayer flag
 			inGame = false;
 			ServerManager.localMultiplayer = true;
 			SceneController.ChangeScene("Main Menu");
+			//also send dirty flag
+			client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
 		}
 	}
 
