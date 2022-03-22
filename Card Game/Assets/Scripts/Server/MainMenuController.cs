@@ -70,7 +70,7 @@ public class MainMenuController : MonoBehaviour
 	public void TryConnect() {
 		//dont allow empty
 		if (ipInput.text == "") return;
-
+		GetComponent<AudioQueue>().Play();
 		client.TryConnect(ipInput.text);
 	}
 

@@ -145,7 +145,7 @@ public class DeckManager : MonoBehaviour
 		card = null;
 
 		//play sound
-		audioPlayer?.Play();
+		audioPlayer?.PlayRandom();
 
 		return temp.transform;
 	}
