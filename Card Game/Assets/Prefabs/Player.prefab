@@ -300,7 +300,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 1490228982155700941}
-  doHover: 0
+  doHover: 1
+  doSplay: 0
+  SplayDegree: 15
+  SplayOffset: 1
 --- !u!114 &1490228982326011793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1237,7 +1240,6 @@ MonoBehaviour:
   col: {fileID: 5693801314463750052}
   text: {fileID: 443504155386815498}
   cardHeight: 0.02
-  cardPrefab: {fileID: 763856821016003713, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
   monsterPrefab: {fileID: 4927160011221335715, guid: b754fb93e1073534f82c348aa95ea457, type: 3}
   spellPrefab: {fileID: 5665379, guid: e726434936a833d4a91d2c51dedefb33, type: 3}
   spawnOffset: {x: 0, y: 0.05, z: 0}
