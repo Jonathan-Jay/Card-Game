@@ -9,6 +9,7 @@ using System.Net.Sockets;
 public class Client : MonoBehaviour
 {
 	public const string gameSceneName = "GameScene";
+	public const char spliter = '\t';
 	public string notificationColour = "yellow";
 	public const int msgCodeSize = 3;
 	public const char terminator = '\r';
@@ -21,6 +22,8 @@ public class Client : MonoBehaviour
 	bool connecting = false;
 	public static bool canStart { get; private set;} = false;
 	public static bool inGame { get; private set;} = false;
+	public static int playerId {get; private set;} = -1;
+
 	static string lobbyName = "";
 	static bool inLobby = false;
 	[SerializeField] TMPro.TMP_Text usernameText;
@@ -141,9 +144,14 @@ public class Client : MonoBehaviour
 					//do the first test manually
 					username = Encoding.ASCII.GetString(recBuffer, 0, recv);
 
+					//format is id/username, where / is the spliter
+					int index = username.IndexOf(spliter);
+					playerId = int.Parse(username.Substring(0, index));
+					username = username.Substring(index + 1);
+
 					//send it whatever might be after the name
-					int index = username.IndexOf(terminator);
-					if (index > 0) {
+					index = username.IndexOf(terminator);
+					if (index > 1) {
 						byte[] testMessage = new byte[recv - index - 1];
 						Buffer.BlockCopy(recBuffer, index + 1, testMessage, 0, testMessage.Length);
 
@@ -230,12 +238,22 @@ public class Client : MonoBehaviour
 		}
 	}
 
+	public static void Concede() {
+		if (inGame && ServerManager.CheckIfClient(null)) {
+			client.SendTo(Encoding.ASCII.GetBytes("CND"), server);
+		}
+	}
+
 	public static void Close() {
 		if (!canStart)	return;
 
 		//make it stall
-		client.Blocking = true;
+		//client.Blocking = true;
 		client.SendTo(Encoding.ASCII.GetBytes("LAP"), server);
+
+		//reset player id
+		playerId = -1;
+
 		//release the resource
 		client.Shutdown(SocketShutdown.Both);
 		client.Close();
@@ -267,7 +285,7 @@ public class Client : MonoBehaviour
 		
 		int index = textBuffer.IndexOf(terminator);
 		//in cases of overflow
-		while (index > 0) {
+		while (index > 1) {
 			//check if words
 			ParseMessage(textBuffer.Substring(0, 3),
 				Encoding.ASCII.GetBytes(textBuffer.Substring(0, index)), index - msgCodeSize);
@@ -332,6 +350,13 @@ public class Client : MonoBehaviour
 			joinedLobby?.Invoke(inLobby, lobbyName);
 		}
 		else if (code == "SRT") {
+			//format is player1id/player2id
+			string ids = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+			
+			int spliterIndex = ids.IndexOf(spliter);
+			ServerManager.p1Index = int.Parse(ids.Substring(0, spliterIndex));
+			ServerManager.p2Index = int.Parse(ids.Substring(spliterIndex + 1));
+			
 			//load game
 			inGame = true;
 			ServerManager.localMultiplayer = false;

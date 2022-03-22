@@ -28,6 +28,8 @@ public class MainMenuController : MonoBehaviour
 		client.dirty += CleanLists;
 		client.lobbyError += LobbyError;
 		client.joinedLobby += JoinedLobby;
+
+		//make the start game button not work right away?
 	}
 
 	private void OnDisable() {

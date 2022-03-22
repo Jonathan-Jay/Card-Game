@@ -9,9 +9,9 @@ public class LobbyProfile : UITemplate
 	[SerializeField] TMP_Text lobbyName;
 	[SerializeField] TMP_Text playerCount;
 	int index;
-    public override void SetData(string username, string playerCount) {
+    public override void SetData(string username, int id, string playerCount) {
 		//all usernames should start with the index
-		index = int.Parse(username.Substring(0, 1));
+		index = id;
 		lobbyName.text = username.Substring(1);
 		this.playerCount.text = playerCount + " player(s)";
 	}

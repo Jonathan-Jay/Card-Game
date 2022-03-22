@@ -150,26 +150,34 @@ public class DeckManager : MonoBehaviour
 		return temp.transform;
 	}
 
-	static WaitForSeconds pointFive = new WaitForSeconds(0.5f);
+	static WaitForSeconds pointFive = new WaitForSeconds(0.4f);
 	public void FirstDraw(bool renderFace) {
-		if (player.canDraw == 0)	return;
+		if (player.canDraw == 0) {
+			player.hand.input.ActivateAll();
+			return;
+		}
 
 		//give ability to click stuff
-		player.hand.input.DeActivateDeck();
-		player.hand.input.ActivateAll();
+		//player.hand.input.DeActivateDeck();
+		//player.hand.input.ActivateAll();
 
 		if (deck.Count == 0)	return;
-		StartCoroutine(AutomaticallyDrawCards(player.canDraw, pointFive, false, renderFace));
+		StartCoroutine(AutomaticallyDrawCards(player.canDraw, pointFive, false, renderFace, true));
 	}
 
 	//automatically adds cards to the hand
 	public void AutoDrawCards(int amt, float delay, bool renderFace = true) {
 		if (deck.Count == 0)	return;
 		//add cards to hand
-		StartCoroutine(AutomaticallyDrawCards(amt, new WaitForSeconds(delay), true, renderFace));
+		StartCoroutine(AutomaticallyDrawCards(amt, new WaitForSeconds(delay), true, renderFace, false));
 	}
 
-	IEnumerator AutomaticallyDrawCards(int amt, WaitForSeconds delay, bool ignoreDrawLimit, bool renderFace) {
+	IEnumerator AutomaticallyDrawCards(int amt, WaitForSeconds delay,
+		bool ignoreDrawLimit, bool renderFace, bool activateInputs)
+	{
+		if (!ignoreDrawLimit)
+			yield return delay;
+		
 		Transform trans;
 		for (int i = 0; i < amt; ++i) {
 			//always ignore drawLimit and draw cards facing down
@@ -182,6 +190,11 @@ public class DeckManager : MonoBehaviour
 			if (deck.Count == 0) break;
 
 			yield return delay;
+		}
+
+		//activate inputs on first draw
+		if (activateInputs) {
+			player.hand.input.ActivateAll();
 		}
 	}
 }

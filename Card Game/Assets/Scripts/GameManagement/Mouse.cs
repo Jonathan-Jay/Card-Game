@@ -86,7 +86,7 @@ public class Mouse : MonoBehaviour {
 
 	public void ActivateAll() {
 		clickEvent += ClickButton;
-		clickEvent += ClickDeck;
+		//clickEvent += ClickDeck;
 		releaseEvent += ReleaseCardHolder;
 		clickEvent += ClickCard;
 		releaseEvent += ReleaseCard;
@@ -94,7 +94,7 @@ public class Mouse : MonoBehaviour {
 
 	public void DeActivateAll() {
 		clickEvent -= ClickButton;
-		clickEvent -= ClickDeck;
+		//clickEvent -= ClickDeck;
 		releaseEvent -= ReleaseCardHolder;
 		clickEvent -= ClickCard;
 		releaseEvent -= ReleaseCard;
@@ -112,13 +112,14 @@ public class Mouse : MonoBehaviour {
 		releaseEvent -= ReleaseCard;
 	}
 
+	/*
 	public void ActivateDeck() {
 		clickEvent += ClickDeck;
 	}
 
 	public void DeActivateDeck() {
 		clickEvent -= ClickDeck;
-	}
+	}*/
 
 	public void LinkInteractablesFunc() {
 		//make sure we're not holding anything
@@ -152,7 +153,7 @@ public class Mouse : MonoBehaviour {
 		if (activeAnims++ != 0)	return;
 
 		clickEvent -= ClickButton;
-		clickEvent -= ClickDeck;
+		//clickEvent -= ClickDeck;
 	}
 
 	public void DeactivateAnimationMode() {
@@ -160,7 +161,7 @@ public class Mouse : MonoBehaviour {
 		if (--activeAnims != 0)	return;
 
 		clickEvent += ClickButton;
-		clickEvent += ClickDeck;
+		//clickEvent += ClickDeck;
 	}
 
 	public void ActivateSpellMode() {
@@ -197,6 +198,8 @@ public class Mouse : MonoBehaviour {
 			holding = cardTest.transform;
 		}
 	}
+
+	/*
 	void ClickDeck(RaycastHit hit) {
 		//first check if we wanna do smt
 		GameObject hitObj = hit.transform.gameObject;
@@ -206,7 +209,7 @@ public class Mouse : MonoBehaviour {
 		if (deckTest != null && deckTest.player == player) {
 			deckTest.FirstDraw(true);
 		}
-	}
+	}*/
 
 	void ClickButton(RaycastHit hit) {
 		GameObject hitObj = hit.transform.gameObject;

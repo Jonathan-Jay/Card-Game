@@ -297,7 +297,7 @@ GameObject:
   - component: {fileID: 7326191857588109863}
   m_Layer: 0
   m_Name: Deck
-  m_TagString: Interactable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -391,7 +391,6 @@ MonoBehaviour:
   col: {fileID: 7326191857588110041}
   text: {fileID: 7881451320985533929}
   cardHeight: 0.01
-  cardPrefab: {fileID: 763856821016003713, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
   monsterPrefab: {fileID: 4927160011221335715, guid: b754fb93e1073534f82c348aa95ea457, type: 3}
   spellPrefab: {fileID: 5665379, guid: e726434936a833d4a91d2c51dedefb33, type: 3}
   spawnOffset: {x: 0, y: 0.05, z: 0}

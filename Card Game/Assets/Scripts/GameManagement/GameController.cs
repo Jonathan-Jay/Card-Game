@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour
 	public PlayerData player1;
 	public PlayerData player2;
 	public event System.Action turnEnded;
+	public event System.Action<PlayerData> playerWon;
 
     void Awake() {
 		if (generateField)
@@ -142,17 +143,19 @@ public class GameController : MonoBehaviour
 		current.hand.input.ActivateAll();
 
 		//possibly deactivate if the player won
-		//if (opposing.currentHP > 0) {
+		if (opposing.currentHP > 0) {
 			turnEnded?.Invoke();
-		//}
-		//else {
+		}
+		else {
 			//what happens when a player wins
-			//yield break;
-		//}
+			playerWon?.Invoke(current);
+			yield break;
+		}
 
 		//check the fatigue of the current player
 		if (opposing.FatigueCheck(fatigueDmg)) {
 			//what happens if opponent dies on first turn
+			playerWon?.Invoke(current);
 		}
 	}
 

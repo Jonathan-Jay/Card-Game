@@ -146,12 +146,12 @@ public class MonsterCard : Card
 		//cancelled
 		if (requirement < 0) {
 			//revert transforms of selected cards
-			for (int i = 0; i < targets.Count; ++i) {
-				if (index >= current.field.Count && current.backLine[index - current.field.Count].holding)
-					current.backLine[index - current.field.Count].holding
+			foreach (int i in targets) {
+				if (i >= current.field.Count && current.backLine[i - current.field.Count].holding)
+					current.backLine[i - current.field.Count].holding
 						.transform.localRotation = Quaternion.identity;
-				else if (current.field[index].holding)
-					current.field[index].holding.transform.localRotation = Quaternion.identity;
+				else if (current.field[i].holding)
+					current.field[i].holding.transform.localRotation = Quaternion.identity;
 			}
 			Release();
 		}
@@ -159,11 +159,11 @@ public class MonsterCard : Card
 		else {
 			//kill all selected cards
 			MonsterCard monster = null;
-			for (int i = 0; i < targets.Count; ++i) {
-				if (targets[i] >= current.field.Count && current.backLine[targets[i] - current.field.Count].holding)
-					monster = (MonsterCard)current.backLine[targets[i] - current.field.Count].holding;
-				else if (current.field[targets[i]].holding)
-					monster = (MonsterCard)current.field[targets[i]].holding;
+			foreach (int i in targets) {
+				if (i >= current.field.Count && current.backLine[i - current.field.Count].holding)
+					monster = (MonsterCard)current.backLine[i - current.field.Count].holding;
+				else if (current.field[i].holding)
+					monster = (MonsterCard)current.field[i].holding;
 				
 				if (monster && monster != this)
 					monster.TakeDamage(monster.currHealth);

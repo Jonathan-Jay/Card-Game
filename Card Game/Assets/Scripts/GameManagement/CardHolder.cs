@@ -104,10 +104,11 @@ public class CardHolder : MonoBehaviour
 			if (callPlace)
 				holding.OnPlace(playerData, opposingData);
 			cardTrans.localPosition = floatingHeight;
+			
+			//play the sound
+			audioPlayer?.Play();
 		}
 
-		//play the sound
-		audioPlayer?.Play();
 
 		yield return new WaitForSeconds(0.25f);
 		if (disabledAnimationMode)
