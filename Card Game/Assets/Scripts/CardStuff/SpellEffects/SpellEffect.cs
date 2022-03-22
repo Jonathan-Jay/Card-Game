@@ -7,6 +7,13 @@ public class SpellEffect : MonoBehaviour
 {
 	public float duration = 0.5f;
 	public float deathDelay = 0.25f;
+
+	protected AudioQueue sounds;
+
+	private void Awake() {
+		sounds = GetComponent<AudioQueue>();
+	}
+
 	public void PerformEffect(SpellCard caster, PlayerData target, int index, int count) {
 		StartCoroutine(DelayedCasting(((SpellData)caster.data).ability, target,
 			index, caster, count));
@@ -39,6 +46,7 @@ public class SpellEffect : MonoBehaviour
 		}
 
 		ability?.Invoke(target, index, (SpellData)caster.data);
+		sounds.Play();
 
 		//kill the thing
 		oneOverDelay = 1f/deathDelay;

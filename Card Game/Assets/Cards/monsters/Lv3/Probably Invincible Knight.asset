@@ -20,3 +20,4 @@ MonoBehaviour:
   healthRMax: 0
   attackRMax: 0
   random: 0
+  attackSound: {fileID: 8300000, guid: c46df838faaf05643bd7369d6c2a6a43, type: 3}

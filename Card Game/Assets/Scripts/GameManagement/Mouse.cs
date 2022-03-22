@@ -11,19 +11,7 @@ public class Mouse : MonoBehaviour {
 	public int ignoredLayer;
 	public int invisibleLayer;
 	public int cardLayer;
-
-	//has to be assigned outside of the class
-	[System.Serializable]
-	public class RaycastEvent : UnityEngine.Events.UnityEvent<RaycastHit> {
-		public static RaycastEvent operator+(RaycastEvent rayEvent, UnityEngine.Events.UnityAction<RaycastHit> listener) {
-			rayEvent.AddListener(listener);
-			return rayEvent;
-		}
-		public static RaycastEvent operator-(RaycastEvent rayEvent, UnityEngine.Events.UnityAction<RaycastHit> listener) {
-			rayEvent.RemoveListener(listener);
-			return rayEvent;
-		}
-	}
+	
 	public event System.Action<RaycastHit> hoverEvent;
 	public event System.Action<RaycastHit> clickEvent;
 	//public RaycastEvent clickEvent;

@@ -10,6 +10,8 @@ public class MonsterData : CardData {
 	public int healthRMax;
 	public int attackRMax;
 	public bool random = false;
+	public AudioClip attackSound;
+
 	public override bool CheckCost(PlayerData player)
 	{
 		int monsterCount = 0;

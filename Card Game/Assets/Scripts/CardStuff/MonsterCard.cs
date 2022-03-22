@@ -23,6 +23,12 @@ public class MonsterCard : Card
 	}
 	List<TempEffect> boosts = new List<TempEffect>();
 
+	AudioQueue sounds;
+
+	private void Awake() {
+		sounds = GetComponent<AudioQueue>();
+	}
+
 	private void Start() {
 		if (data != null) {
 			SetData(data);
@@ -47,6 +53,9 @@ public class MonsterCard : Card
 		}
 		attackMesh.color = Color.black;
 		healthMesh.color = Color.black;
+
+		if (sounds.empty)
+			sounds.AddClip(((MonsterData)data).attackSound);
 	}
 
 	public override void RenderFace() {
@@ -270,6 +279,7 @@ public class MonsterCard : Card
 		}
 
 		attack.Invoke();
+		sounds.Play();
 
 		while (transform.localPosition != returnPos) {
 			transform.localPosition = Vector3.MoveTowards(transform.localPosition, returnPos,

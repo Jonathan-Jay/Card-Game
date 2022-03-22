@@ -5,12 +5,23 @@ using UnityEngine;
 public class AudioQueue : MonoBehaviour
 {
 	[SerializeField] List<AudioSource> sounds = new List<AudioSource>();
-	private void Start() {
+	private void Awake() {
 		//only fill if not manually assigned
 		if (sounds.Count == 0) {
 			foreach (AudioSource source in GetComponents<AudioSource>()) {
 				sounds.Add(source);
 			}
+		}
+	}
+
+	public bool empty = false;
+
+	public void AddClip(AudioClip clip) {
+		//for dirty checking
+		empty = false;
+
+		foreach (AudioSource source in sounds) {
+			source.clip = clip;
 		}
 	}
 
@@ -26,6 +37,7 @@ public class AudioQueue : MonoBehaviour
 		//selects a track to play and will play it.
 		sounds[index % sounds.Count].Play();
 	}
+
 	int lastPlayed = -1;
 	public void PlayRandom()
 	{

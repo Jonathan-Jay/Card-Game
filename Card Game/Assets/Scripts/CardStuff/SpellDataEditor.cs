@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(SpellData))]
+[CanEditMultipleObjects]
 public class SpellDataEditor : Editor
 {
 	static bool lockedDescription = true;
@@ -153,54 +154,57 @@ public class SpellDataEditor : Editor
 
 		cardName.stringValue = EditorGUILayout.TextField("Card Name", cardName.stringValue, richTextBoxed);
 		EditorGUILayout.PropertyField(cardArt);
-		cost.intValue = EditorGUILayout.IntSlider("Cost", cost.intValue, 0, 5);
 		
-		bool dirty = false;
-		int temp;
+		//if multiediting, can add other safeties, but whatevs
+		if (cardName.hasMultipleDifferentValues) {
+			EditorGUILayout.PropertyField(actionParameter1);
+			EditorGUILayout.PropertyField(actionParameter2);
+			EditorGUILayout.PropertyField(abilityParameter1);
+			EditorGUILayout.PropertyField(abilityParameter2);
+			EditorGUILayout.PropertyField(abilityParameter3);
+			EditorGUILayout.PropertyField(cardDescription);
+			EditorGUILayout.PropertyField(effect);
+			EditorGUILayout.PropertyField(targetting);
+			EditorGUILayout.PropertyField(activate);
+			EditorGUILayout.PropertyField(ability);
+
+			this.serializedObject.ApplyModifiedProperties();
+			return;
+		}
 
 		unlockedInts = EditorGUILayout.Toggle("Unlock Sliders", unlockedInts);
+
+		bool dirty = false;
+
 		if (unlockedInts){
-			temp = actionParameter1.intValue;
-			actionParameter1.intValue = EditorGUILayout.IntField("Action Parameter 1", actionParameter1.intValue);
-			dirty = temp != actionParameter1.intValue || dirty;
+			cost.intValue = EditorGUILayout.IntField("Cost", cost.intValue);
 
-			temp = actionParameter2.intValue;
-			actionParameter2.intValue = EditorGUILayout.IntField("Action Parameter 2", actionParameter2.intValue);
-			dirty = temp != actionParameter2.intValue || dirty;
+			EditorGUI.BeginChangeCheck();
 
-			temp = abilityParameter1.intValue;
-			abilityParameter1.intValue = EditorGUILayout.IntField("Ability Parameter 1", abilityParameter1.intValue);
-			dirty = temp != abilityParameter1.intValue || dirty;
-
-			temp = abilityParameter2.intValue;
-			abilityParameter2.intValue = EditorGUILayout.IntField("Ability Parameter 2", abilityParameter2.intValue);
-			dirty = temp != abilityParameter2.intValue || dirty;
-
-			temp = abilityParameter3.intValue;
-			abilityParameter3.intValue = EditorGUILayout.IntField("Ability Parameter 3", abilityParameter3.intValue);
-			dirty = temp != abilityParameter3.intValue || dirty;
+			EditorGUILayout.PropertyField(actionParameter1);
+			EditorGUILayout.PropertyField(actionParameter2);
+			EditorGUILayout.PropertyField(abilityParameter1);
+			EditorGUILayout.PropertyField(abilityParameter2);
+			EditorGUILayout.PropertyField(abilityParameter3);
 		}
 		else {
-			temp = actionParameter1.intValue;
-			actionParameter1.intValue = EditorGUILayout.IntSlider("Action Parameter 1", actionParameter1.intValue, 0, 10);
-			dirty = temp != actionParameter1.intValue || dirty;
+			cost.intValue = EditorGUILayout.IntSlider("Cost", cost.intValue, 0, 5);
 
-			temp = actionParameter2.intValue;
-			actionParameter2.intValue = EditorGUILayout.IntSlider("Action Parameter 2", actionParameter2.intValue, 0, 10);
-			dirty = temp != actionParameter2.intValue || dirty;
+			EditorGUI.BeginChangeCheck();
 
-			temp = abilityParameter1.intValue;
-			abilityParameter1.intValue = EditorGUILayout.IntSlider("Ability Parameter 1", abilityParameter1.intValue, -10, 10);
-			dirty = temp != abilityParameter1.intValue || dirty;
-
-			temp = abilityParameter2.intValue;
-			abilityParameter2.intValue = EditorGUILayout.IntSlider("Ability Parameter 2", abilityParameter2.intValue, -10, 10);
-			dirty = temp != abilityParameter2.intValue || dirty;
-
-			temp = abilityParameter3.intValue;
-			abilityParameter3.intValue = EditorGUILayout.IntSlider("Ability Parameter 3", abilityParameter3.intValue, -10, 10);
-			dirty = temp != abilityParameter3.intValue || dirty;
+			actionParameter1.intValue = EditorGUILayout.IntSlider("Action Parameter 1",
+				actionParameter1.intValue, 0, 10);
+			actionParameter2.intValue = EditorGUILayout.IntSlider("Action Parameter 2",
+				actionParameter2.intValue, 0, 10);
+			abilityParameter1.intValue = EditorGUILayout.IntSlider("Ability Parameter 1",
+				abilityParameter1.intValue, -10, 10);
+			abilityParameter2.intValue = EditorGUILayout.IntSlider("Ability Parameter 2",
+				abilityParameter2.intValue, -10, 10);
+			abilityParameter3.intValue = EditorGUILayout.IntSlider("Ability Parameter 3",
+				abilityParameter3.intValue, -10, 10);
 		}
+
+		dirty = EditorGUI.EndChangeCheck();
 
 		EditorGUILayout.LabelField("<b>Description:</b>", richText);
 		++EditorGUI.indentLevel;
@@ -212,11 +216,13 @@ public class SpellDataEditor : Editor
 
 		//do spell options here
 		EditorGUILayout.Space();
+		EditorGUI.BeginChangeCheck();
 
-		//ability
-		temp = ability.enumValueIndex;
+
+
+
+		//ability;
 		EditorGUILayout.PropertyField(ability);
-		dirty = temp != ability.enumValueIndex || dirty;
 		//display text
 		++EditorGUI.indentLevel;
 		EditorGUILayout.LabelField("Name: <b>" + abilityOptions[ability.enumValueIndex].name + "</b>", richText);
@@ -228,9 +234,7 @@ public class SpellDataEditor : Editor
 		EditorGUILayout.Space();
 
 		//activation
-		temp = activate.enumValueIndex;
 		EditorGUILayout.PropertyField(activate);
-		dirty = temp != activate.enumValueIndex || dirty;
 		//display text
 		++EditorGUI.indentLevel;
 		EditorGUILayout.LabelField("Name: <b>" + activationOptions[activate.enumValueIndex].name + "</b>", richText);
@@ -241,9 +245,7 @@ public class SpellDataEditor : Editor
 		EditorGUILayout.Space();
 
 		//targetting
-		temp = targetting.enumValueIndex;
 		EditorGUILayout.PropertyField(targetting);
-		dirty = temp != targetting.enumValueIndex || dirty;
 		//display text
 		++EditorGUI.indentLevel;
 		EditorGUILayout.LabelField("Name: <b>" + targettingOptions[targetting.enumValueIndex].name + "</b>", richText);
@@ -251,10 +253,7 @@ public class SpellDataEditor : Editor
 		--EditorGUI.indentLevel;
 		EditorGUILayout.Space();
 
-		//prefab entry
-		EditorGUILayout.PropertyField(effect);
-
-		if (dirty && !lockedDescription) {
+		if (!lockedDescription && (dirty || EditorGUI.EndChangeCheck())) {
 			//change description
 			cardDescription.stringValue = abilityOptions[ability.enumValueIndex].descriptionText
 				+ activationOptions[activate.enumValueIndex].descriptionText
@@ -266,6 +265,9 @@ public class SpellDataEditor : Editor
 				.Replace("{3}", abilityParameter2.intValue.ToString())
 				.Replace("{4}", abilityParameter3.intValue.ToString());
 		}
+		//prefab entry
+		EditorGUILayout.PropertyField(effect);
+
 		this.serializedObject.ApplyModifiedProperties();
 	}
 }
