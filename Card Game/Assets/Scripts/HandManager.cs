@@ -7,8 +7,11 @@ public class HandManager : MonoBehaviour
 	public Mouse input;
 	public bool doHover = false;
 	public bool doSplay = false;
-	public float SplayDegree = 0f;
+	public float SplayDegree = 15f;
+	public int splaySelectEmptiness = 3;
 	public int splaySelectIndex = -1;
+
+	private int splaySelectIndexOld = -1;
 	private struct HoverObj {
 		public GameObject gameObject;
 		public Vector3 origPos;
@@ -27,22 +30,27 @@ public class HandManager : MonoBehaviour
 
 	void HoverManagement(RaycastHit rayHitInfo) {
 		if (!doHover)	return;
+
+		splaySelectIndexOld = splaySelectIndex;
+		splaySelectIndex = (rayHitInfo.transform.gameObject.layer == 6 && rayHitInfo.transform.parent == transform && input.mouseObject.transform.childCount == 1) ? rayHitInfo.transform.GetSiblingIndex() : -1;
+
+		doSplay = doSplay || splaySelectIndex != splaySelectIndexOld;
 		if (doSplay) TestSplay();
 
 		//Can only dehover if you're hovering smth and if raycast has different output then saved input
-		if (IsHovering() && rayHitInfo.transform.gameObject != hoverObjs[isHoveringIndex].gameObject)
+		/*if (IsHovering() && rayHitInfo.transform.gameObject != hoverObjs[isHoveringIndex].gameObject)
 			StartCoroutine(DeActivateHover());
 		//Can only animate the hovering if you arent hovering smth, if layer is card, if parent is the hand, and if mouse has only one child (card pickup makes card goto hand)
 		if (!IsHovering() && rayHitInfo.transform.gameObject.layer == 6
 			&& rayHitInfo.transform.parent == transform && input.mouseObject.transform.childCount == 1)
-				StartCoroutine(ActivateHover(rayHitInfo));
+				StartCoroutine(ActivateHover(rayHitInfo));*/
 	}
 
 	void TestSplay() {
 		doSplay = false;
 
-		int extraCards = 6;			//Keep it even or bad stuff happens
-		int extraCardsHalf = extraCards / 2;
+		int extraCards = splaySelectEmptiness * 2;
+		int extraCardsHalf = splaySelectEmptiness;
 		int effectiveChildCount = transform.childCount + (splaySelectIndex >= 0 ? extraCards : 0);
 		float temp = 0.5f * SplayDegree * (effectiveChildCount - 1);
 		Vector3 start = -transform.forward;
@@ -121,7 +129,7 @@ public class HandManager : MonoBehaviour
 		if (!tempLoop)
 			ms.gameObject.transform.localPosition = ms.origPos;
 
-		if (!tempLoop) {
+		if (!tempLoop || ms.gameObject.transform.parent != transform) {
 			//indexes can change if other DeActivator deletes it, only gets deleted if loop exited "cleanly" as "unclean" exits means it needs it
 			int indexToRemove = hoverObjs.FindIndex(x => x.gameObject == ms.gameObject);
 			hoverObjs.RemoveAt(indexToRemove);
