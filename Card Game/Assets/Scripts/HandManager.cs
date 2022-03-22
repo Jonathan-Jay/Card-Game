@@ -7,8 +7,10 @@ public class HandManager : MonoBehaviour
 	public Mouse input;
 	public bool doHover = false;
 	public bool doSplay = false;
+	public int splayMinimum = 3;
 	public float totalSplayDegree = 90f;
 	public float hoverHeight = 0.1f;
+	public float cardTilt = 10f;
 	float SplayDegree = 15f;
 	public int splaySelectEmptiness = 3;
 	public int splaySelectIndex = -1;
@@ -50,34 +52,48 @@ public class HandManager : MonoBehaviour
 	void TestSplay() {
 		doSplay = false;
 
-		int extraCards = splaySelectEmptiness * 2;
-		int extraCardsHalf = splaySelectEmptiness;
-		int effectiveChildCount = transform.childCount + (splaySelectIndex >= 0 ? extraCards : 0);
+		int effectiveChildCount = transform.childCount;
+		int first = 0;
+		int second = 0;
+
+		if (splaySelectIndex >= 0 && transform.childCount > splayMinimum) {
+			//if not left edge
+			if (splaySelectIndex > 0) {
+				first = splaySelectEmptiness;
+			}
+			second = first;
+			//if not on right edge (adds to first so first is 0 if left edge)
+			if (splaySelectIndex < transform.childCount - 1) {
+				second += splaySelectEmptiness;
+			}
+			//only once if on the edge, twice if not
+			effectiveChildCount += second;
+		}
 
 		SplayDegree = totalSplayDegree / effectiveChildCount;
 
-		float temp = 0.5f * SplayDegree * (effectiveChildCount - 1);
+		float temp = 0.5f * (effectiveChildCount - 1);
 
-        for (int i = 0; i < effectiveChildCount; ++i) {
-			if (splaySelectIndex >= 0 && Mathf.Abs(i - splaySelectIndex - extraCardsHalf) < (extraCardsHalf + 1) && i != splaySelectIndex + extraCardsHalf)
-				continue;
+        for (int i = 0; i < transform.childCount; ++i) {
 
-			int effectedCard = i;
+			int effectiveCard = i;
 			Vector3 basePos = Vector3.back;
-			float tilt = -10f;
-			if (splaySelectIndex >= 0 && i == splaySelectIndex + extraCardsHalf) {
-				effectedCard -= extraCardsHalf;
-				basePos += Vector3.up * hoverHeight;
-				tilt = 0f;
-			}
-			else {
-				if (splaySelectIndex >= 0 && i > splaySelectIndex + extraCardsHalf) {
-					effectedCard -= extraCards;
+			float tilt = cardTilt;
+			if (splaySelectIndex >= 0){
+				if (i == splaySelectIndex) {
+					effectiveCard += first;
+					basePos += Vector3.up * hoverHeight;
+					tilt = 0f;
+				}
+				else if (i > splaySelectIndex) {
+					effectiveCard += second;
+					//invert tilt to help navigation
+					tilt = -tilt;
 				}
 			}
 
-			transform.GetChild(effectedCard).localPosition = basePos + Quaternion.AngleAxis(SplayDegree * i - temp, Vector3.up) * Vector3.forward;
-			transform.GetChild(effectedCard).localRotation = Quaternion.Euler(0f, SplayDegree * i - temp, tilt);
+			transform.GetChild(i).localPosition = basePos + Quaternion.AngleAxis(SplayDegree * (effectiveCard - temp), Vector3.up) * Vector3.forward;
+			transform.GetChild(i).localRotation = Quaternion.Euler(0f, SplayDegree * (effectiveCard - temp), tilt);
 		}
 	}
 
