@@ -99,6 +99,7 @@ MonoBehaviour:
   maxMana: 5
   cardsPerTurn: 1
   minCardsInHand: 3
+  maxCardsInHand: 1000
   fatigueDmg: 1
   player1: {fileID: 0}
   player2: {fileID: 0}

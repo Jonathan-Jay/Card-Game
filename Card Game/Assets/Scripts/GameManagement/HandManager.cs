@@ -8,25 +8,27 @@ public class HandManager : MonoBehaviour
 	public bool doHover = false;
 	public bool doSplay = false;
 	public int splayMinimum = 3;
-	public float totalSplayDegree = 90f;
+	public float totalSplayDegree = 30f;
+	public float splayOriginOffset = 3f;
 	public float hoverHeight = 0.1f;
 	public float cardTilt = 10f;
-	float SplayDegree = 15f;
+	float splayDegree = 15f;
 	public int splaySelectEmptiness = 3;
 	public int splaySelectIndex = -1;
-
 	private int splaySelectIndexOld = -1;
-	private struct HoverObj {
-		public GameObject gameObject;
-		public Vector3 origPos;
+
+	class NewPosData {
+		public Vector3 targetPos;
+		public Quaternion targetRot;
 	}
-	
-	int isHoveringIndex = -1;
-	private List<HoverObj> hoverObjs = new List<HoverObj>();
+
+	bool transitioning = false;
+	List<NewPosData> transitionData = new List<NewPosData>();
 
 	private void OnEnable() {
 		input.hoverEvent += HoverManagement;
 	}
+
 	private void OnDisable() {
 		input.hoverEvent -= HoverManagement;
 	}
@@ -74,15 +76,21 @@ public class HandManager : MonoBehaviour
 			effectiveChildCount += second;
 		}
 
-		SplayDegree = totalSplayDegree / effectiveChildCount;
+		splayDegree = totalSplayDegree / effectiveChildCount;
 
 		float temp = 0.5f * (effectiveChildCount - 1);
+		Vector3 inverseBase = Vector3.forward * splayOriginOffset;
+
+		while (transform.childCount > transitionData.Count) {
+			transitionData.Add(new NewPosData());
+		}
 
         for (int i = 0; i < transform.childCount; ++i) {
 
 			int effectiveCard = i;
-			Vector3 basePos = Vector3.back;
+			Vector3 basePos = Vector3.back * splayOriginOffset;
 			float tilt = defaultTilt;
+
 			if (splaySelectIndex >= 0){
 				if (i == splaySelectIndex) {
 					effectiveCard += first;
@@ -96,10 +104,120 @@ public class HandManager : MonoBehaviour
 				}
 			}
 
-			transform.GetChild(i).localPosition = basePos + Quaternion.AngleAxis(SplayDegree * (effectiveCard - temp), Vector3.up) * Vector3.forward;
-			transform.GetChild(i).localRotation = Quaternion.Euler(0f, SplayDegree * (effectiveCard - temp), tilt);
+			//transform.GetChild(i).localPosition = basePos + Quaternion.AngleAxis(splayDegree * (effectiveCard - temp), Vector3.up) * inverseBase;
+			transitionData[i].targetPos = basePos + Quaternion.AngleAxis(splayDegree * (effectiveCard - temp), Vector3.up) * inverseBase;
+			//transform.GetChild(i).localRotation = Quaternion.Euler(0f, splayDegree * (effectiveCard - temp), tilt);
+			transitionData[i].targetRot = Quaternion.Euler(0f, splayDegree * (effectiveCard - temp), tilt);
+		}
+
+		if (!transitioning) {
+			transitioning = true;
+			StartCoroutine(Transition());
 		}
 	}
+
+	IEnumerator Transition() {
+		bool clean = true;
+		Transform temp = null;
+		while (transitioning) {
+			clean = true;
+
+			float moveSpeed = 5f * Time.deltaTime;
+			float rotSpeed = 225f * Time.deltaTime;
+
+			//do transition on each card if not already complete
+			for (int i = 0; i < transform.childCount; ++i) {
+				temp = transform.GetChild(i);
+				if (temp.localPosition != transitionData[i].targetPos) {
+					clean = false;
+					temp.localPosition = Vector3.MoveTowards(temp.localPosition,
+							transitionData[i].targetPos, moveSpeed);
+				}
+				if (temp.localRotation != transitionData[i].targetRot) {
+					clean = false;
+					temp.localRotation = Quaternion.RotateTowards(temp.localRotation,
+							transitionData[i].targetRot, rotSpeed);
+				}
+			}
+
+			if (clean) {
+				transitioning = false;
+			}
+
+			yield return Card.eof;
+		}
+	}
+
+	public void ReturnCardToHand(Transform cardTrans) {
+		cardTrans.SetParent(transform, true);
+		cardTrans.GetComponent<Rigidbody>().isKinematic = true;
+
+		//this should deal with it
+		TestSplay();
+		//copied this coroutine from the card class
+		//StartCoroutine(ReturnToHand(cardTrans));
+	}
+
+	//old stuff
+	/*
+	IEnumerator ReturnToHand(Transform card) {
+		card.gameObject.layer = input.ignoredLayer;
+
+		float returnSpeed = 2f;
+		float returnRotSpeed = 135f;
+		card.GetComponent<Rigidbody>().isKinematic = true;
+
+		Vector3 targetPos = Vector3.zero;
+		Quaternion targetRot = Quaternion.Euler(0f, 0f, 10f);
+
+		while (card.parent == transform)
+		{
+			if (Vector3.Distance(card.localPosition, targetPos) > 0.1f) {
+				card.localPosition = Vector3.Lerp(card.localPosition, targetPos,
+					returnSpeed * Time.deltaTime);
+			}
+			else {
+				card.localPosition = Vector3.MoveTowards(card.localPosition, targetPos,
+					0.25f * Time.deltaTime);
+			}
+
+			if (card.localRotation != targetRot) {
+			//if (Quaternion.Angle(transform.localRotation, targetRot) > 1f) {
+			//	transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRot,
+			//		returnSpeed * Time.deltaTime);
+			//}
+			//else {
+				card.localRotation = Quaternion.RotateTowards(card.localRotation, targetRot,
+					returnRotSpeed * Time.deltaTime);
+			}
+
+			if (Vector3.Distance(card.localPosition, targetPos) < 0.75f && card.localRotation == targetRot){
+				break;
+			}
+			yield return Card.eof;
+		}
+
+		//ensure transform is good
+		if (card.parent == transform) {
+			card.localPosition = targetPos;
+			card.localRotation = targetRot;
+		}
+
+		card.gameObject.layer = input.cardLayer;
+
+		//just do this every time a card lands
+		TestSplay();
+	}
+
+	//actual old code
+
+	int isHoveringIndex = -1;
+	private struct HoverObj
+	{
+		public GameObject gameObject;
+		public Vector3 origPos;
+	}
+	private List<HoverObj> hoverObjs = new List<HoverObj>();
 
 	bool IsHovering() {
 		return isHoveringIndex > -1;
@@ -169,61 +287,5 @@ public class HandManager : MonoBehaviour
 			if (isHoveringIndex >= indexToRemove && IsHovering()) --isHoveringIndex;
 		}
 	}
-
-	public void ReturnCardToHand(Transform cardTrans) {
-		//copied this coroutine from the card class
-		cardTrans.SetParent(transform, true);
-		//cardTrans.GetComponent<Rigidbody>().isKinematic = true;
-		//TestSplay();
-		StartCoroutine(ReturnToHand(cardTrans));
-	}
-
-	IEnumerator ReturnToHand(Transform card) {
-		card.gameObject.layer = input.ignoredLayer;
-
-		float returnSpeed = 2f;
-		float returnRotSpeed = 135f;
-		card.GetComponent<Rigidbody>().isKinematic = true;
-
-		Vector3 targetPos = Vector3.zero;
-		Quaternion targetRot = Quaternion.Euler(0f, 0f, 10f);
-
-		while (card.parent == transform)
-		{
-			if (Vector3.Distance(card.localPosition, targetPos) > 0.1f) {
-				card.localPosition = Vector3.Lerp(card.localPosition, targetPos,
-					returnSpeed * Time.deltaTime);
-			}
-			else {
-				card.localPosition = Vector3.MoveTowards(card.localPosition, targetPos,
-					0.25f * Time.deltaTime);
-			}
-
-			if (card.localRotation != targetRot) {
-			//if (Quaternion.Angle(transform.localRotation, targetRot) > 1f) {
-			//	transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRot,
-			//		returnSpeed * Time.deltaTime);
-			//}
-			//else {
-				card.localRotation = Quaternion.RotateTowards(card.localRotation, targetRot,
-					returnRotSpeed * Time.deltaTime);
-			}
-
-			if (Vector3.Distance(card.localPosition, targetPos) < 0.75f && card.localRotation == targetRot){
-				break;
-			}
-			yield return Card.eof;
-		}
-
-		//ensure transform is good
-		if (card.parent == transform) {
-			card.localPosition = targetPos;
-			card.localRotation = targetRot;
-		}
-
-		card.gameObject.layer = input.cardLayer;
-
-		//just do this every time a card lands
-		TestSplay();
-	}
+	*/
 }

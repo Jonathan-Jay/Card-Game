@@ -51,7 +51,7 @@ public class PlayerData : MonoBehaviour {
 	}
 
 	//do whatever a player does when their turn ends
-	public void TurnEnd(int maxMana, int cardsPerTurn, int requiredCards) {
+	public void TurnEnd(int maxMana, int cardsPerTurn, int requiredCards, int maxCards) {
 		IncreaseMaxMana(Mathf.Clamp(++this.maxMana, 0, maxMana));
 		
 		//we do this even if the deck is empty in case the player bugs the game out
@@ -62,13 +62,20 @@ public class PlayerData : MonoBehaviour {
 			canDraw = Mathf.Min(requiredCards - cardsHeld.Count + cardsPerTurn, deck.deck.Count);
 		}
 
+		//drawing too many cards, canDraw is the difference
+		if (cardsHeld.Count + canDraw > maxCards) {
+			//if they bug this out
+			canDraw = Mathf.Max(maxCards - cardsHeld.Count, 0);
+		}
+
 		//clamp this
 		drawCard?.Invoke();
 	}
 
 	//returns true if they died
 	public bool FatigueCheck(int fatigueDmg) {
-		if (canDraw == 0) {
+		//only fatigue if empty deck
+		if (canDraw == 0 && deck.deck.Count == 0) {
 			TakeDamage(fatigueDmg);
 
 			return currentHP <= 0;

@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
 	public int maxMana = 5;
 	public int cardsPerTurn = 1;
 	public int minCardsInHand = 3;
+	public int maxCardsInHand = 40;
 	public int fatigueDmg = 1;
 	public PlayerData player1;
 	public PlayerData player2;
@@ -139,7 +140,7 @@ public class GameController : MonoBehaviour
 			}
 		}
 
-		current.TurnEnd(maxMana, cardsPerTurn, minCardsInHand);
+		current.TurnEnd(maxMana, cardsPerTurn, minCardsInHand, maxCardsInHand);
 		current.hand.input.ActivateAll();
 
 		//possibly deactivate if the player won

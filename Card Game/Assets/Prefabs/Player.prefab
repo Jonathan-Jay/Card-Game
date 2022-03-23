@@ -302,7 +302,8 @@ MonoBehaviour:
   doHover: 1
   doSplay: 0
   splayMinimum: 3
-  totalSplayDegree: 75
+  totalSplayDegree: 25
+  splayOriginOffset: 3
   hoverHeight: 0.1
   cardTilt: 10
   splaySelectEmptiness: 1
