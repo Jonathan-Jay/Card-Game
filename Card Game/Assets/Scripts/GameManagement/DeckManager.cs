@@ -65,8 +65,8 @@ public class DeckManager : MonoBehaviour
 		//fix the height
 		cardStack.localScale = Vector3.one + Vector3.down * (1f - cardHeight * deck.Count);
 		col.size = col.size + col.size.y * Vector3.down + Vector3.up * cardHeight * deck.Count;
-		col.center = Vector3.up * cardHeight * deck.Count * 0.5f;
-		text.transform.localPosition = Vector3.up * (cardHeight * deck.Count + 0.025f);
+		col.center = cardStack.localPosition + Vector3.up * cardHeight * deck.Count * 0.5f;
+		text.transform.localPosition = cardStack.localPosition + Vector3.up * (cardHeight * deck.Count + 0.025f);
 		text.text = deck.Count.ToString();
 	}
 
@@ -104,8 +104,8 @@ public class DeckManager : MonoBehaviour
 		else {
 			cardStack.localScale = Vector3.one + Vector3.down * (1f - cardHeight * deck.Count);
 			col.size = col.size + col.size.y * Vector3.down + Vector3.up * cardHeight * deck.Count;
-			col.center = Vector3.up * cardHeight * deck.Count * 0.5f;
-			text.transform.localPosition = Vector3.up * (cardHeight * deck.Count + 0.025f);
+			col.center = cardStack.localPosition + Vector3.up * cardHeight * deck.Count * 0.5f;
+			text.transform.localPosition = cardStack.localPosition + Vector3.up * (cardHeight * deck.Count + 0.025f);
 		}
 		text.text = deck.Count.ToString();
 
