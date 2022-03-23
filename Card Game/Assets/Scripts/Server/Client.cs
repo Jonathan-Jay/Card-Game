@@ -220,6 +220,14 @@ public class Client : MonoBehaviour
 		client.SendTo(Encoding.ASCII.GetBytes("LLB"), server);
 	}
 
+	public static void TryJoinPlayer(string message) {
+		client.SendTo(Encoding.ASCII.GetBytes("JNP" + message), server);
+	}
+
+	public static void LeavePlayer() {
+		client.SendTo(Encoding.ASCII.GetBytes("LVP"), server);
+	}
+
 	public static void StartGame() {
 		if (!inGame) {
 			client.SendTo(Encoding.ASCII.GetBytes("SRT"), server);

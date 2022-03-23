@@ -85,7 +85,7 @@ MonoBehaviour:
   maxHP: 20
   currentMana: 1
   maxMana: 1
-  hand: {fileID: 1490228982326011792}
+  hand: {fileID: 8221884563460776616}
   field: []
   backLine: []
   deck: {fileID: 0}
@@ -264,7 +264,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1490228982326011807}
-  - component: {fileID: 1490228982326011792}
+  - component: {fileID: 8221884563460776616}
   m_Layer: 0
   m_Name: Player hand
   m_TagString: Untagged
@@ -286,7 +286,7 @@ Transform:
   m_Father: {fileID: 1490228982075256586}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -34, y: 0, z: 0}
---- !u!114 &1490228982326011792
+--- !u!114 &8221884563460776616
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1490228982326011806}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1c6376ec32687e458226cb3df7bb3cb, type: 3}
+  m_Script: {fileID: 11500000, guid: a78d5a5a819fe9b4680a0f78afb4dc2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 1490228982155700941}
@@ -1023,13 +1023,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1490228983681832006}
-  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 2.5, z: -3.75}
+  m_LocalRotation: {x: 0.3420201, y: 0, z: 0, w: 0.9396927}
+  m_LocalPosition: {x: 0, y: 2.5, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1490228982075256586}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 40, y: 0, z: 0}
 --- !u!1 &1490228983689745688
 GameObject:
   m_ObjectHideFlags: 0

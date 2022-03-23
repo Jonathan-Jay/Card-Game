@@ -56,8 +56,8 @@ public class SpellCard : Card
 	}
 
 	IEnumerator CastSpell(PlayerData current, PlayerData opposing) {
-		RaycastHit hit = new RaycastHit();
-		void UpdateRaycastHit(RaycastHit rayHit) {
+		Transform hit = null;
+		void UpdateRaycastHit(Transform rayHit) {
 			hit = rayHit;
 		}
 

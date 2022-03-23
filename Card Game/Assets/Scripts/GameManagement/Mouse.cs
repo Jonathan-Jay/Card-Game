@@ -12,10 +12,10 @@ public class Mouse : MonoBehaviour {
 	public int invisibleLayer;
 	public int cardLayer;
 	
-	public event System.Action<RaycastHit> hoverEvent;
-	public event System.Action<RaycastHit> clickEvent;
+	public event System.Action<Transform> hoverEvent;
+	public event System.Action<Transform> clickEvent;
 	//public RaycastEvent clickEvent;
-	public event System.Action<RaycastHit> releaseEvent;
+	public event System.Action<Transform> releaseEvent;
 	//public RaycastEvent releaseEvent;
 
     private Camera cam;
@@ -61,13 +61,13 @@ public class Mouse : MonoBehaviour {
         if (Physics.Raycast(rayInfo, out rayHitInfo, maxDist, mask)) {
             mouseObject.position = rayHitInfo.point + Vector3.up * vertOffset;
 			
-			hoverEvent?.Invoke(rayHitInfo);
+			hoverEvent?.Invoke(rayHitInfo.transform);
 
 			if (Input.GetMouseButtonDown(0)) {
-				clickEvent?.Invoke(rayHitInfo);
+				clickEvent?.Invoke(rayHitInfo.transform);
 			}
 			if (Input.GetMouseButtonUp(0)) {
-				releaseEvent?.Invoke(rayHitInfo);
+				releaseEvent?.Invoke(rayHitInfo.transform);
 			}
         }
     }
@@ -170,15 +170,15 @@ public class Mouse : MonoBehaviour {
 
 	}
 
-	void ClickCard(RaycastHit hit) {
+	void ClickCard(Transform hit) {
 		//first check if we wanna do smt
-		GameObject hitObj = hit.transform.gameObject;
+		GameObject hitObj = hit.gameObject;
 		if (!hitObj.CompareTag("Interactable"))	return;
 
 		Card cardTest = hitObj.GetComponent<Card>();
 		if (cardTest == null || cardTest.player != player) return;
 
-		hit.rigidbody.isKinematic = true;
+		hit.GetComponent<Rigidbody>().isKinematic = true;
 		cardTest.transform.SetParent(mouseObject, true);
 		cardTest.transform.localPosition = Vector3.up * vertOffset;
 		cardTest.gameObject.layer = ignoredLayer;
@@ -187,9 +187,9 @@ public class Mouse : MonoBehaviour {
 	}
 
 	/*
-	void ClickDeck(RaycastHit hit) {
+	void ClickDeck(Transform hit) {
 		//first check if we wanna do smt
-		GameObject hitObj = hit.transform.gameObject;
+		GameObject hitObj = hit.gameObject;
 		if (!hitObj.CompareTag("Interactable"))	return;
 
 		DeckManager deckTest = hitObj.GetComponent<DeckManager>();
@@ -198,8 +198,8 @@ public class Mouse : MonoBehaviour {
 		}
 	}*/
 
-	void ClickButton(RaycastHit hit) {
-		GameObject hitObj = hit.transform.gameObject;
+	void ClickButton(Transform hit) {
+		GameObject hitObj = hit.gameObject;
 		if (!hitObj.CompareTag("Interactable")) return;
 
 		PressEventButton buttonTest = hitObj.GetComponent<PressEventButton>();
@@ -208,10 +208,10 @@ public class Mouse : MonoBehaviour {
 		}
 	}
 
-	void ReleaseCardHolder(RaycastHit hit) {
+	void ReleaseCardHolder(Transform hit) {
 		if (!holding) return;
 
-		GameObject hitObj = hit.transform.gameObject;
+		GameObject hitObj = hit.gameObject;
 		//cardholder test
 		if (!hitObj.CompareTag("Interactable"))	return;
 
@@ -223,7 +223,7 @@ public class Mouse : MonoBehaviour {
 		}
 	}
 
-	void ReleaseCard(RaycastHit hit) {
+	void ReleaseCard(Transform hit) {
 		if (!holding) return;
 
 		//just drop the card otherwise

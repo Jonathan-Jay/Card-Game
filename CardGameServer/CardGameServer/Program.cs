@@ -322,7 +322,7 @@ public class SynServer
 						string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
 						if (char.IsDigit(message[0])) {
 							//make them join the lobby if it's valid
-							int index = int.Parse(message.Substring(0));
+							int index = int.Parse(message);
 							if (index < lobbies.Count) {
 								//they don't need the index, the index doesn't really matter
 								player.handler.SendTo(Encoding.ASCII.GetBytes("JLB"
@@ -441,10 +441,19 @@ public class SynServer
 							else if (code == "LLB") {
 								//make them quit if in game (somehow) and exit
 								//players really shouldn't be able to do this...
-								if (player.inGame) {
-									player.inGame = false;
-									player.handler.SendTo(exitMsg, player.remoteEP);
-								}
+								//if (player.inGame) {
+								//	player.inGame = false;
+								//	player.handler.SendTo(exitMsg, player.remoteEP);
+								//}
+								//else {
+									//if a player, disconnect from table
+									if (lobby.player1 == player.id) {
+										lobby.player1 = -1;
+									}
+									else if (lobby.player2 == player.id) {
+										lobby.player1 = -1;
+									}
+								//}
 
 								//left the lobby, move them back
 								serverLobby.players.Add(player);
@@ -465,6 +474,33 @@ public class SynServer
 								player.status = "Waiting";
 								ldirty = true;
 								continue;
+							}
+							else if (code == "JNP") {
+								//get which player they want to join
+								string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
+								if (message == "player1") {
+									if (lobby.player1 < 0) {
+										lobby.player1 = player.id;
+										ldirty = true;
+									}
+								}
+								else if (message == "player2") {
+									if (lobby.player2 < 0) {
+										lobby.player2 = player.id;
+										ldirty = true;
+									}
+								}
+							}
+							else if (code == "LVP") {
+								//were they actually the player?
+								if (lobby.player1 == player.id) {
+									lobby.player1 = -1;
+									ldirty = true;
+								}
+								else if (lobby.player2 == player.id) {
+									lobby.player2 = -1;
+									ldirty = true;
+								}
 							}
 							else if (code == "LAP" || !player.handler.Connected) {
 								//left app?
@@ -541,6 +577,14 @@ public class SynServer
 									player.handler.SendTo(exitMsg, player.remoteEP);
 								}
 
+								//if this happens, big trouble lol, well you could always make the spectators leave
+								if (lobby.player1 == player.id) {
+									lobby.player1 = -1;
+								}
+								else if (lobby.player2 == player.id) {
+									lobby.player1 = -1;
+								}
+
 								//left the lobby, move them back
 								serverLobby.players.Add(player);
 								lobby.players.RemoveAt(i);
@@ -558,7 +602,7 @@ public class SynServer
 								player.handler.SendTo(leftLBMsg, player.remoteEP);
 
 								player.status = "Waiting";
-								dirty = true;
+								ldirty = true;
 								continue;
 							}
 							else if (code == "LAP" || !player.handler.Connected) {

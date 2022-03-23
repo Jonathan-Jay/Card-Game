@@ -104,8 +104,8 @@ public class MonsterCard : Card
 	}
 
 	IEnumerator CheckCost(PlayerData current, PlayerData opposing) {
-		RaycastHit hit = new RaycastHit();
-		void UpdateRaycastHit(RaycastHit rayHit) {
+		Transform hit = null;
+		void UpdateRaycastHit(Transform rayHit) {
 			hit = rayHit;
 		}
 
@@ -144,7 +144,7 @@ public class MonsterCard : Card
 					--requirement;
 				}
 				index = placement.index;
-				hit = new RaycastHit();
+				hit = null;
 			}
 			//clicked on self, cancel the thing
 			else {

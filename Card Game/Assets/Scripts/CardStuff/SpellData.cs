@@ -4,7 +4,7 @@ using UnityEngine;
 
 //helps shorten things
 public delegate PlayerData TargettingFunc(PlayerData current, PlayerData opposing,
-	ref int index, ref UnityEngine.RaycastHit hit);
+	ref int index, ref Transform hit);
 public delegate void ActivationFunc(SpellCard caster, PlayerData target, int index, SpellData spell);
 public delegate void AbilityFunc(PlayerData target, int index, SpellData spell);
 
@@ -129,7 +129,7 @@ public class SpellData : CardData {
 	#region TargettingOptions
 	//return opposing card
 	static public PlayerData TargetOpposingCard(PlayerData current,
-		PlayerData opposing, ref int index, ref RaycastHit hit)
+		PlayerData opposing, ref int index, ref Transform hit)
 	{
 		if (!(opposing.field[index].holding && opposing.field[index].holding.targetable)) {
 			index = -2;
@@ -140,7 +140,7 @@ public class SpellData : CardData {
 
 	//return random card on the field
 	static public PlayerData TargetOpposingField(PlayerData current,
-		PlayerData opposing, ref int index, ref RaycastHit hit)
+		PlayerData opposing, ref int index, ref Transform hit)
 	{
 		/*
 		List<int> valids = new List<int>();
@@ -157,9 +157,9 @@ public class SpellData : CardData {
 		return opposing;*/
 
 		//check if hitting something
-		if (hit.transform) {
+		if (hit) {
 			//check if holder
-			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+			CardHolder holder = hit.GetComponent<CardHolder>();
 
 			//check if holding a card if it's a holder
 			if (holder != null && holder.holding) {
@@ -182,7 +182,7 @@ public class SpellData : CardData {
 
 	//return random card on the field
 	static public PlayerData TargetSelfField(PlayerData current,
-		PlayerData opposing, ref int index, ref RaycastHit hit)
+		PlayerData opposing, ref int index, ref Transform hit)
 	{
 		/*
 		List<int> valids = new List<int>();
@@ -198,9 +198,9 @@ public class SpellData : CardData {
 		return current;*/
 
 		//check if hitting something
-		if (hit.transform) {
+		if (hit) {
 			//check if holder
-			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+			CardHolder holder = hit.GetComponent<CardHolder>();
 
 			//check if holding a card if it's a holder
 			if (holder != null && holder.holding) {
@@ -223,7 +223,7 @@ public class SpellData : CardData {
 
 	//return opposing player
 	static public PlayerData TargetPlayer(PlayerData current,
-		PlayerData opposing, ref int index, ref RaycastHit hit)
+		PlayerData opposing, ref int index, ref Transform hit)
 	{
 		index = -1;
 		return opposing;
@@ -231,19 +231,19 @@ public class SpellData : CardData {
 
 	//return self player
 	static public PlayerData TargetSelfPlayer(PlayerData current,
-		PlayerData opposing, ref int index, ref RaycastHit hit)
+		PlayerData opposing, ref int index, ref Transform hit)
 	{
 		index = -1;
 		return current;
 	}
 
 	static public PlayerData TargetAnyCard(PlayerData current,
-		PlayerData opposing, ref int index, ref RaycastHit hit)
+		PlayerData opposing, ref int index, ref Transform hit)
 	{
 		//check if hitting something
-		if (hit.transform) {
+		if (hit) {
 			//check if holder
-			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+			CardHolder holder = hit.GetComponent<CardHolder>();
 			//check if holding a card if it's a holder
 			if (holder != null && holder.holding) {
 				//if targettign self, return error code
@@ -274,12 +274,12 @@ public class SpellData : CardData {
 	}
 
 	static public PlayerData TargetAnyPlayerCard(PlayerData current,
-		PlayerData opposing, ref int index, ref RaycastHit hit)
+		PlayerData opposing, ref int index, ref Transform hit)
 	{
 		//check if hitting something
-		if (hit.transform) {
+		if (hit) {
 			//check if holder
-			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+			CardHolder holder = hit.GetComponent<CardHolder>();
 			
 			//check if holding a card if it's a holder
 			if (holder != null && holder.holding) {
@@ -305,12 +305,12 @@ public class SpellData : CardData {
 	}
 
 	static public PlayerData TargetAnyOpposingCard(PlayerData current,
-		PlayerData opposing, ref int index, ref RaycastHit hit)
+		PlayerData opposing, ref int index, ref Transform hit)
 	{
 		//check if hitting something
-		if (hit.transform) {
+		if (hit) {
 			//check if holder
-			CardHolder holder = hit.transform.GetComponent<CardHolder>();
+			CardHolder holder = hit.GetComponent<CardHolder>();
 			//check if holding a card if it's a holder
 			if (holder != null && holder.holding) {
 				//if targettign self, return error code
