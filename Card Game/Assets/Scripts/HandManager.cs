@@ -55,8 +55,12 @@ public class HandManager : MonoBehaviour
 		int effectiveChildCount = transform.childCount;
 		int first = 0;
 		int second = 0;
+		float defaultTilt = cardTilt;
 
 		if (splaySelectIndex >= 0 && transform.childCount > splayMinimum) {
+			//make sure tilt is negative
+			defaultTilt = -Mathf.Abs(defaultTilt);
+
 			//if not left edge
 			if (splaySelectIndex > 0) {
 				first = splaySelectEmptiness;
@@ -78,7 +82,7 @@ public class HandManager : MonoBehaviour
 
 			int effectiveCard = i;
 			Vector3 basePos = Vector3.back;
-			float tilt = cardTilt;
+			float tilt = defaultTilt;
 			if (splaySelectIndex >= 0){
 				if (i == splaySelectIndex) {
 					effectiveCard += first;
@@ -169,7 +173,9 @@ public class HandManager : MonoBehaviour
 	public void ReturnCardToHand(Transform cardTrans) {
 		//copied this coroutine from the card class
 		cardTrans.SetParent(transform, true);
-		StartCoroutine(ReturnToHand(cardTrans));
+		cardTrans.GetComponent<Rigidbody>().isKinematic = true;
+		TestSplay();
+		//StartCoroutine(ReturnToHand(cardTrans));
 	}
 
 	IEnumerator ReturnToHand(Transform card) {

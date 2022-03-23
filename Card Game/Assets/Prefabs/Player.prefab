@@ -301,9 +301,10 @@ MonoBehaviour:
   input: {fileID: 1490228982155700941}
   doHover: 1
   doSplay: 0
+  splayMinimum: 3
   totalSplayDegree: 90
   hoverHeight: 0.1
-  cardTilt: -10
+  cardTilt: 10
   splaySelectEmptiness: 1
   splaySelectIndex: -1
 --- !u!1 &1490228982329847308
