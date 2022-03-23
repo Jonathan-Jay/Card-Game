@@ -1,17 +1,9 @@
 fileFormatVersion: 2
-guid: b002e1ae3446b774a8573c94580c83c1
+guid: 52e136b9d17a719418648449ab635788
 ModelImporter:
   serializedVersion: 21100
-  internalIDToNameTable:
-  - first:
-      74: 4719882491835903105
-    second: Bell_File|Bell
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Bell
-    second: {fileID: 2100000, guid: 97cd60a3506db384aa894bc772c2b7aa, type: 2}
+  internalIDToNameTable: []
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

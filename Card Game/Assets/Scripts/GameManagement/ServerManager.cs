@@ -26,8 +26,8 @@ public class ServerManager : MonoBehaviour
 	[SerializeField]	GameObject leaveLobbyButton;
 	[SerializeField]	GameObject concedeButton;
 
-	MeshRenderer p1bell;
-	MeshRenderer p2bell;
+	SkinnedMeshRenderer p1bell;
+	SkinnedMeshRenderer p2bell;
 	Color defaultBellCol;
 
 	private void Awake() {
@@ -42,8 +42,8 @@ public class ServerManager : MonoBehaviour
 
 	//late inits
 	private void Start() {
-		p1bell = game.player1.turnEndButton.GetComponentInChildren<MeshRenderer>();
-		p2bell = game.player2.turnEndButton.GetComponentInChildren<MeshRenderer>();
+		p1bell = game.player1.turnEndButton.GetComponentInChildren<SkinnedMeshRenderer>();
+		p2bell = game.player2.turnEndButton.GetComponentInChildren<SkinnedMeshRenderer>();
 
 		defaultBellCol = p1bell.material.color;
 
@@ -57,6 +57,7 @@ public class ServerManager : MonoBehaviour
 				p1mouse.disabled = false;
 				p2cam.enabled = false;
 				p2mouse.disabled = true;
+				p2mouse.GetComponent<KeypressCamController>().IgnoreInput(true);
 
 				game.player2.turnEndButton.enabled = false;
 				p2bell.material.color = Color.grey;
@@ -64,6 +65,7 @@ public class ServerManager : MonoBehaviour
 			else {
 				p1cam.enabled = false;
 				p1mouse.disabled = true;
+				p1mouse.GetComponent<KeypressCamController>().IgnoreInput(true);
 				p2cam.enabled = true;
 				p2mouse.disabled = false;
 
@@ -233,16 +235,20 @@ public class ServerManager : MonoBehaviour
 			if (p1cam.enabled) {
 				p1cam.enabled = false;
 				p1mouse.disabled = true;
+				p1mouse.GetComponent<KeypressCamController>().IgnoreInput(true);
 
 				p2cam.enabled = true;
 				p2mouse.disabled = false;
+				p2mouse.GetComponent<KeypressCamController>().IgnoreInput(false);
 			}
 			else {
 				p1cam.enabled = true;
 				p1mouse.disabled = false;
+				p1mouse.GetComponent<KeypressCamController>().IgnoreInput(false);
 
 				p2cam.enabled = false;
 				p2mouse.disabled = true;
+				p2mouse.GetComponent<KeypressCamController>().IgnoreInput(true);
 			}
 			LookAt.ForceUpdateCamera?.Invoke();
 		}
