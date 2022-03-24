@@ -270,6 +270,7 @@ public class Client : MonoBehaviour
 	private void Update() {
 		//only if client is existing
 		if (!canStart)	return;
+		Debug.Log("y");
 
 		try {
 			recv = client.Receive(recBuffer);
