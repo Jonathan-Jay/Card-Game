@@ -18,6 +18,10 @@ public class MainMenuController : MonoBehaviour
 	[SerializeField] UITemplateList lobbyList;
 	[SerializeField] UITemplateList playerList;
 	[SerializeField] UITemplateList inLobbyPlayerList;
+	[SerializeField] GameObject joinPlayer1Seat;
+	[SerializeField] GameObject joinPlayer2Seat;
+	[SerializeField] GameObject leaveSeat;
+	[SerializeField] GameObject startButton;
 
 	private void OnEnable() {
 		client.connectedEvent += EnableUI;
@@ -28,6 +32,7 @@ public class MainMenuController : MonoBehaviour
 		client.dirty += CleanLists;
 		client.lobbyError += LobbyError;
 		client.joinedLobby += JoinedLobby;
+		client.tableSeatUpdated += SeatedPlayersChanged;
 
 		//make the start game button not work right away?
 	}
@@ -41,6 +46,7 @@ public class MainMenuController : MonoBehaviour
 		client.dirty -= CleanLists;
 		client.lobbyError -= LobbyError;
 		client.joinedLobby -= JoinedLobby;
+		client.tableSeatUpdated -= SeatedPlayersChanged;
 	}
 
 	void EnableUI(bool connected) {
@@ -123,5 +129,25 @@ public class MainMenuController : MonoBehaviour
 				cam.IncrementIndex(true);
 			}
 		}
+	}
+
+	void SeatedPlayersChanged() {
+		if (ServerManager.CheckIfClient(null)) {
+			//show the leave seat if you're a player
+			leaveSeat.SetActive(true);
+			joinPlayer1Seat.SetActive(false);
+			joinPlayer2Seat.SetActive(false);
+			
+			startButton.SetActive(ServerManager.p1Index >= 0 && ServerManager.p2Index >= 0);
+		}
+		else {
+			leaveSeat.SetActive(false);
+			//make button work if no player
+			joinPlayer1Seat.SetActive(ServerManager.p1Index < 0);
+			joinPlayer2Seat.SetActive(ServerManager.p2Index < 0);
+
+			startButton.SetActive(false);
+		}
+
 	}
 }

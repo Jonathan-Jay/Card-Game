@@ -12,7 +12,10 @@ public class Client : MonoBehaviour
 	public const char spliter = '\t';
 	public string notificationColour = "yellow";
 	public const int msgCodeSize = 3;
+	public const int gameCodeSize = sizeof(int) * 40;
 	public const char terminator = '\r';
+	public const string player1Code = "Player1";
+	public const string player2Code = "Player2";
     public static byte[] recBuffer = new byte[512];
 	public static Socket client;
 	public static IPEndPoint server;
@@ -44,6 +47,8 @@ public class Client : MonoBehaviour
 	public event Action<string> lobbyError;
 	//true if in lobby, string for lobby name
 	public event Action<bool, string> joinedLobby;
+	public event Action tableSeatUpdated;
+	public event Action<byte[]> gameCodeReceived;
 
 	private void Start() {
 		//not online yet
@@ -64,6 +69,7 @@ public class Client : MonoBehaviour
 		//send to lobby if in a lobby already
 		if (inLobby) {
 			joinedLobby?.Invoke(inLobby, lobbyName);
+			tableSeatUpdated?.Invoke();
 			//refresh list somehow
 			client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
 		}
@@ -149,6 +155,9 @@ public class Client : MonoBehaviour
 					playerId = int.Parse(username.Substring(0, index));
 					username = username.Substring(index + 1);
 
+					//send garbage for refreshing data
+					client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
+
 					//send it whatever might be after the name
 					index = username.IndexOf(terminator);
 					if (index > 1) {
@@ -200,6 +209,10 @@ public class Client : MonoBehaviour
 		textChat.text = "";
 	}
 
+	public static void SendStringMessage(string message) {
+		client.SendTo(Encoding.ASCII.GetBytes(message), server);
+	}
+
 	public static void ChangeUserName(TMPro.TMP_InputField username) {
 		if (username.text == "")	return;
 
@@ -220,8 +233,13 @@ public class Client : MonoBehaviour
 		client.SendTo(Encoding.ASCII.GetBytes("LLB"), server);
 	}
 
-	public static void TryJoinPlayer(string message) {
-		client.SendTo(Encoding.ASCII.GetBytes("JNP" + message), server);
+	public static void JoinPlayer(bool player1) {
+		if (player1) {
+			client.SendTo(Encoding.ASCII.GetBytes("JNP" + player1Code), server);
+		}
+		else {
+			client.SendTo(Encoding.ASCII.GetBytes("JNP" + player2Code), server);
+		}
 	}
 
 	public static void LeavePlayer() {
@@ -291,98 +309,190 @@ public class Client : MonoBehaviour
 		//textBuffer += message;
 		string textBuffer = Encoding.ASCII.GetString(buffer, 0, size);
 		
-		int index = textBuffer.IndexOf(terminator);
 		//in cases of overflow
-		while (index > 1) {
-			//check if words
-			ParseMessage(textBuffer.Substring(0, 3),
-				Encoding.ASCII.GetBytes(textBuffer.Substring(0, index)), index - msgCodeSize);
+		if (textBuffer.Length < 2)	return;
 
-			//get rid of everything
-			textBuffer = textBuffer.Substring(index + 1);
+		//for going through bytes
+		int index = textBuffer.IndexOf(terminator);
+		int compoundIndex = msgCodeSize;
+
+		string code = textBuffer.Substring(0, 3);
+		while (index > 1 || code == "COD") {
+			if (code != "COD") {
+				byte[] message = new byte[index - msgCodeSize];
+				Buffer.BlockCopy(buffer, compoundIndex, message, 0, index - msgCodeSize);
+				//check if words
+				ParseMessage(code, message, index - msgCodeSize);
+			}
+			//it's a game code
+			else {
+				//send the message
+				byte[] message = new byte[gameCodeSize];
+				Buffer.BlockCopy(buffer, compoundIndex, message, 0, gameCodeSize);
+
+				gameCodeReceived?.Invoke(message);
+
+				//because of the terminator skip
+				index = gameCodeSize - 1;
+				//reset this
+				code = "";
+			}
+
+			//update compound index, and ignore terminator
+			compoundIndex += index + 1;
+
+			//get rid of everything below the thing
+			textBuffer = Encoding.ASCII.GetString(buffer, compoundIndex - msgCodeSize, size - compoundIndex + msgCodeSize);
+
 			index = textBuffer.IndexOf(terminator);
+
+			//only retrieve code if it works
+			if (index > 1)
+				code = textBuffer.Substring(0, 3);
 		}
 	}
 
+	//buffer is without code
 	void ParseMessage(string code, byte[] buffer, int size) {
-		//get code
-		if (code == "MSG") {
-			chat.UpdateChat(Encoding.ASCII.GetString(buffer, msgCodeSize, size));
-		}
-		else if (code == "NTF") {
-			chat.UpdateChat("<color=" + notificationColour + ">"
-				+ Encoding.ASCII.GetString(buffer, msgCodeSize, size) + "</color>");
-		}
-		
-		//possibly move these all into a not in game section
-		//could also be in a seperate class, or at least moving the above to seperate classes
-		else if (code == "CNM") {
-			//changed username
-			username = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
-			usernameText.text = username;
-		}
-		else if (code == "PIN") {
-			//update all the players
-			//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
-			//updatePlayerList?.Invoke(inLobby, message);
-			updatePlayerList?.Invoke(inLobby, Encoding.ASCII.GetString(buffer, msgCodeSize, size));
-		}
-		else if (code == "LIN") {
-			//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+		//could go back to else if if you wanna remove some depending on if in game or not
 
-			updateLobbyList?.Invoke(Encoding.ASCII.GetString(buffer, msgCodeSize, size));
-		}
-		else if (code == "DTY") {
-			dirty?.Invoke();
-		}
-		else if (code == "CLB") {
-			//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
-			//these are error codes
-			lobbyError?.Invoke(Encoding.ASCII.GetString(buffer, msgCodeSize, size));
-			//the join lobby code will come later
-		}
-		else if (code == "JLB") {
-			//if joining a lobby
-			inLobby = true;
+		Debug.Log(code + ": " + Encoding.ASCII.GetString(buffer, 0, size));
 
-			lobbyName = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+		switch (code) {
+			case "MSG": {
+				chat.UpdateChat(Encoding.ASCII.GetString(buffer, 0, size));
+				break;
+			}
+			case "NTF": {
+				chat.UpdateChat("<color=" + notificationColour + ">"
+					+ Encoding.ASCII.GetString(buffer, 0, size) + "</color>");
+				break;
+			}
+			case "CNM": {
+				//changed username
+				username = Encoding.ASCII.GetString(buffer, 0, size);
+				usernameText.text = username;
+				break;
+			}
+			//menu related
+			case "PIN": {
+				//update all the players
+				//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+				//updatePlayerList?.Invoke(inLobby, message);
+				updatePlayerList?.Invoke(inLobby, Encoding.ASCII.GetString(buffer, 0, size));
+				break;
+			}
+			case "LIN": {
+				//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
 
-			joinedLobby?.Invoke(inLobby, lobbyName);
-		}
-		
-		//can happen in gameplay
-		else if (code == "LLB") {
-			//if leaving lobby, decrement camera back to index 1
-			inLobby = false;
+				updateLobbyList?.Invoke(Encoding.ASCII.GetString(buffer, 0, size));
+				break;
+			}
+			case "DTY": {
+				dirty?.Invoke();
+				break;
+			}
+			case "CLB": {
+				//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+				//these are error codes
+				lobbyError?.Invoke(Encoding.ASCII.GetString(buffer, 0, size));
+				//the join lobby code will come later
+				break;
+			}
+			case "JLB": {
+				//if joining a lobby (also receive current players)
+				inLobby = true;
 
-			lobbyName = "";
+				lobbyName = Encoding.ASCII.GetString(buffer, 0, size);
+				
+				int index = lobbyName.IndexOf(spliter);
+				ServerManager.p1Index = int.Parse(lobbyName.Substring(0, index));
 
-			joinedLobby?.Invoke(inLobby, lobbyName);
-		}
-		
-		//shouldnt happen in gameplay, etc.
-		else if (code == "SRT") {
-			//format is player1id/player2id
-			string ids = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
-			
-			int spliterIndex = ids.IndexOf(spliter);
-			ServerManager.p1Index = int.Parse(ids.Substring(0, spliterIndex));
-			ServerManager.p2Index = int.Parse(ids.Substring(spliterIndex + 1));
-			
-			//load game
-			inGame = true;
-			ServerManager.localMultiplayer = false;
-			SceneController.ChangeScene(gameSceneName);
-		}
-		
-		//consider seperating once we add gameplay loop
-		else if (code == "EXT") {
-			//load menu and reset multiplayer flag
-			inGame = false;
-			ServerManager.localMultiplayer = true;
-			SceneController.ChangeScene("Main Menu");
-			//also send dirty flag
-			client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
+				int index2 = lobbyName.IndexOf(spliter, ++index);
+				ServerManager.p2Index = int.Parse(lobbyName.Substring(index, index2 - index));
+				lobbyName = lobbyName.Substring(index2 + 1);
+
+				joinedLobby?.Invoke(inLobby, lobbyName);
+
+				tableSeatUpdated?.Invoke();
+				break;
+			}
+			case "JNP": {
+				//this player joined the table
+				string message = Encoding.ASCII.GetString(buffer, 0, size);
+				int index = message.IndexOf(spliter);
+				//get the index
+				int id = int.Parse(message.Substring(0, index));
+
+				//now you can trim the message
+				message = message.Substring(index + 1);
+
+				if (message == "Player1") {
+					//we now have the id of Player1
+					ServerManager.p1Index = id;
+				}
+				else if (message == "Player2") {
+					//we now have the id of Player2
+					ServerManager.p2Index = id;
+				}
+
+				tableSeatUpdated?.Invoke();
+
+				//otherwise wtf happened
+				break;
+			}
+			case "LVP": {
+				//this player left the table
+				string message = Encoding.ASCII.GetString(buffer, 0, size);
+
+				if (message == "Player1") {
+					//we now have the id of Player1
+					ServerManager.p1Index = -1;
+				}
+				else if (message == "Player2") {
+					//we now have the id of Player2
+					ServerManager.p2Index = -1;
+				}
+
+				tableSeatUpdated?.Invoke();
+
+				//otherwise wtf happened
+				break;
+			}
+			case "LLB": {
+				//if leaving lobby, decrement camera back to index 1
+				inLobby = false;
+
+				lobbyName = "";
+
+				joinedLobby?.Invoke(inLobby, lobbyName);
+				break;
+			}
+			case "SRT": {
+				//format is player1id/player2id
+				//string ids = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+
+				//int spliterIndex = ids.IndexOf(spliter);
+				//ServerManager.p1Index = int.Parse(ids.Substring(0, spliterIndex));
+				//ServerManager.p2Index = int.Parse(ids.Substring(spliterIndex + 1));
+				//dont need these
+
+				//load game
+				inGame = true;
+				ServerManager.localMultiplayer = false;
+				SceneController.ChangeScene(gameSceneName);
+				break;
+			}
+			//more game related
+			case "EXT": {
+				//load menu and reset multiplayer flag
+				inGame = false;
+				ServerManager.localMultiplayer = true;
+				SceneController.ChangeScene("Main Menu");
+				//also send dirty flag
+				client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
+				break;
+			}
 		}
 	}
 

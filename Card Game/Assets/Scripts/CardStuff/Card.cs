@@ -80,10 +80,11 @@ public class Card : MonoBehaviour
 	}
 
 	public void CallBackCard() {
+		if (transform.parent == player.hand.transform) return;
+		if (placement)	return;
+		
 		//put in hand
-		if (transform.parent != player.hand.transform) {
-			player.hand.ReturnCardToHand(transform);
-		}
+		player.hand.ReturnCardToHand(transform);
 	}
 
 	IEnumerator Death() {

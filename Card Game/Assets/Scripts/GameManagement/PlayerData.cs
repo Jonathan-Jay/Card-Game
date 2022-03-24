@@ -15,7 +15,7 @@ public class PlayerData : MonoBehaviour {
 	public PressEventButton turnEndButton;
 	public int canDraw = 0;
 
-	[SerializeField] List<Card> cardsHeld;
+	public List<Card> heldCards {get; private set;} = new List<Card>();
 
 	//sends old value
 	public event System.Action<int> healthUpdated;
@@ -40,10 +40,10 @@ public class PlayerData : MonoBehaviour {
 	}
 
 	public void AddCard(Card card) {
-		cardsHeld.Add(card);
+		heldCards.Add(card);
 	}
 	public void RemoveCard(Card card) {
-		cardsHeld.Remove(card);
+		heldCards.Remove(card);
 	}
 
 	public void DrawCard() {
@@ -58,14 +58,14 @@ public class PlayerData : MonoBehaviour {
 		canDraw = Mathf.Min(cardsPerTurn, deck.deck.Count);
 
 		//we store the owned cards in cardsheld
-		if (cardsHeld.Count < requiredCards) {
-			canDraw = Mathf.Min(requiredCards - cardsHeld.Count + cardsPerTurn, deck.deck.Count);
+		if (heldCards.Count < requiredCards) {
+			canDraw = Mathf.Min(requiredCards - heldCards.Count + cardsPerTurn, deck.deck.Count);
 		}
 
 		//drawing too many cards, canDraw is the difference
-		if (cardsHeld.Count + canDraw > maxCards) {
+		if (heldCards.Count + canDraw > maxCards) {
 			//if they bug this out
-			canDraw = Mathf.Max(maxCards - cardsHeld.Count, 0);
+			canDraw = Mathf.Max(maxCards - heldCards.Count, 0);
 		}
 
 		//clamp this

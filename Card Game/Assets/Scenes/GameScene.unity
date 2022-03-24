@@ -257,7 +257,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 0
+  m_CharacterLimit: 25
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -3620,7 +3620,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3518372173776631801, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.31
+      value: 4.3
       objectReference: {fileID: 0}
     - target: {fileID: 3518372173776631801, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3674,25 +3674,13 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 7.5
       objectReference: {fileID: 0}
-    - target: {fileID: 3518372173891877198, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.5
+    - target: {fileID: 3518372173896849615, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 60
       objectReference: {fileID: 0}
-    - target: {fileID: 3518372173891877199, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
-      propertyPath: m_Size.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3518372173891877199, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
-      propertyPath: m_Size.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3518372173891877199, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
-      propertyPath: m_Size.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3518372173891877199, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
-      propertyPath: m_Center.y
-      value: 0
+    - target: {fileID: 3518372173896849615, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 3518372174244927522, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
       propertyPath: m_LocalScale.x
@@ -8167,7 +8155,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4663023584056767907}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 31.6, y: 0, z: -3.5}
+  m_LocalPosition: {x: 31.65, y: 0, z: -3.467}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4663023584252765451}

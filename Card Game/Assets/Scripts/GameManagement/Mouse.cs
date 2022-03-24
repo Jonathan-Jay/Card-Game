@@ -66,10 +66,10 @@ public class Mouse : MonoBehaviour {
 			if (Input.GetMouseButtonDown(0)) {
 				clickEvent?.Invoke(rayHitInfo.transform);
 			}
-			if (Input.GetMouseButtonUp(0)) {
-				releaseEvent?.Invoke(rayHitInfo.transform);
-			}
         }
+		if (Input.GetMouseButtonUp(0)) {
+			releaseEvent?.Invoke(rayHitInfo.transform);
+		}
     }
 
 	public void ActivateAll() {
@@ -209,7 +209,7 @@ public class Mouse : MonoBehaviour {
 	}
 
 	void ReleaseCardHolder(Transform hit) {
-		if (!holding) return;
+		if (!holding || !hit) return;
 
 		GameObject hitObj = hit.gameObject;
 		//cardholder test
@@ -227,9 +227,18 @@ public class Mouse : MonoBehaviour {
 		if (!holding) return;
 
 		//just drop the card otherwise
-		holding.GetComponent<Rigidbody>().isKinematic = false;
 		holding.gameObject.layer = cardLayer;
-		holding.SetParent(null, true);
+
+		//check if colliding with hand maybe?
+		if (hit && hit.parent == player.hand.transform) {
+			//put in hand
+			holding.GetComponent<Card>()?.CallBackCard();
+		}
+		else {
+			holding.GetComponent<Rigidbody>().isKinematic = false;
+			holding.SetParent(null, true);
+		}
+		
 		holding = null;
 	}
 }

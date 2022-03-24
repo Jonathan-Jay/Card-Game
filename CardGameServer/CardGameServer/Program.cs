@@ -9,13 +9,19 @@ using System.Net.Sockets;
 public class SynServer
 {
 	const int msgCodeSize = 3;
+	const int gameCodeSize = sizeof(int) * 40;
 	const char terminator = '\r';
 	const char spliter = '\t';
+	const string player1Code = "Player1";
+	const string player2Code = "Player2";
 	//static int sleepLength = 0;
 	//static byte[] pingMsg;
 	static byte[] dirtyMsg;
+	static byte[] startMsg;
 	static byte[] exitMsg;
 	static byte[] leftLBMsg;
+	static byte[] p1LeftMsg;
+	static byte[] p2LeftMsg;
 
 	public class Player
 	{
@@ -92,9 +98,8 @@ public class SynServer
 	//cause why not
 	const int maxLobbies = 5;
 
-	static int num = 0;
 	static string GetName() {
-		return "NewUser" + (num++);
+		return "NewUser" + (playerCount + 1);
 	}
 
 	//return true on success
@@ -118,8 +123,11 @@ public class SynServer
 
 		//pingMsg = Encoding.ASCII.GetBytes(terminator.ToString());
 		dirtyMsg = Encoding.ASCII.GetBytes("DTY" + terminator);
-		leftLBMsg = Encoding.ASCII.GetBytes("LLB" + terminator);
+		startMsg = Encoding.ASCII.GetBytes("SRT" + terminator);
 		exitMsg = Encoding.ASCII.GetBytes("EXT" + terminator);
+		leftLBMsg = Encoding.ASCII.GetBytes("LLB" + terminator);
+		p1LeftMsg = Encoding.ASCII.GetBytes("LVP" + player1Code + terminator);
+		p2LeftMsg = Encoding.ASCII.GetBytes("LVP" + player2Code + terminator);
 		return true;
 	}
 
@@ -298,6 +306,8 @@ public class SynServer
 								lobbies.Add(new Lobby(name));
 
 								player.handler.SendTo(Encoding.ASCII.GetBytes("JLB"
+									+ lobbies[index].player1.ToString() + spliter
+									+ lobbies[index].player2.ToString() + spliter
 									+ name + terminator), player.remoteEP);
 
 								//make the player join the lobby
@@ -326,6 +336,8 @@ public class SynServer
 							if (index < lobbies.Count) {
 								//they don't need the index, the index doesn't really matter
 								player.handler.SendTo(Encoding.ASCII.GetBytes("JLB"
+									+ lobbies[index].player1.ToString() + spliter
+									+ lobbies[index].player2.ToString() + spliter
 									+ lobbies[index].name + terminator), player.remoteEP);
 
 								serverLobby.players.RemoveAt(i);
@@ -344,7 +356,7 @@ public class SynServer
 								continue;
 							}
 						}
-							}
+					}
 					else if (code == "LAP" || !player.handler.Connected) {
 						//left app?
 						#if PRINT_TO_CONSOLE
@@ -430,9 +442,7 @@ public class SynServer
 										other.inGame = true;
 										other.status = "Gaming";
 										//other.status = "In Game";
-										other.handler.SendTo(Encoding.ASCII.GetBytes("SRT"
-											+ lobby.player1.ToString() + spliter + lobby.player2.ToString()
-											+ terminator), other.remoteEP);
+										other.handler.SendTo(startMsg, other.remoteEP);
 									}
 
 									ldirty = false;
@@ -449,9 +459,17 @@ public class SynServer
 									//if a player, disconnect from table
 									if (lobby.player1 == player.id) {
 										lobby.player1 = -1;
+										//resend player data codes
+										foreach (Player other in lobby.players) {
+											other.handler.SendTo(p1LeftMsg, other.remoteEP);
+										}
 									}
 									else if (lobby.player2 == player.id) {
 										lobby.player1 = -1;
+										//resend player data codes
+										foreach (Player other in lobby.players) {
+											other.handler.SendTo(p2LeftMsg, other.remoteEP);
+										}
 									}
 								//}
 
@@ -477,29 +495,62 @@ public class SynServer
 							}
 							else if (code == "JNP") {
 								//get which player they want to join
-								string message = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
-								if (message == "player1") {
+								string input = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
+								Console.WriteLine(input);
+								byte[] message = null;
+								
+								if (input == "Player1") {
 									if (lobby.player1 < 0) {
 										lobby.player1 = player.id;
+										player.status = "In Lobby: " + lobby.name + " as Player 1";
 										ldirty = true;
+
+										message = Encoding.ASCII.GetBytes("JNP"
+											+ lobby.player1.ToString() + spliter
+											+ player1Code + terminator);
 									}
 								}
-								else if (message == "player2") {
+								else if (input == "Player2") {
 									if (lobby.player2 < 0) {
 										lobby.player2 = player.id;
+										player.status = "In Lobby: " + lobby.name + " as Player 2";
 										ldirty = true;
+
+										message = Encoding.ASCII.GetBytes("JNP"
+											+ lobby.player2.ToString() + spliter
+											+ player2Code + terminator);
+									}
+								}
+								//send confirmation if valid
+								if (message != null) {
+									foreach (Player other in lobby.players) {
+										other.handler.SendTo(message, other.remoteEP);
 									}
 								}
 							}
 							else if (code == "LVP") {
+								byte[] message = null;
+
 								//were they actually the player?
 								if (lobby.player1 == player.id) {
 									lobby.player1 = -1;
+									player.status = "In Lobby: " + lobby.name;
 									ldirty = true;
+
+									message = p1LeftMsg;
 								}
 								else if (lobby.player2 == player.id) {
 									lobby.player2 = -1;
+									player.status = "In Lobby: " + lobby.name;
 									ldirty = true;
+
+									message = p2LeftMsg;
+								}
+
+								if (message != null) {
+									foreach (Player other in lobby.players) {
+										other.handler.SendTo(message, other.remoteEP);
+									}
 								}
 							}
 							else if (code == "LAP" || !player.handler.Connected) {
@@ -511,9 +562,15 @@ public class SynServer
 								//check if they were a player, and if so, remove it
 								if (lobby.player1 == player.id) {
 									lobby.player1 = -1;
+									foreach (Player other in lobby.players) {
+										other.handler.SendTo(p1LeftMsg, other.remoteEP);
+									}
 								}
 								else if (lobby.player2 == player.id) {
 									lobby.player2 = -1;
+									foreach (Player other in lobby.players) {
+										other.handler.SendTo(p2LeftMsg, other.remoteEP);
+									}
 								}
 
 
@@ -531,15 +588,40 @@ public class SynServer
 						}
 						//lobby is in game
 						else {
-							if (code == "SRT") {
+							if (code == "COD") {
+								byte[] start = null;
+								//repackage and send to everyone else
+								//should only be from the game players
+								if (player.id == lobby.player1) {
+									start = Encoding.ASCII.GetBytes("COD" + player1Code);
+								}
+								else if (player.id == lobby.player2) {
+									start = Encoding.ASCII.GetBytes("COD" + player2Code);
+								}
+
+								if (start != null) {
+									byte[] message = new byte[start.Length + gameCodeSize];
+									Buffer.BlockCopy(start, 0, message, 0, start.Length);
+									//if player sends too much data it'll trim it, so oh well
+									//if (recv - msgCodeSize > gameCodeSize) {
+										//too big, idk what happened
+									//}
+									Buffer.BlockCopy(buffer, msgCodeSize, message, start.Length, gameCodeSize);
+
+									foreach (Player other in lobby.players) {
+										//ignore self
+										if (player == other) continue;
+										other.handler.SendTo(message, other.remoteEP);
+									}
+								}
+							}
+							else if (code == "SRT") {
 								//should only be spectators that aren't in game
 								/*if (!player.inGame) {
 									player.inGame = true;
 									player.status = "Gaming";
 									//other.status = "In Game";
-									player.handler.SendTo(Encoding.ASCII.GetBytes("SRT"
-										+ lobby.player1.ToString() + spliter + lobby.player2.ToString()
-										+ terminator), player.remoteEP);
+									player.handler.SendTo(startMsg, player.remoteEP);
 
 									ldirty = false;
 								}
@@ -557,7 +639,15 @@ public class SynServer
 										if (!other.inGame) continue;
 
 										other.inGame = false;
-										other.status = "In Lobby: " + lobby.name;
+										if (lobby.player1 == other.id) {
+											player.status = "In Lobby: " + lobby.name + " as Player 1";
+										}
+										else if (lobby.player2 == other.id) {
+											player.status = "In Lobby: " + lobby.name + " as Player 2";
+										}
+										else {
+											other.status = "In Lobby: " + lobby.name;
+										}
 										other.handler.SendTo(exitMsg, other.remoteEP);
 									}
 									ldirty = false;
@@ -569,6 +659,29 @@ public class SynServer
 									player.handler.SendTo(exitMsg, player.remoteEP);
 								}
 							}
+							else if (code == "CND") {
+								//for now jsut exist for testing purposes
+								lobby.inGame = false;
+
+								//exiting game, send them back
+								foreach (Player other in lobby.players) {
+									//if they already exited, dont bother
+									if (!other.inGame) continue;
+
+									other.inGame = false;
+									if (lobby.player1 == other.id) {
+										player.status = "In Lobby: " + lobby.name + "as Player 1";
+									}
+									else if (lobby.player2 == other.id) {
+										player.status = "In Lobby: " + lobby.name + "as Player 2";
+									}
+									else {
+										other.status = "In Lobby: " + lobby.name;
+									}
+									other.handler.SendTo(exitMsg, other.remoteEP);
+								}
+								ldirty = false;
+							}
 							else if (code == "LLB") {
 								//make them quit if in game (somehow) and exit
 								//players really shouldn't be able to do this...
@@ -578,12 +691,12 @@ public class SynServer
 								}
 
 								//if this happens, big trouble lol, well you could always make the spectators leave
-								if (lobby.player1 == player.id) {
-									lobby.player1 = -1;
-								}
-								else if (lobby.player2 == player.id) {
-									lobby.player1 = -1;
-								}
+								//if (lobby.player1 == player.id) {
+								//	lobby.player1 = -1;
+								//}
+								//else if (lobby.player2 == player.id) {
+								//	lobby.player1 = -1;
+								//}
 
 								//left the lobby, move them back
 								serverLobby.players.Add(player);
@@ -610,6 +723,15 @@ public class SynServer
 								#if PRINT_TO_CONSOLE
 								Console.WriteLine(player.username + " left the server");
 								#endif
+								
+								//if this happens, big trouble lol
+								//try to send the concede message, so figure something out for that
+								if (lobby.player1 == player.id) {
+									lobby.player1 = -1;
+								}
+								else if (lobby.player2 == player.id) {
+									lobby.player1 = -1;
+								}
 
 								byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 									+ " left the server" + terminator);

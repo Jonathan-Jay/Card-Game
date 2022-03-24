@@ -8,7 +8,7 @@ public class UITemplate : MonoBehaviour {
 public class UITemplateList : MonoBehaviour
 {
 	[SerializeField] UITemplate prefab;
-	List<string> usernames = new List<string>();
+	List<int> ids = new List<int>();
 	List<UITemplate> profiles = new List<UITemplate>();
 	[SerializeField] Vector3 offset = Vector3.down * 55f;
 
@@ -26,7 +26,8 @@ public class UITemplateList : MonoBehaviour
 		int id = int.Parse(name.Substring(0, secondSplit));
 		//now properly get name
 		name = name.Substring(secondSplit + 1);
-		usernames.Add(name);
+		
+		ids.Add(id);
 
 		//position index
 		int index = profiles.Count;
@@ -38,7 +39,7 @@ public class UITemplateList : MonoBehaviour
 	}
 
 	public void Clear() {
-		usernames.Clear();
+		ids.Clear();
 		while (profiles.Count > 0) {
 			Destroy(profiles[0].gameObject);
 			profiles.RemoveAt(0);

@@ -20,7 +20,8 @@ public class PlayerDataListener : MonoBehaviour
 	}
 
 	[HideInInspector]
-	public PlayerData target = null;
+	[SerializeField] PlayerData target = null;
+
 	[SerializeField] TMP_Text healthNumber;
 	[SerializeField] TMP_Text[] healthNumbers;
 	int healthIndex = 0;
@@ -75,6 +76,9 @@ public class PlayerDataListener : MonoBehaviour
 		OnDisable();
 		target = newTarget;
 		OnEnable();
+
+		//also set for possible child
+		GetComponentInChildren<ReturnCardsToHand>()?.SetPlayer(target);
 	}
 
 	void UpdateHealth(int prevHealth) {

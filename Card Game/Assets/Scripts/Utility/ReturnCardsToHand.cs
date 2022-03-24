@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PressEventButton))]
 public class ReturnCardsToHand : MonoBehaviour
 {
 	[SerializeField] PlayerData player;
@@ -12,14 +13,15 @@ public class ReturnCardsToHand : MonoBehaviour
 		GetComponent<PressEventButton>().pressed -= Return;
 	}
 
-    // Update is called once per frame
-    void Return()
-    {
-        foreach(Card card in FindObjectsOfType<Card>()) {
-			if (!card.placement) {
-				if (player == null || card.player == player)
-					card.CallBackCard();
-			}
+	public void SetPlayer(PlayerData newPlayer) {
+		player = newPlayer;
+		GetComponent<PressEventButton>().player = player;
+	}
+
+    void Return() {
+		//don't include placed cards
+		foreach(Card card in player.heldCards) {
+			card.CallBackCard();
 		}
     }
 }

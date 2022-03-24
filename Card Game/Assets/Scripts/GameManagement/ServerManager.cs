@@ -85,6 +85,10 @@ public class ServerManager : MonoBehaviour
 		}
 		//online game
 		else {
+			//get these and maybe add the name or smt?
+			//game.player1.GetComponentInChildren<TMPro.TMP_InputField>();
+			//game.player2.GetComponentInChildren<TMPro.TMP_InputField>();
+
 			//should be defaulted to true
 			//make sure leave lobby button is here
 			//also the concede button
@@ -153,6 +157,9 @@ public class ServerManager : MonoBehaviour
 				StartCoroutine(DelayedStart(3f, false, false));
 			}
 		}
+
+		//make sure those cams are working
+		LookAt.ForceUpdateCamera?.Invoke();
 	}
 
 	private void OnDestroy() {
@@ -376,15 +383,15 @@ public class ServerManager : MonoBehaviour
 	//always returns true if local game
 	//if player is null, returns if player is either
 	public static bool CheckIfClient(PlayerData player) {
+		//if no player, check for client
+		if (player == null) {
+			return p1Index == Client.playerId || p2Index == Client.playerId;
+		}
+
 		if (localMultiplayer)	return true;
 
 		//always return true if no game
 		if (game == null)	return true;
-
-		//read the comment above
-		if (player == null) {
-			return p1Index == Client.playerId || p2Index == Client.playerId;
-		}
 
 		//check if the index matches the player index
 		if (p1Index == Client.playerId) {
