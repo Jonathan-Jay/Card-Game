@@ -1,4 +1,4 @@
-//#define PRINT_TO_CONSOLE
+#define PRINT_TO_CONSOLE
 
 using System;
 using System.Collections.Generic;
@@ -9,8 +9,8 @@ using System.Net.Sockets;
 public class SynServer
 {
 	const int msgCodeSize = 3;
-	//the extra 1 is for the terminator
-	const int gameCodeSize = sizeof(int) * 40 + msgCodeSize;
+	//msg codes are also sent here
+	const int gameCodeSize = 40 + msgCodeSize;
 	const char terminator = '\r';
 	const char spliter = '\t';
 	const string player1Code = "P1";

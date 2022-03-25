@@ -12,8 +12,8 @@ public class Client : MonoBehaviour
 	public const char spliter = '\t';
 	public string notificationColour = "yellow";
 	public const int msgCodeSize = 3;
-	//dont forget message code is added to game code, the 40 is the current deck size
-	public const int gameCodeSize = (sizeof(int)) * 40 + msgCodeSize;
+	//dont forget message code is added to game code, currently up to 40 bytes
+	public const int gameCodeSize = 40 + msgCodeSize;
 	public const char terminator = '\r';
 	public const string player1Code = "P1";
 	public const string player2Code = "P2";

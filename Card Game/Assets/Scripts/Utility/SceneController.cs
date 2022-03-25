@@ -12,6 +12,6 @@ public class SceneController : MonoBehaviour
 	}
 
 	static public void StartGame() {
-		SceneManager.LoadScene(Client.gameSceneName);
+		ChangeScene(Client.gameSceneName);
 	}
 }

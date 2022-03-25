@@ -17,11 +17,11 @@ MonoBehaviour:
   cost: 5
   targettingOption: 3
   activateOption: 3
-  abilityOption: 2
-  cardDescription: Destroy all monsters on the board
+  abilityOption: 0
+  cardDescription: Deal <color=red>2</color> damage to every monster in the frontlines
   actionParameter1: 0
   actionParameter2: 0
-  abilityParameter1: 0
+  abilityParameter1: 2
   abilityParameter2: 0
   abilityParameter3: 0
   effect: {fileID: -7501756154870324049, guid: 65c6af3ee79b6b240810d9b8adb33669, type: 3}

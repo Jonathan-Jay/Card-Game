@@ -12,7 +12,7 @@ public class LobbyProfile : UITemplate
     public override void SetData(string username, int id, string playerCount) {
 		//all usernames should start with the index
 		index = id;
-		lobbyName.text = username.Substring(1);
+		lobbyName.text = username;
 		this.playerCount.text = playerCount + " player(s)";
 	}
 

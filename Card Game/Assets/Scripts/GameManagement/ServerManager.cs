@@ -352,7 +352,10 @@ public class ServerManager : MonoBehaviour
 		//now we make players draw cards
 		game.StartDrawCards(isP1, isP2);
 
-		void InputSend(string code, Transform hit, PlayerData player) {
+		void InputSend(string code, Transform hit, Mouse mouse) {
+			//avoid the uh oh stinkies
+			//if (mouse.whoopsies)	return;
+
 			//the obvious
 			if (!hit || !hit.CompareTag("Interactable")) return;
 
@@ -381,7 +384,7 @@ public class ServerManager : MonoBehaviour
 					message = "CAT" + GetPlayerCode(attackerTest.playerData) + index.ToString() + Client.spliter;
 			}
 			else if (hit.TryGetComponent<PressEventButton>(out buttonTest)) {
-				if (buttonTest.player == player)
+				if (buttonTest.player == mouse.player)
 					message = "BUT" + buttonTest.name + Client.spliter;
 			}
 
@@ -395,23 +398,23 @@ public class ServerManager : MonoBehaviour
 		//hover event is better as UDP
 		if (isP1) {
 			void P1ClickSend(Transform hit) {
-				InputSend("CLK", hit, game.player1);
+				InputSend("CLK", hit, p1mouse);
 			}
 			p1mouse.clickEvent += P1ClickSend;
 
 			void P1ReleaseSend(Transform hit) {
-				InputSend("REL", hit, game.player1);
+				InputSend("REL", hit, p1mouse);
 			}
 			p1mouse.releaseEvent += P1ReleaseSend;
 		}
 		if (isP2) {
 			void P2ClickSend(Transform hit) {
-				InputSend("CLK", hit, game.player2);
+				InputSend("CLK", hit, p2mouse);
 			}
 			p2mouse.clickEvent += P2ClickSend;
 
 			void P2ReleaseSend(Transform hit) {
-				InputSend("REL", hit, game.player2);
+				InputSend("REL", hit, p2mouse);
 			}
 			p2mouse.releaseEvent += P2ReleaseSend;
 		}
@@ -608,7 +611,7 @@ public class ServerManager : MonoBehaviour
 	}
 
 	void OnlineTurnEndPlayerChange() {
-		StartCoroutine(DelayedTurnEnd(p1turn ? game.player1 : game.player2));
+		StartCoroutine(DelayedTurnEnd(p1turn ? game.player2 : game.player1));
 	}
 
 	IEnumerator DelayedTurnEnd(PlayerData player) {
@@ -623,10 +626,10 @@ public class ServerManager : MonoBehaviour
 			p1bell.material.color = Color.grey;
 
 			//delay this if it's the player's turn end, makes sure the other doesnt double press
+			p2mouse.DeActivateEssentials();
 			if (CheckIfClient(player, false))
 				yield return Client.DesyncCompensation;
 			
-			p2mouse.DeActivateEssentials();
 			game.player2.deck.FirstDraw(CheckIfClient(game.player2, false));
 			//if (game.player2.canDraw > 0)
 			//	p2mouse.ActivateDeck();
@@ -640,20 +643,20 @@ public class ServerManager : MonoBehaviour
 		}
 		else {
 			p1turn = true;
-			p1mouse.DeActivateEssentials();
-			game.player1.deck.FirstDraw(CheckIfClient(game.player1, false));
-
-			game.player1.turnEndButton.enabled = true;
-			p1bell.material.color = defaultBellCol;
-
-			//delay this if it's the player's turn end, makes sure the other doesnt double press
-			if (CheckIfClient(player, false))
-				yield return Client.DesyncCompensation;
-
 			p2mouse.DeActivateAll();
 			p2mouse.ActivateEssentials();
 			game.player2.turnEndButton.enabled = false;
 			p2bell.material.color = Color.grey;
+
+			//delay this if it's the player's turn end, makes sure the other doesnt double press
+			p1mouse.DeActivateEssentials();
+			if (CheckIfClient(player, false))
+				yield return Client.DesyncCompensation;
+
+			game.player1.deck.FirstDraw(CheckIfClient(game.player1, false));
+
+			game.player1.turnEndButton.enabled = true;
+			p1bell.material.color = defaultBellCol;
 
 			//dont need to disable cards
 		}

@@ -121,7 +121,6 @@ public class Mouse : MonoBehaviour {
 	public void DeActivateDeck() {
 		clickEvent -= ClickDeck;
 	}*/
-
 	public void LinkInteractablesFunc() {
 		//make sure we're not holding anything
 		if (holding) {
@@ -130,6 +129,7 @@ public class Mouse : MonoBehaviour {
 			holding.SetParent(null, true);
 			holding = null;
 		}
+
 		clickEvent += ClickCard;
 		releaseEvent += ReleaseCardHolder;
 		releaseEvent += ReleaseCard;
@@ -143,6 +143,7 @@ public class Mouse : MonoBehaviour {
 			holding.SetParent(null, true);
 			holding = null;
 		}
+
 		clickEvent -= ClickCard;
 		releaseEvent -= ReleaseCardHolder;
 		releaseEvent -= ReleaseCard;
