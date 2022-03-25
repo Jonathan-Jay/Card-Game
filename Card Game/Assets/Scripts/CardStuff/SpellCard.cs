@@ -56,6 +56,10 @@ public class SpellCard : Card
 	}
 
 	IEnumerator CastSpell(PlayerData current, PlayerData opposing) {
+		//makes less missinputs, hopefully
+		if (ServerManager.CheckIfClient(player, false))
+			yield return Client.DesyncCompensation;
+
 		Transform hit = null;
 		void UpdateRaycastHit(Transform rayHit) {
 			hit = rayHit;
@@ -93,10 +97,15 @@ public class SpellCard : Card
 		//can't target something, so just drop card
 		if (newIndex < -1) {
 			//relink mouse functions
-			player.hand.input.DeactivateSpellMode();
 			Release();
 			//return the mana cost
 			current.ReduceMana(-data.cost);
+
+			//delay on client, dont want them clicking button immidiately after the thing
+			if (ServerManager.CheckIfClient(player, false))
+				yield return Client.DesyncCompensation;
+			
+			player.hand.input.DeactivateSpellMode();
 			yield break;
 		}
 
@@ -113,6 +122,10 @@ public class SpellCard : Card
 
 	IEnumerator DelayedDeath(float delay) {
 		yield return new WaitForSeconds(delay);
+
+		//delay on client, dont want them clicking button immidiately after the thing
+		if (ServerManager.CheckIfClient(player, false))
+			yield return Client.DesyncCompensation;
 		
 		player.hand.input.DeactivateSpellMode();
 		StartCoroutine("Death");

@@ -35,25 +35,28 @@ public class GameController : MonoBehaviour
         	Generate();
     }
 
-	public void StartGame(bool p1Starts, bool renderFirst, bool renderSecond) {
-		PlayerData first = p1Starts ? player1 : player2;
-		PlayerData second = p1Starts ? player2 : player1;
+	public void LocalGameStart(bool p1Starts) {
+		//null data so it shuffles
+		StartPlayerTurn(p1Starts ? player1 : player2, null);
+		StartPlayerTurn(p1Starts ? player2 : player1, null);
 
-		//update player
-		first.Init(startingMana, cardsPerTurn);
-		second.Init(startingMana, cardsPerTurn);
+		//only the starting player has visible cards
+		StartDrawCards(p1Starts, !p1Starts);
+	}
 
-		//update bells
-		player1.turnEndButton.pressed += DoPlayer1Turn;
-		player2.turnEndButton.pressed += DoPlayer2Turn;
+	//if no bytes, shuffles deck
+	public void StartPlayerTurn(PlayerData player, int[] deckData) {
+		player.Init(startingMana, cardsPerTurn);
 
-		//shuffle decks
-		first.deck.ShuffleDeck();
-		second.deck.ShuffleDeck();
+		if (deckData == null)
+			player.deck.ShuffleDeck();
+		else
+			player.deck.FromArray(deckData);
+	}
 
-		//fill hands
-		first.deck.AutoDrawCards(startingHandSize, 0.25f, renderFirst);
-		second.deck.AutoDrawCards(startingHandSize, 0.25f, renderSecond);
+	public void StartDrawCards(bool renderP1, bool renderP2) {
+		player1.deck.AutoDrawCards(startingHandSize, 0.25f, renderP1);
+		player2.deck.AutoDrawCards(startingHandSize, 0.25f, renderP2);
 	}
 
 	void DoPlayer1Turn() {
@@ -160,20 +163,6 @@ public class GameController : MonoBehaviour
 		}
 	}
 
-	//display current turn?
-	/*
-	private void OnEnable() {
-		turnEnded += TurnEnd;
-	}
-
-	private void OnDisable() {
-		turnEnded -= TurnEnd;
-	}
-
-	void TurnEnd() {
-		
-	}*/
-
 	void Generate() {
 		//clear current field
 		Clear();
@@ -204,6 +193,7 @@ public class GameController : MonoBehaviour
 		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
 		player2.turnEndButton = temp.GetComponent<PressEventButton>();
 		player2.turnEndButton.player = player2;
+		player2.turnEndButton.pressed += DoPlayer2Turn;
 		//temp.gameObject.tag = "Player2";
 
 		temp = Instantiate(turnEndButtonPrefab.gameObject, transform).transform;
@@ -211,6 +201,7 @@ public class GameController : MonoBehaviour
 		temp.localRotation = Quaternion.identity;
 		player1.turnEndButton = temp.GetComponent<PressEventButton>();
 		player1.turnEndButton.player = player1;
+		player1.turnEndButton.pressed += DoPlayer1Turn;
 		//temp.gameObject.tag = "Player1";
 
 

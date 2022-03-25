@@ -1,4 +1,4 @@
-#define PRINT_TO_CONSOLE
+//#define PRINT_TO_CONSOLE
 
 using System;
 using System.Collections.Generic;
@@ -9,11 +9,12 @@ using System.Net.Sockets;
 public class SynServer
 {
 	const int msgCodeSize = 3;
-	const int gameCodeSize = sizeof(int) * 40;
+	//the extra 1 is for the terminator
+	const int gameCodeSize = sizeof(int) * 40 + msgCodeSize;
 	const char terminator = '\r';
 	const char spliter = '\t';
-	const string player1Code = "Player1";
-	const string player2Code = "Player2";
+	const string player1Code = "P1";
+	const string player2Code = "P2";
 	//static int sleepLength = 0;
 	//static byte[] pingMsg;
 	static byte[] dirtyMsg;
@@ -465,7 +466,7 @@ public class SynServer
 										}
 									}
 									else if (lobby.player2 == player.id) {
-										lobby.player1 = -1;
+										lobby.player2 = -1;
 										//resend player data codes
 										foreach (Player other in lobby.players) {
 											other.handler.SendTo(p2LeftMsg, other.remoteEP);
@@ -496,10 +497,9 @@ public class SynServer
 							else if (code == "JNP") {
 								//get which player they want to join
 								string input = Encoding.ASCII.GetString(buffer, msgCodeSize, recv);
-								Console.WriteLine(input);
 								byte[] message = null;
 								
-								if (input == "Player1") {
+								if (input == player1Code) {
 									if (lobby.player1 < 0) {
 										lobby.player1 = player.id;
 										player.status = "In Lobby: " + lobby.name + " as Player 1";
@@ -510,7 +510,7 @@ public class SynServer
 											+ player1Code + terminator);
 									}
 								}
-								else if (input == "Player2") {
+								else if (input == player2Code) {
 									if (lobby.player2 < 0) {
 										lobby.player2 = player.id;
 										player.status = "In Lobby: " + lobby.name + " as Player 2";
@@ -630,7 +630,7 @@ public class SynServer
 							}
 							else if (code == "EXT") {
 								//if player, make everyone quit
-								if (lobby.player1 == player.id && lobby.player2 == player.id) {
+								if (lobby.player1 == player.id || lobby.player2 == player.id) {
 									lobby.inGame = false;
 
 									//exiting game, send them back
@@ -640,10 +640,10 @@ public class SynServer
 
 										other.inGame = false;
 										if (lobby.player1 == other.id) {
-											player.status = "In Lobby: " + lobby.name + " as Player 1";
+											other.status = "In Lobby: " + lobby.name + " as Player 1";
 										}
 										else if (lobby.player2 == other.id) {
-											player.status = "In Lobby: " + lobby.name + " as Player 2";
+											other.status = "In Lobby: " + lobby.name + " as Player 2";
 										}
 										else {
 											other.status = "In Lobby: " + lobby.name;
@@ -670,10 +670,10 @@ public class SynServer
 
 									other.inGame = false;
 									if (lobby.player1 == other.id) {
-										player.status = "In Lobby: " + lobby.name + "as Player 1";
+										other.status = "In Lobby: " + lobby.name + "as Player 1";
 									}
 									else if (lobby.player2 == other.id) {
-										player.status = "In Lobby: " + lobby.name + "as Player 2";
+										other.status = "In Lobby: " + lobby.name + "as Player 2";
 									}
 									else {
 										other.status = "In Lobby: " + lobby.name;

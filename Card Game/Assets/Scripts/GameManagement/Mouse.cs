@@ -21,6 +21,7 @@ public class Mouse : MonoBehaviour {
     private Camera cam;
 	int mask;
 
+
 	//used in the disabling of things
 	int activeAnims = 0;
 	int activeSpells = 0;
@@ -49,6 +50,18 @@ public class Mouse : MonoBehaviour {
 	IEnumerator DelayedIgnoreSetter(bool val, float delay) {
 		yield return new WaitForSeconds(delay);
 		ignore = val;
+	}
+
+	public void ForwardHoverEvent(Transform hit) {
+		hoverEvent?.Invoke(hit);
+	}
+
+	public void ForwardClickEvent(Transform hit) {
+		clickEvent?.Invoke(hit);
+	}
+
+	public void ForwardReleaseEvent(Transform hit) {
+		releaseEvent?.Invoke(hit);
 	}
 
     // Update is called once per frame
@@ -152,9 +165,13 @@ public class Mouse : MonoBehaviour {
 		//clickEvent += ClickDeck;
 	}
 
+	//to turn off animation mode (avoid weird desync issues in networking, vm, seems to still do issues lol)
+	//public bool disabledAnimationMode = false;
+
 	public void ActivateSpellMode() {
 		if (activeSpells++ != 0)	return;
 
+		//if (disabledAnimationMode)
 		UnLinkInteractablesFunc();
 		ActivateAnimationMode();
 		//change rendering
@@ -164,6 +181,7 @@ public class Mouse : MonoBehaviour {
 	public void DeactivateSpellMode() {
 		if (--activeSpells != 0)	return;
 
+		//if (disabledAnimationMode)
 		LinkInteractablesFunc();
 		DeactivateAnimationMode();
 		//change rendering

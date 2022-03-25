@@ -12,6 +12,8 @@ public class DeckManager : MonoBehaviour
 
 	public CardDataMultiplier[] deckOptions = new CardDataMultiplier[0];
 	public Stack<int> deck = new Stack<int>();
+	//public int[] viewableDeck;
+
 	[SerializeField]	Transform cardStack;
 	[SerializeField]	BoxCollider col;
 	[SerializeField]	TMPro.TMP_Text text;
@@ -68,9 +70,29 @@ public class DeckManager : MonoBehaviour
 		col.center = cardStack.localPosition + Vector3.up * cardHeight * deck.Count * 0.5f;
 		text.transform.localPosition = cardStack.localPosition + Vector3.up * (cardHeight * deck.Count + 0.025f);
 		text.text = deck.Count.ToString();
+
+		//viewableDeck = deck.ToArray();
 	}
 
-    public Transform DrawCard(bool renderFace = true, bool faceDown = false, bool ignoreDrawLimit = false) {
+	//order should be left = top, right = bottom
+	public void FromArray(int[] arr) {
+		//for debugging purposes
+		//for (int i = 0; i < arr.Length; ++i) {
+		for (int i = arr.Length - 1; i >= 0; --i) {
+			deck.Push(arr[i]);
+		}
+
+		//fix the height
+		cardStack.localScale = Vector3.one + Vector3.down * (1f - cardHeight * deck.Count);
+		col.size = col.size + col.size.y * Vector3.down + Vector3.up * cardHeight * deck.Count;
+		col.center = cardStack.localPosition + Vector3.up * cardHeight * deck.Count * 0.5f;
+		text.transform.localPosition = cardStack.localPosition + Vector3.up * (cardHeight * deck.Count + 0.025f);
+		text.text = deck.Count.ToString();
+
+		//viewableDeck = deck.ToArray();
+	}
+
+	public Transform DrawCard(bool renderFace = true, bool faceDown = false, bool ignoreDrawLimit = false) {
 		//dont draw if empty
 		if (deck.Count == 0)	return null;
 		//if not ignoring draw limit, check canDraw
@@ -152,7 +174,7 @@ public class DeckManager : MonoBehaviour
 		return temp.transform;
 	}
 
-	static WaitForSeconds pointFive = new WaitForSeconds(0.4f);
+	public static WaitForSeconds pointFive = new WaitForSeconds(0.4f);
 	public void FirstDraw(bool renderFace) {
 		if (player.canDraw == 0) {
 			player.hand.input.ActivateAll();

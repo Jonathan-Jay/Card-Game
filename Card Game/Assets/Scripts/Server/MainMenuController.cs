@@ -132,7 +132,7 @@ public class MainMenuController : MonoBehaviour
 	}
 
 	void SeatedPlayersChanged() {
-		if (ServerManager.CheckIfClient(null)) {
+		if (ServerManager.CheckIfClient(null, false)) {
 			//show the leave seat if you're a player
 			leaveSeat.SetActive(true);
 			joinPlayer1Seat.SetActive(false);

@@ -110,8 +110,11 @@ public class CardHolder : MonoBehaviour
 			audioPlayer?.Play();
 		}
 
-
 		yield return new WaitForSeconds(0.25f);
+
+		if (ServerManager.CheckIfClient(playerData, false))
+			yield return Client.DesyncCompensation;
+
 		if (disabledAnimationMode)
 			playerData.hand.input.DeactivateSpellMode();
 		else

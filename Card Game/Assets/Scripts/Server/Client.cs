@@ -12,10 +12,11 @@ public class Client : MonoBehaviour
 	public const char spliter = '\t';
 	public string notificationColour = "yellow";
 	public const int msgCodeSize = 3;
-	public const int gameCodeSize = sizeof(int) * 40;
+	//dont forget message code is added to game code, the 40 is the current deck size
+	public const int gameCodeSize = (sizeof(int)) * 40 + msgCodeSize;
 	public const char terminator = '\r';
-	public const string player1Code = "Player1";
-	public const string player2Code = "Player2";
+	public const string player1Code = "P1";
+	public const string player2Code = "P2";
     public static byte[] recBuffer = new byte[512];
 	public static Socket client;
 	public static IPEndPoint server;
@@ -49,6 +50,8 @@ public class Client : MonoBehaviour
 	public event Action<bool, string> joinedLobby;
 	public event Action tableSeatUpdated;
 	public event Action<byte[]> gameCodeReceived;
+
+	public static WaitForSeconds DesyncCompensation = new WaitForSeconds(0.5f);
 
 	private void Start() {
 		//not online yet
@@ -204,6 +207,8 @@ public class Client : MonoBehaviour
     }
 
 	public void SendTextChatMessage() {
+		if (textChat.text == "")	return;
+
 		byte[] msg = Encoding.ASCII.GetBytes("MSG" + textChat.text);
 		client.SendTo(msg, server);
 		textChat.text = "";
@@ -264,8 +269,21 @@ public class Client : MonoBehaviour
 		}
 	}
 
+	public static void SendGameData(byte[] data) {
+		//for now jsut send it all, trimed to max size
+		byte[] start = Encoding.ASCII.GetBytes("COD");
+		byte[] message = new byte[start.Length + gameCodeSize];
+
+		//add the start
+		Buffer.BlockCopy(start, 0, message, 0, start.Length);
+		//add the actual message
+		Buffer.BlockCopy(data, 0, message, start.Length, Mathf.Min(data.Length, gameCodeSize));
+
+		client.SendTo(message, server);
+	}
+
 	public static void Concede() {
-		if (inGame && ServerManager.CheckIfClient(null)) {
+		if (inGame && ServerManager.CheckIfClient(null, false)) {
 			client.SendTo(Encoding.ASCII.GetBytes("CND"), server);
 		}
 	}
@@ -288,7 +306,6 @@ public class Client : MonoBehaviour
 	private void Update() {
 		//only if client is existing
 		if (!canStart)	return;
-		Debug.Log("y");
 
 		try {
 			recv = client.Receive(recBuffer);
@@ -309,9 +326,9 @@ public class Client : MonoBehaviour
 	void TestMessage(byte[] buffer, int size) {
 		//textBuffer += message;
 		string textBuffer = Encoding.ASCII.GetString(buffer, 0, size);
-		
+
 		//in cases of overflow
-		if (textBuffer.Length < 2)	return;
+		if (textBuffer.Length < 3)	return;
 
 		//for going through bytes
 		int index = textBuffer.IndexOf(terminator);
@@ -327,20 +344,26 @@ public class Client : MonoBehaviour
 			}
 			//it's a game code
 			else {
-				//send the message
-				byte[] message = new byte[gameCodeSize];
-				Buffer.BlockCopy(buffer, compoundIndex, message, 0, gameCodeSize);
+				//playerCode.length only works because of ascii encoding, consider thinking of that
+
+				//send the message plus the terminator
+				byte[] message = new byte[player1Code.Length + gameCodeSize];
+				Buffer.BlockCopy(buffer, compoundIndex, message, 0, message.Length);
 
 				gameCodeReceived?.Invoke(message);
 
-				//because of the terminator skip
-				index = gameCodeSize - 1;
+				//undo possibly terminator
+				index = message.Length - 1;
 				//reset this
 				code = "";
 			}
 
-			//update compound index, and ignore terminator
+			//update compound index and termninator
 			compoundIndex += index + 1;
+
+			if (compoundIndex >= size) {
+				break;
+			}
 
 			//get rid of everything below the thing
 			textBuffer = Encoding.ASCII.GetString(buffer, compoundIndex - msgCodeSize, size - compoundIndex + msgCodeSize);
@@ -356,9 +379,7 @@ public class Client : MonoBehaviour
 	//buffer is without code
 	void ParseMessage(string code, byte[] buffer, int size) {
 		//could go back to else if if you wanna remove some depending on if in game or not
-
-		Debug.Log(code + ": " + Encoding.ASCII.GetString(buffer, 0, size));
-
+		
 		switch (code) {
 			case "MSG": {
 				chat.UpdateChat(Encoding.ASCII.GetString(buffer, 0, size));
@@ -428,11 +449,11 @@ public class Client : MonoBehaviour
 				//now you can trim the message
 				message = message.Substring(index + 1);
 
-				if (message == "Player1") {
+				if (message == player1Code) {
 					//we now have the id of Player1
 					ServerManager.p1Index = id;
 				}
-				else if (message == "Player2") {
+				else if (message == player2Code) {
 					//we now have the id of Player2
 					ServerManager.p2Index = id;
 				}
@@ -446,11 +467,11 @@ public class Client : MonoBehaviour
 				//this player left the table
 				string message = Encoding.ASCII.GetString(buffer, 0, size);
 
-				if (message == "Player1") {
+				if (message == player1Code) {
 					//we now have the id of Player1
 					ServerManager.p1Index = -1;
 				}
-				else if (message == "Player2") {
+				else if (message == player2Code) {
 					//we now have the id of Player2
 					ServerManager.p2Index = -1;
 				}

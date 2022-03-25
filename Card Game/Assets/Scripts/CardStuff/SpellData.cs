@@ -555,7 +555,7 @@ public class SpellData : CardData {
 		if (index >= 0)	return;
 		
 		//render if client matches
-		target.deck.AutoDrawCards(spell.abilityParameter1, 0.25f, ServerManager.CheckIfClient(target));
+		target.deck.AutoDrawCards(spell.abilityParameter1, 0.25f, ServerManager.CheckIfClient(target, true));
 	}
 #endregion
 
