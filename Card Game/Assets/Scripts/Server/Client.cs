@@ -19,7 +19,9 @@ public class Client : MonoBehaviour
 	public const string player2Code = "P2";
     public static byte[] recBuffer = new byte[512];
 	public static Socket client;
+	public static Socket udpClient;
 	public static IPEndPoint server;
+	public static IPEndPoint udpServer;
 	public static string username {get; private set;} = "";
 
 	public float waitDuration = 5f;
@@ -158,8 +160,8 @@ public class Client : MonoBehaviour
 					playerId = int.Parse(username.Substring(0, index));
 					username = username.Substring(index + 1);
 
-					//send garbage for refreshing data
-					client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
+					//send garbage for refreshing data, it'll now be through the udp command
+					//client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
 
 					//send it whatever might be after the name
 					index = username.IndexOf(terminator);
@@ -174,7 +176,33 @@ public class Client : MonoBehaviour
 					}
 					usernameText.text = username;
 				}
-				connected = true;
+
+				//now we can create our udp socket and send it to the server
+				udpClient = new Socket(server.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+
+				//start searching from this port onwards
+				int udpPort = 420;
+				EndPoint remote = null;
+				while (!connected) {
+					remote = new IPEndPoint(server.Address, ++udpPort);
+					try {
+						udpClient.Bind(remote);
+
+						connected = true;
+					}
+					catch (SocketException sockExcep) {
+						if (sockExcep.SocketErrorCode != SocketError.AddressAlreadyInUse) {
+							Debug.Log(sockExcep.ToString());
+						}
+					}
+					catch (Exception e) {
+						Debug.Log(e.ToString());
+					}
+				}
+
+				//send the udpPort now
+				client.SendTo(Encoding.ASCII.GetBytes("UDP" + udpPort.ToString()), server);
+
 				break;
 			}
 			catch (SocketException SockExc) {
@@ -430,10 +458,16 @@ public class Client : MonoBehaviour
 				int index = lobbyName.IndexOf(spliter);
 				ServerManager.p1Index = int.Parse(lobbyName.Substring(0, index));
 
-				int index2 = lobbyName.IndexOf(spliter, ++index);
-				ServerManager.p2Index = int.Parse(lobbyName.Substring(index, index2 - index));
-				lobbyName = lobbyName.Substring(index2 + 1);
+				lobbyName = lobbyName.Substring(index + 1);
+				index = lobbyName.IndexOf(spliter);
+				ServerManager.p2Index = int.Parse(lobbyName.Substring(0, index));
+				
+				//get the udp port for sending stuff
+				lobbyName = lobbyName.Substring(index + 1);
+				index = lobbyName.IndexOf(spliter);
+				udpServer = new IPEndPoint(server.Address, int.Parse(lobbyName.Substring(0, index)));
 
+				lobbyName = lobbyName.Substring(index + 1);
 				joinedLobby?.Invoke(inLobby, lobbyName);
 
 				tableSeatUpdated?.Invoke();
@@ -484,6 +518,10 @@ public class Client : MonoBehaviour
 			case "LLB": {
 				//if leaving lobby, decrement camera back to index 1
 				inLobby = false;
+
+				//clear this
+				if (udpServer != null)
+					udpServer = null;
 
 				lobbyName = "";
 

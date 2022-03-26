@@ -1,4 +1,4 @@
-#define PRINT_TO_CONSOLE
+//#define PRINT_TO_CONSOLE
 
 using System;
 using System.Collections.Generic;
@@ -27,8 +27,8 @@ public class SynServer
 	public class Player
 	{
 		public Socket handler;
-		public EndPoint remoteEP;
-		//public EndPoint udpEP;
+		public IPEndPoint remoteEP;
+		public IPEndPoint udpEP = null;
 		public string username;
 		public string status;
 		public int id;
@@ -36,13 +36,13 @@ public class SynServer
 
 		public Player(Socket handler, string username, int id) {
 			this.handler = handler;
-			this.remoteEP = (EndPoint)handler.RemoteEndPoint;
+			this.remoteEP = (IPEndPoint)handler.RemoteEndPoint;
 			this.username = username;
 			this.id = id;
 			this.status = "New";
 		}
 
-		~Player() {
+		public void Kill() {
 			#if PRINT_TO_CONSOLE
 			Console.WriteLine("Player \"" + username + "\" was terminated");
 			#endif
@@ -63,8 +63,9 @@ public class SynServer
 		public int player1 = -1;
 		public int player2 = -1;
 
-		//public Socket udpSocket = null;
-		//public EndPoint remote = null;
+		public Socket udpSocket = null;
+		public EndPoint remote = null;
+		public int udpPort = -1;
 
 		public Lobby(string name, string password = "") {
 			players = new List<Player>();
@@ -72,13 +73,13 @@ public class SynServer
 			this.password = password;
 		}
 
-		~Lobby() {
+		public void Kill() {
 			#if PRINT_TO_CONSOLE
 			Console.WriteLine("Lobby \"" + name + "\" was terminated");
 			#endif
-			//if (udpSocket != null) {
-				//udpSocket.Close();
-			//}
+			if (udpSocket != null) {
+				udpSocket.Close();
+			}
 		}
 	}
 	
@@ -86,10 +87,11 @@ public class SynServer
 	static Socket server;
 	//each lobby has their own for ease of use (dont have to find the specific server the udp was received on)
 	//this is to make it unique per lobby
-	//static int udpSocketPort = 69420;
+	static int udpSocketPort = 420;
 
 	//when checking new players
-	static Socket tempHandler;
+	static Socket tempHandler = null;
+	static IPEndPoint tempIPRemote = null;
 
 	static int playerCount = 0;
 
@@ -307,20 +309,52 @@ public class SynServer
 							if (!exists) {
 								int index = lobbies.Count;
 								lobbies.Add(new Lobby(name));
+								Lobby lobby = lobbies[index];
 
+								//create the udp socket
+								lobby.udpSocket = new Socket(ip.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+								EndPoint remote = null;
+								while (lobby.remote == null) {
+									remote = new IPEndPoint(ip, ++udpSocketPort);
+									try {
+										lobby.udpSocket.Bind(remote);
+
+										lobby.udpPort = udpSocketPort;
+
+										lobby.remote = new IPEndPoint(IPAddress.Any, 0);
+									}
+									catch (SocketException sockExcep) {
+										if (sockExcep.SocketErrorCode != SocketError.AddressAlreadyInUse) {
+											Console.WriteLine(sockExcep.ToString());
+											return false;
+										}
+										remote = null;
+									}
+									catch (Exception e) {
+										Console.WriteLine(e.ToString());
+										return false;
+									}
+								}
+
+								#if PRINT_TO_CONSOLE
+								Console.WriteLine("Lobby " + name + " created on udp Port " + udpSocketPort);
+								#endif
+
+								//send the port to them
 								player.handler.SendTo(Encoding.ASCII.GetBytes("JLB"
-									+ lobbies[index].player1.ToString() + spliter
-									+ lobbies[index].player2.ToString() + spliter
+									+ lobby.player1.ToString() + spliter
+									+ lobby.player2.ToString() + spliter
+									+ lobby.udpPort.ToString() + spliter
 									+ name + terminator), player.remoteEP);
 
 								//make the player join the lobby
 								serverLobby.players.RemoveAt(i);
-								lobbies[index].players.Add(player);
+								lobby.players.Add(player);
 
 								byte[] join = Encoding.ASCII.GetBytes("NTF" + player.username
 									+ " joined the lobby" + terminator);
 
-								foreach (Player other in lobbies[index].players) {
+								foreach (Player other in lobby.players) {
 									//send to all players that user left
 									other.handler.SendTo(join, other.remoteEP);
 								}
@@ -341,6 +375,7 @@ public class SynServer
 								player.handler.SendTo(Encoding.ASCII.GetBytes("JLB"
 									+ lobbies[index].player1.ToString() + spliter
 									+ lobbies[index].player2.ToString() + spliter
+									+ lobbies[index].udpPort.ToString() + spliter
 									+ lobbies[index].name + terminator), player.remoteEP);
 
 								serverLobby.players.RemoveAt(i);
@@ -369,6 +404,7 @@ public class SynServer
 						byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 							+ " left the server" + terminator);
 
+						player.Kill();
 						serverLobby.players.RemoveAt(i);
 						foreach (Player other in serverLobby.players) {
 							//send to all players that user left
@@ -376,6 +412,16 @@ public class SynServer
 						}
 						dirty = true;
 						continue;
+					}
+					//last because this should be the first thign we receive from players, so uncommon
+					else if (code == "UDP") {
+						//it's their earliest available udp port
+						player.udpEP = new IPEndPoint(((IPEndPoint)player.handler.RemoteEndPoint).Address,
+							int.Parse(Encoding.ASCII.GetString(buffer, msgCodeSize, recv)));
+						//if it crashes, idk how that happened lol
+
+						//mark dirty to also let the player reget everything
+						dirty = true;
 					}
 				}
 			}
@@ -391,6 +437,7 @@ public class SynServer
 						byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 							+ " left the server" + terminator);
 
+						player.Kill();
 						serverLobby.players.RemoveAt(i);
 						foreach (Player other in serverLobby.players) {
 							//send to all players that user left
@@ -441,31 +488,6 @@ public class SynServer
 								{
 									//if no udp, we can just set to true
 									lobby.inGame = true;
-
-									/*//create the socket if you haven't already
-									if (lobby.udpSocket == null) {
-										lobby.udpSocket = new Socket(ip.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-										EndPoint remote = null;
-										while (!lobby.inGame) {
-											remote = new IPEndPoint(ip, udpSocketPort++);
-											try {
-												lobby.udpSocket.Bind(remote);
-												//if this fails, it currently crashes the entire server lol
-												lobby.inGame = true;
-											}
-											catch (SocketException sockExcep) {
-												if (sockExcep.SocketErrorCode != SocketError.AddressAlreadyInUse) {
-													Console.WriteLine(sockExcep.ToString());
-													return false;
-												}
-											}
-											catch (Exception e) {
-												Console.WriteLine(e.ToString());
-												return false;
-											}
-										}
-										lobby.remote = new IPEndPoint(IPAddress.Any, 0);
-									}//*/
 
 									//starting game, send all players into game, can also probably ignore dirty tags
 									foreach (Player other in lobby.players) {
@@ -606,6 +628,7 @@ public class SynServer
 								byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 									+ " left the server" + terminator);
 
+								player.Kill();
 								lobby.players.RemoveAt(i);
 								foreach (Player other in lobby.players) {
 									//send to all players that user left
@@ -765,6 +788,7 @@ public class SynServer
 								byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 									+ " left the server" + terminator);
 
+								player.Kill();
 								lobby.players.RemoveAt(i);
 								foreach (Player other in lobby.players) {
 									//send to all players that user left
@@ -796,6 +820,7 @@ public class SynServer
 							byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
 								+ " left the server" + terminator);
 
+							player.Kill();
 							lobby.players.RemoveAt(i);
 							foreach (Player other in lobby.players) {
 								//send to all players that user left
@@ -821,32 +846,39 @@ public class SynServer
 				//all players left, close the lobby
 				#if PRINT_TO_CONSOLE
 				Console.WriteLine("Lobby " + lobby.name + " deleted");
-				#endif
+#endif
 
+				lobby.Kill();
 				lobbies.RemoveAt(j);
 
 				//check if that was the last lobby
 				if (lobbies.Count == 0) {
 					//if so, reset the udp port number
-					//udpServerPort = 69420;
+					udpSocketPort = 420;
 				}
 
 				dirty = true;
 				continue;
 			}
 
-			/*//after all the tcp, do udp stuff if gaming
+			//after all the tcp, do udp stuff if gaming
 			if (lobby.inGame) {
 				try {
 					recv = lobby.udpSocket.ReceiveFrom(buffer, ref lobby.remote);
 
+					tempIPRemote = (IPEndPoint)lobby.remote;
 					if (recv > 0) {
 						//send it to everyone else, ignore the one who sent it, the data should be properly formatted
 						foreach (Player player in lobby.players) {
-							if (player.udpEP == lobby.remote) continue;
+							if (tempIPRemote.Port == player.udpEP.Port &&
+								tempIPRemote.Address.GetHashCode() == player.udpEP.Address.GetHashCode())
+							{
+								continue;
+							}
 							lobby.udpSocket.SendTo(buffer, recv, SocketFlags.None, player.udpEP);
 						}
 					}
+					tempIPRemote = null;
 
 					lobby.remote = new IPEndPoint(IPAddress.Any, 0);
 				}
@@ -858,7 +890,7 @@ public class SynServer
 				catch (Exception e) {
 					Console.WriteLine(e.ToString());
 				}
-			}//*/
+			}
 
 			//if the player number changed or dirty
 			if (ldirty || lobby.playerCount != lobby.players.Count) {
@@ -935,9 +967,13 @@ public class SynServer
 
 	static void CloseServer() {
 
-		//players have a destructor to close the socket
-		serverLobby.players.Clear();
+		//Kill the serverlobby an dall lobbies before clearing
+		serverLobby.Kill();
+		foreach (Lobby lobby in lobbies) {
+			lobby.Kill();
+		}
 		lobbies.Clear();
+
 		//close all sockets
 		server.Shutdown(SocketShutdown.Both);
 		server.Close();
@@ -955,7 +991,7 @@ public class SynServer
 		}
 
 		//if the ip fails
-		if (!StartServer(10)) {
+		if (!StartServer(1)) {
 			Console.WriteLine("Press any button to close the app...");
 			Console.ReadKey();
 			return -1;
