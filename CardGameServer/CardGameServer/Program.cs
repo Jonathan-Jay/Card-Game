@@ -15,7 +15,7 @@ public class SynServer
 	const char spliter = '\t';
 	const string player1Code = "P1";
 	const string player2Code = "P2";
-	//static int sleepLength = 0;
+
 	//static byte[] pingMsg;
 	static byte[] dirtyMsg;
 	static byte[] startMsg;
@@ -28,6 +28,7 @@ public class SynServer
 	{
 		public Socket handler;
 		public EndPoint remoteEP;
+		//public EndPoint udpEP;
 		public string username;
 		public string status;
 		public int id;
@@ -40,6 +41,13 @@ public class SynServer
 			this.id = id;
 			this.status = "New";
 		}
+
+		~Player() {
+			#if PRINT_TO_CONSOLE
+			Console.WriteLine("Player \"" + username + "\" was terminated");
+			#endif
+			handler.Close();
+		}
 	}
 	public class Lobby
 	{
@@ -49,45 +57,37 @@ public class SynServer
 		public string name;
 		public string password;
 
-		//from: https://docs.microsoft.com/en-us/dotnet/api/system.threading.timer?view=net-6.0
-		public System.Threading.Timer counter;
 		public int playerCount = 0;
 		public bool inGame = false;
 
 		public int player1 = -1;
 		public int player2 = -1;
 
+		//public Socket udpSocket = null;
+		//public EndPoint remote = null;
+
 		public Lobby(string name, string password = "") {
 			players = new List<Player>();
 			this.name = name;
 			this.password = password;
-			//30 second delay
-			//counter = new System.Threading.Timer(Ping, players, 30000, 30000);
-			//5 for testing
-			//counter = new System.Threading.Timer(Ping, players, 5000, 5000);
 		}
 
-		//~Lobby() {
-			//Console.WriteLine("Killed the timer");
-			//counter.Dispose();
-		//}
-
-		//void Ping(Object test) {
-			//Console.WriteLine("Pinged: " + name);
-			//go through each player and ping
-			//foreach (Player player in players) {
-				//try {
-					//player.handler.Send(pingMsg);
-				//}
-				//catch (Exception) {
-					//just catch it
-				//}
+		~Lobby() {
+			#if PRINT_TO_CONSOLE
+			Console.WriteLine("Lobby \"" + name + "\" was terminated");
+			#endif
+			//if (udpSocket != null) {
+				//udpSocket.Close();
 			//}
-		//}
+		}
 	}
 	
 	static byte[] buffer = new byte[512];
 	static Socket server;
+	//each lobby has their own for ease of use (dont have to find the specific server the udp was received on)
+	//this is to make it unique per lobby
+	//static int udpSocketPort = 69420;
+
 	//when checking new players
 	static Socket tempHandler;
 
@@ -103,8 +103,10 @@ public class SynServer
 		return "NewUser" + (playerCount + 1);
 	}
 
+	static IPAddress ip = null;
+
 	//return true on success
-	public static bool StartServer(int maxPlayers, IPAddress ip) {
+	public static bool StartServer(int maxPlayers) {
 		IPEndPoint localEP = new IPEndPoint(ip, 42069);
 
 		server = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -437,7 +439,34 @@ public class SynServer
 								if (lobby.player1 >= 0 && lobby.player2 >= 0 &&
 									(lobby.player1 == player.id || lobby.player2 == player.id))
 								{
+									//if no udp, we can just set to true
 									lobby.inGame = true;
+
+									/*//create the socket if you haven't already
+									if (lobby.udpSocket == null) {
+										lobby.udpSocket = new Socket(ip.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+										EndPoint remote = null;
+										while (!lobby.inGame) {
+											remote = new IPEndPoint(ip, udpSocketPort++);
+											try {
+												lobby.udpSocket.Bind(remote);
+												//if this fails, it currently crashes the entire server lol
+												lobby.inGame = true;
+											}
+											catch (SocketException sockExcep) {
+												if (sockExcep.SocketErrorCode != SocketError.AddressAlreadyInUse) {
+													Console.WriteLine(sockExcep.ToString());
+													return false;
+												}
+											}
+											catch (Exception e) {
+												Console.WriteLine(e.ToString());
+												return false;
+											}
+										}
+										lobby.remote = new IPEndPoint(IPAddress.Any, 0);
+									}//*/
+
 									//starting game, send all players into game, can also probably ignore dirty tags
 									foreach (Player other in lobby.players) {
 										other.inGame = true;
@@ -783,6 +812,7 @@ public class SynServer
 				catch (Exception e) {
 					Console.WriteLine(e.ToString());
 				}
+
 				++i;
 			}
 
@@ -794,9 +824,41 @@ public class SynServer
 				#endif
 
 				lobbies.RemoveAt(j);
+
+				//check if that was the last lobby
+				if (lobbies.Count == 0) {
+					//if so, reset the udp port number
+					//udpServerPort = 69420;
+				}
+
 				dirty = true;
 				continue;
 			}
+
+			/*//after all the tcp, do udp stuff if gaming
+			if (lobby.inGame) {
+				try {
+					recv = lobby.udpSocket.ReceiveFrom(buffer, ref lobby.remote);
+
+					if (recv > 0) {
+						//send it to everyone else, ignore the one who sent it, the data should be properly formatted
+						foreach (Player player in lobby.players) {
+							if (player.udpEP == lobby.remote) continue;
+							lobby.udpSocket.SendTo(buffer, recv, SocketFlags.None, player.udpEP);
+						}
+					}
+
+					lobby.remote = new IPEndPoint(IPAddress.Any, 0);
+				}
+				catch (SocketException sockExcep) {
+					if (sockExcep.SocketErrorCode != SocketError.WouldBlock) {
+						Console.WriteLine(sockExcep.ToString());
+					}
+				}
+				catch (Exception e) {
+					Console.WriteLine(e.ToString());
+				}
+			}//*/
 
 			//if the player number changed or dirty
 			if (ldirty || lobby.playerCount != lobby.players.Count) {
@@ -872,16 +934,18 @@ public class SynServer
 	}
 
 	static void CloseServer() {
-		//close all handlers
 
-		tempHandler.Shutdown(SocketShutdown.Both);
-		tempHandler.Close();
+		//players have a destructor to close the socket
+		serverLobby.players.Clear();
+		lobbies.Clear();
+		//close all sockets
+		server.Shutdown(SocketShutdown.Both);
+		server.Close();
 	}
 
 	public static int Main(string[] args) {
 
 		Console.Write("Type IP address (blank for host ip): ");
-		IPAddress ip;
 		string input = Console.ReadLine();
 		if (input == "") {
 			ip = Dns.GetHostAddresses(Dns.GetHostName())[1];
@@ -891,7 +955,7 @@ public class SynServer
 		}
 
 		//if the ip fails
-		if (!StartServer(10, ip)) {
+		if (!StartServer(10)) {
 			Console.WriteLine("Press any button to close the app...");
 			Console.ReadKey();
 			return -1;
