@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Actual Rock
   m_EditorClassIdentifier: 
   cardName: Actual Rock
-  cardArt: {fileID: 2800000, guid: b0c3fa30ffecc91408c2cf30586f370c, type: 3}
+  cardArt: {fileID: 2800000, guid: a6eea620a9a1e3d48bb7890a71c8ab99, type: 3}
   cost: 0
   health: 3
   attack: 0

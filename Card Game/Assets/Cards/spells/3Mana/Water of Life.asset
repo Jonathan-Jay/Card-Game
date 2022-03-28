@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Water of Life
   m_EditorClassIdentifier: 
   cardName: Water of Life
-  cardArt: {fileID: 2800000, guid: a1c086fc7cba168428c06d6ecc551040, type: 3}
+  cardArt: {fileID: 2800000, guid: 95c54c3b3693f9741b9758fcb8fc4a68, type: 3}
   cost: 3
   targettingOption: 4
   activateOption: 0

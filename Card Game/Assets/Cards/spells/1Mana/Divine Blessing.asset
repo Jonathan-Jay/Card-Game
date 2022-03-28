@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Divine Blessing
   m_EditorClassIdentifier: 
   cardName: Divine Blessing
-  cardArt: {fileID: 2800000, guid: a1c086fc7cba168428c06d6ecc551040, type: 3}
+  cardArt: {fileID: 2800000, guid: c7788a4971e6f86438f3c4ff064edce9, type: 3}
   cost: 1
   targettingOption: 6
   activateOption: 0

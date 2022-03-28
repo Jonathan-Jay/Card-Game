@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Baggy Sleeves
   m_EditorClassIdentifier: 
   cardName: Baggy Sleeves
-  cardArt: {fileID: 2800000, guid: a1c086fc7cba168428c06d6ecc551040, type: 3}
+  cardArt: {fileID: 2800000, guid: 9b99214c80164d44ebb9b2b6f1e5a014, type: 3}
   cost: 2
   targettingOption: 4
   activateOption: 0
