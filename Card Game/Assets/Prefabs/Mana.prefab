@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4606315333690536169}
   - component: {fileID: 6308060345286667039}
   - component: {fileID: 8733627473158302175}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Mana
   m_TagString: Untagged
   m_Icon: {fileID: 0}

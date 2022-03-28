@@ -102,19 +102,23 @@ public class MonsterCard : Card
 			base.OnPlace(current, opposing);
 		}
 	}
-
+	
 	IEnumerator CheckCost(PlayerData current, PlayerData opposing) {
 		//makes less missinputs, hopefully
-		if (ServerManager.CheckIfClient(current, false))
-			yield return Client.DesyncCompensation;
 
 		Transform hit = null;
 		void UpdateRaycastHit(Transform rayHit) {
 			hit = rayHit;
 		}
 
-		current.hand.input.ActivateSpellMode();
-		current.hand.input.clickEvent += UpdateRaycastHit;
+		//activate spell mode
+		if (ServerManager.CheckIfClient(player, true)) {
+			player.hand.input.ActivateSpellMode();
+			if (!ServerManager.localMultiplayer)
+				Client.SendGameData(spellModeOn);
+		}
+		
+		player.hand.input.clickEvent += UpdateRaycastHit;
 
 		for (float i = 0; i < 0.25f; i += Time.deltaTime) {
 			transform.localPosition += Vector3.forward * Time.deltaTime;
@@ -203,13 +207,15 @@ public class MonsterCard : Card
 		}
 
 		//give controls back whether or not it succeeded
-		current.hand.input.clickEvent -= UpdateRaycastHit;
+		player.hand.input.clickEvent -= UpdateRaycastHit;
 
-		//delay on client, dont want them clicking button immidiately after the thing
-		if (ServerManager.CheckIfClient(current, false))
-			yield return Client.DesyncCompensation;
+		//deactivate spell mode
+		if (ServerManager.CheckIfClient(player, true)) {
+			player.hand.input.DeactivateSpellMode();
+			if (!ServerManager.localMultiplayer)
+				Client.SendGameData(spellModeOff);
+		}
 
-		current.hand.input.DeactivateSpellMode();
 	}
 
 	public void Boost(TempEffect boostEffect) {

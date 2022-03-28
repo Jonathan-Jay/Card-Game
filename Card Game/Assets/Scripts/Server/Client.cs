@@ -301,15 +301,15 @@ public class Client : MonoBehaviour
 		}
 	}
 
+	static byte[] gameStartCode = Encoding.ASCII.GetBytes("COD");
 	public static void SendGameData(byte[] data) {
 		//for now jsut send it all, trimed to max size
-		byte[] start = Encoding.ASCII.GetBytes("COD");
-		byte[] message = new byte[start.Length + gameCodeSize];
+		byte[] message = new byte[gameStartCode.Length + gameCodeSize];
 
 		//add the start
-		Buffer.BlockCopy(start, 0, message, 0, start.Length);
+		Buffer.BlockCopy(gameStartCode, 0, message, 0, gameStartCode.Length);
 		//add the actual message
-		Buffer.BlockCopy(data, 0, message, start.Length, Mathf.Min(data.Length, gameCodeSize));
+		Buffer.BlockCopy(data, 0, message, gameStartCode.Length, Mathf.Min(data.Length, gameCodeSize));
 
 		client.SendTo(message, server);
 	}

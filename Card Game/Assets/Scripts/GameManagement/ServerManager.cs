@@ -183,11 +183,12 @@ public class ServerManager : MonoBehaviour
 		game.LocalGameStart(p1turn);
 		yield return new WaitForSeconds((game.startingHandSize + 2) * 0.25f);
 		if (p1turn) {
-			game.player1.deck.FirstDraw(CheckIfClient(game.player1, true));
+			//game.player1.deck.FirstDraw(CheckIfClient(game.player1, true));
+			game.player1.deck.FirstDraw(true);
 			p2mouse.ActivateEssentials();
 		}
 		else {
-			game.player2.deck.FirstDraw(CheckIfClient(game.player2, true));
+			game.player2.deck.FirstDraw(true);
 			p1mouse.ActivateEssentials();
 		}
 	}
@@ -446,6 +447,27 @@ public class ServerManager : MonoBehaviour
 
 		if (mouse == null)	return;
 
+		//if an input change
+		if (code == "INP") {
+			string msg = System.Text.Encoding.ASCII.GetString(message, Client.player1Code.Length, 5);
+			//get the animation mode code
+			code = msg.Substring(0, 3);
+
+			if (code == "ANM") {
+				if (msg.Substring(3, 2) == "ON")
+					mouse.ActivateAnimationMode();
+				else
+					mouse.DeactivateAnimationMode();
+			}
+			else if (code == "SPL") {
+				if (msg.Substring(3, 2) == "ON")
+					mouse.ActivateSpellMode();
+				else
+					mouse.DeactivateSpellMode();
+			}
+			return;
+		}
+
 		Transform hit = FindTheObject(message, mouse);
 
 		if (hit == null)	return;
@@ -611,11 +633,6 @@ public class ServerManager : MonoBehaviour
 	}
 
 	void OnlineTurnEndPlayerChange() {
-		StartCoroutine(DelayedTurnEnd(p1turn ? game.player2 : game.player1));
-	}
-
-	IEnumerator DelayedTurnEnd(PlayerData player) {
-		
 		//check current player, then toggle them
 		if (p1turn) {
 			p1turn = false;
@@ -627,9 +644,6 @@ public class ServerManager : MonoBehaviour
 
 			//delay this if it's the player's turn end, makes sure the other doesnt double press
 			p2mouse.DeActivateEssentials();
-			if (CheckIfClient(player, false))
-				yield return Client.DesyncCompensation;
-			
 			game.player2.deck.FirstDraw(CheckIfClient(game.player2, false));
 			//if (game.player2.canDraw > 0)
 			//	p2mouse.ActivateDeck();
@@ -650,9 +664,6 @@ public class ServerManager : MonoBehaviour
 
 			//delay this if it's the player's turn end, makes sure the other doesnt double press
 			p1mouse.DeActivateEssentials();
-			if (CheckIfClient(player, false))
-				yield return Client.DesyncCompensation;
-
 			game.player1.deck.FirstDraw(CheckIfClient(game.player1, false));
 
 			game.player1.turnEndButton.enabled = true;
@@ -747,6 +758,9 @@ public class ServerManager : MonoBehaviour
 	}
 
 	public static string GetPlayerCode(PlayerData player) {
+		//always return nothing if no game
+		if (game == null) return "";
+
 		if (player == game.player1)	return Client.player1Code;
 		if (player == game.player2)	return Client.player2Code;
 		return "";

@@ -78,6 +78,8 @@ public class MainMenuController : MonoBehaviour
 	public void TryConnect() {
 		//dont allow empty
 		if (ipInput.text == "") return;
+		//disable these
+		localGameButtons.SetActive(false);
 		GetComponent<AudioQueue>().Play();
 		client.TryConnect(ipInput.text);
 	}
@@ -88,6 +90,9 @@ public class MainMenuController : MonoBehaviour
 		//if functioning is true, dont let these work
 		ipInput.interactable = !functioning;
 		joinServerButton.interactable = !functioning;
+
+		//things to hide?
+		localGameButtons.SetActive(!functioning);
 
 		//if not functioning, reset ipInput;
 		if (!functioning)

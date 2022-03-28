@@ -6,7 +6,7 @@ public class HandManager : MonoBehaviour
 {
 	public Mouse input;
 	public bool doHover = false;
-	public bool doSplay = false;
+	bool doSplay = false;
 	public int splayMinimum = 3;
 	public float totalSplayDegree = 30f;
 	public float splayOriginOffset = 3f;
@@ -37,7 +37,7 @@ public class HandManager : MonoBehaviour
 		if (!doHover)	return;
 
 		splaySelectIndexOld = splaySelectIndex;
-		splaySelectIndex = (rayHitInfo.gameObject.layer == 6 && rayHitInfo.parent == transform && input.mouseObject.childCount == 1) ? rayHitInfo.GetSiblingIndex() : -1;
+		splaySelectIndex = (rayHitInfo.gameObject.layer == 6 && rayHitInfo.parent == transform && !input.holding) ? rayHitInfo.GetSiblingIndex() : -1;
 
 		doSplay = doSplay || splaySelectIndex != splaySelectIndexOld;
 		if (doSplay) TestSplay();

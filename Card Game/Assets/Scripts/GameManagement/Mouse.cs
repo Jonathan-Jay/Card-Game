@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Mouse : MonoBehaviour {
     public Transform mouseObject;
+    public MeshRenderer defaultCursor;
+    public MeshRenderer targettingCursor;
+	public Color defaultCol = Color.green;
+	public Color hoverCol = Color.red;
 	public PlayerData player;
 	public bool disabled = false;
     public float maxDist = 0f;
@@ -30,6 +34,49 @@ public class Mouse : MonoBehaviour {
         cam = GetComponent<Camera>();
 		//just do this once
 		mask = ~((1 << ignoredLayer) | (1 << invisibleLayer));
+		targettingCursor.gameObject.SetActive(false);
+	}
+
+	private void OnEnable() {
+		hoverEvent += ColourChange;
+	}
+
+	private void OnDisable() {
+		hoverEvent -= ColourChange;
+	}
+
+	bool onValidCard = false;
+	void ColourChange(Transform hit) {
+		if (!hit)	return;
+
+		//if in spell mode
+		if (activeSpells > 0) {
+			CardHolder test = hit.GetComponent<CardHolder>();
+			//if over a monster, it's red
+			if (test && test.holding && test.holding.targetable) {
+				if (!onValidCard) {
+					targettingCursor.material.color = hoverCol;
+					onValidCard = true;
+				}
+			}
+			else if (onValidCard) {
+				targettingCursor.material.color = defaultCol;
+				onValidCard = false;
+			}
+		}
+		else {
+			//what do we do when not targetting? anythign interactable
+			if (hit.CompareTag("Interactable")) {
+				if (!onValidCard) {
+					defaultCursor.material.color = hoverCol;
+					onValidCard = true;
+				}
+			}
+			else if (onValidCard) {
+				defaultCursor.material.color = defaultCol;
+				onValidCard = false;
+			}
+		}
 	}
 
 	public Transform holding = null;
@@ -175,8 +222,11 @@ public class Mouse : MonoBehaviour {
 		//if (disabledAnimationMode)
 		UnLinkInteractablesFunc();
 		ActivateAnimationMode();
-		//change rendering
 		
+		//change rendering
+		targettingCursor.gameObject.SetActive(true);
+		defaultCursor.gameObject.SetActive(false);
+		defaultCursor.material.color = defaultCol;
 	}
 
 	public void DeactivateSpellMode() {
@@ -185,21 +235,25 @@ public class Mouse : MonoBehaviour {
 		//if (disabledAnimationMode)
 		LinkInteractablesFunc();
 		DeactivateAnimationMode();
+		
 		//change rendering
-
+		targettingCursor.gameObject.SetActive(false);
+		targettingCursor.material.color = defaultCol;
+		defaultCursor.gameObject.SetActive(true);
 	}
 
 	void ClickCard(Transform hit) {
 		//first check if we wanna do smt
-		GameObject hitObj = hit.gameObject;
-		if (!hitObj.CompareTag("Interactable"))	return;
+		if (!hit.CompareTag("Interactable"))	return;
 
-		Card cardTest = hitObj.GetComponent<Card>();
+		Card cardTest = hit.GetComponent<Card>();
 		if (cardTest == null || cardTest.player != player) return;
 
 		hit.GetComponent<Rigidbody>().isKinematic = true;
 		cardTest.transform.SetParent(mouseObject, true);
-		cardTest.transform.localPosition = Vector3.up * vertOffset;
+		Vector3 pos = cardTest.transform.localPosition;
+		pos.y = vertOffset;
+		cardTest.transform.localPosition = pos;
 		cardTest.gameObject.layer = ignoredLayer;
 
 		holding = cardTest.transform;
@@ -218,10 +272,9 @@ public class Mouse : MonoBehaviour {
 	}*/
 
 	void ClickButton(Transform hit) {
-		GameObject hitObj = hit.gameObject;
-		if (!hitObj.CompareTag("Interactable")) return;
+		if (!hit.CompareTag("Interactable")) return;
 
-		PressEventButton buttonTest = hitObj.GetComponent<PressEventButton>();
+		PressEventButton buttonTest = hit.GetComponent<PressEventButton>();
 		if (buttonTest != null && buttonTest.enabled && (buttonTest.player == null || buttonTest.player == player)) {
 			buttonTest.Press();
 		}
@@ -230,11 +283,10 @@ public class Mouse : MonoBehaviour {
 	void ReleaseCardHolder(Transform hit) {
 		if (!holding || !hit) return;
 
-		GameObject hitObj = hit.gameObject;
 		//cardholder test
-		if (!hitObj.CompareTag("Interactable"))	return;
+		if (!hit.CompareTag("Interactable"))	return;
 
-		CardHolder tempHolder = hitObj.GetComponent<CardHolder>();
+		CardHolder tempHolder = hit.GetComponent<CardHolder>();
 		if (tempHolder != null && tempHolder.PutCard(holding.GetComponent<Card>())) {
 			//dont allow cards to be interactable when in holder (aka dont change the layer)
 			//holding.gameObject.layer = tempLayer;
@@ -245,7 +297,7 @@ public class Mouse : MonoBehaviour {
 	void ReleaseCard(Transform hit) {
 		if (!holding) return;
 
-		//just drop the card otherwise
+		//just drop the card
 		holding.gameObject.layer = cardLayer;
 
 		//check if colliding with hand maybe?

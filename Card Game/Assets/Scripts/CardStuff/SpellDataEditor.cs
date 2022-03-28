@@ -11,6 +11,7 @@ public class SpellDataEditor : Editor
 	SerializedProperty cardArt;
 	SerializedProperty cardName;
 	SerializedProperty cost;
+	SerializedProperty flavourText;
 	SerializedProperty actionParameter1;
 	SerializedProperty actionParameter2;
 	SerializedProperty abilityParameter1;
@@ -122,6 +123,8 @@ public class SpellDataEditor : Editor
 		cardName = this.serializedObject.FindProperty("cardName");
 		cardArt = this.serializedObject.FindProperty("cardArt");
 		cost = this.serializedObject.FindProperty("cost");
+		flavourText = this.serializedObject.FindProperty("flavourText");
+
 		actionParameter1 = this.serializedObject.FindProperty("actionParameter1");
 		actionParameter2 = this.serializedObject.FindProperty("actionParameter2");
 		abilityParameter1 = this.serializedObject.FindProperty("abilityParameter1");
@@ -265,6 +268,9 @@ public class SpellDataEditor : Editor
 				.Replace("{3}", abilityParameter2.intValue.ToString())
 				.Replace("{4}", abilityParameter3.intValue.ToString());
 		}
+
+		flavourText.stringValue = EditorGUILayout.TextField("Flavour Text", flavourText.stringValue, richTextBoxed);
+
 		//prefab entry
 		EditorGUILayout.PropertyField(effect);
 

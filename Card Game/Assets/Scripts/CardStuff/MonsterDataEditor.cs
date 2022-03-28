@@ -12,6 +12,7 @@ public class MonsterDataEditor : Editor
 	SerializedProperty cost;
 	SerializedProperty health;
 	SerializedProperty attack;
+	SerializedProperty flavourText;
 
 	SerializedProperty healthRMax;
 	SerializedProperty attackRMax;
@@ -22,6 +23,8 @@ public class MonsterDataEditor : Editor
 		cardName = this.serializedObject.FindProperty("cardName");
 		cardArt = this.serializedObject.FindProperty("cardArt");
 		cost = this.serializedObject.FindProperty("cost");
+		flavourText = this.serializedObject.FindProperty("flavourText");
+
 		health = this.serializedObject.FindProperty("health");
 		attack = this.serializedObject.FindProperty("attack");
 		random = this.serializedObject.FindProperty("random");
@@ -64,6 +67,8 @@ public class MonsterDataEditor : Editor
 				healthRMax.intValue = EditorGUILayout.IntSlider("Health Randomized Max", healthRMax.intValue, 0, 10);
 			}
 		}
+		flavourText.stringValue = EditorGUILayout.TextField("Flavour Text", flavourText.stringValue, richText);
+		
 		EditorGUILayout.PropertyField(attackSound);
 
 		this.serializedObject.ApplyModifiedProperties();

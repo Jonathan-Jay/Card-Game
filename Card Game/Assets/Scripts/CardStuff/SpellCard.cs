@@ -35,6 +35,8 @@ public class SpellCard : Card
 
 		costMesh.text = (data.cost) + "*";
 
+		flavourTextMesh.text = data.flavourText;
+
 		//dirty flag
 		renderingFace = true;
 
@@ -56,9 +58,6 @@ public class SpellCard : Card
 	}
 
 	IEnumerator CastSpell(PlayerData current, PlayerData opposing) {
-		//makes less missinputs, hopefully
-		if (ServerManager.CheckIfClient(player, false))
-			yield return Client.DesyncCompensation;
 
 		Transform hit = null;
 		void UpdateRaycastHit(Transform rayHit) {
@@ -66,7 +65,12 @@ public class SpellCard : Card
 		}
 
 		//stop mouse from working immediately
-		player.hand.input.ActivateSpellMode();
+		if (ServerManager.CheckIfClient(player, true)) {
+			player.hand.input.ActivateSpellMode();
+			if (!ServerManager.localMultiplayer)
+				Client.SendGameData(spellModeOn);
+		}
+
 		player.hand.input.clickEvent += UpdateRaycastHit;
 
 		yield return new WaitForSeconds(0.25f);
@@ -101,11 +105,12 @@ public class SpellCard : Card
 			//return the mana cost
 			current.ReduceMana(-data.cost);
 
-			//delay on client, dont want them clicking button immidiately after the thing
-			if (ServerManager.CheckIfClient(player, false))
-				yield return Client.DesyncCompensation;
+			if (ServerManager.CheckIfClient(player, true)) {
+				player.hand.input.DeactivateSpellMode();
+				if (!ServerManager.localMultiplayer)
+					Client.SendGameData(spellModeOff);
+			}
 			
-			player.hand.input.DeactivateSpellMode();
 			yield break;
 		}
 
@@ -124,10 +129,13 @@ public class SpellCard : Card
 		yield return new WaitForSeconds(delay);
 
 		//delay on client, dont want them clicking button immidiately after the thing
-		if (ServerManager.CheckIfClient(player, false))
-			yield return Client.DesyncCompensation;
 		
-		player.hand.input.DeactivateSpellMode();
+		if (ServerManager.CheckIfClient(player, true)) {
+			player.hand.input.DeactivateSpellMode();
+			if (!ServerManager.localMultiplayer)
+				Client.SendGameData(spellModeOff);
+		}
+		
 		StartCoroutine("Death");
 	}
 }

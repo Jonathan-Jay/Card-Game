@@ -13,6 +13,7 @@ public class Card : MonoBehaviour
 	[SerializeField]	protected MeshRenderer frontFace;
 	[SerializeField]	protected TMP_Text nameMesh;
 	[SerializeField]	protected TMP_Text costMesh;
+	[SerializeField]	protected TMP_Text flavourTextMesh;
 	static public WaitForEndOfFrame eof = new WaitForEndOfFrame();
 	static Material defaultMaterial = null;
 	
@@ -44,6 +45,8 @@ public class Card : MonoBehaviour
 
 		costMesh.text = "Lv. " + (data.cost  + 1);
 
+		flavourTextMesh.text = data.flavourText;
+
 		//dirty flag
 		renderingFace = true;
 	}
@@ -56,6 +59,8 @@ public class Card : MonoBehaviour
 		frontFace.material = defaultMaterial;
 
 		costMesh.text = "";
+
+		flavourTextMesh.text = "";
 
 		renderingFace = false;
 	}
@@ -95,4 +100,10 @@ public class Card : MonoBehaviour
 		}
 		Destroy(gameObject);
 	}
+
+	//for the children classes:
+	public static byte[] animationModeOn = System.Text.Encoding.ASCII.GetBytes("INPANMON");
+	public static byte[] animationModeOff = System.Text.Encoding.ASCII.GetBytes("INPANMOF");
+	public static byte[] spellModeOn = System.Text.Encoding.ASCII.GetBytes("INPSPLON");
+	public static byte[] spellModeOff = System.Text.Encoding.ASCII.GetBytes("INPSPLOF");
 }

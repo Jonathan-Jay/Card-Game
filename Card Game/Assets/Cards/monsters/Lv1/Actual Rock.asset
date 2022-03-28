@@ -15,6 +15,7 @@ MonoBehaviour:
   cardName: Actual Rock
   cardArt: {fileID: 2800000, guid: a6eea620a9a1e3d48bb7890a71c8ab99, type: 3}
   cost: 0
+  flavourText: Not a pet
   health: 3
   attack: 0
   healthRMax: 0

@@ -15,6 +15,7 @@ MonoBehaviour:
   cardName: Dragon
   cardArt: {fileID: 2800000, guid: b0c3fa30ffecc91408c2cf30586f370c, type: 3}
   cost: 2
+  flavourText: Beginner dragon
   health: 3
   attack: 4
   healthRMax: 0

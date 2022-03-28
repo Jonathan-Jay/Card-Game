@@ -77,10 +77,17 @@ public class CardHolder : MonoBehaviour
 		if (disabledAnimationMode) {
 			//we need to unlink it
 			playerData.hand.input.holding = null;
-			playerData.hand.input.ActivateSpellMode();
+			if (ServerManager.CheckIfClient(playerData, true)) {
+				playerData.hand.input.ActivateSpellMode();
+				if (!ServerManager.localMultiplayer)
+					Client.SendGameData(Card.spellModeOn);
+			}
 		}
-		else
+		else if (ServerManager.CheckIfClient(playerData, true)) {
 			playerData.hand.input.ActivateAnimationMode();
+			if (!ServerManager.localMultiplayer)
+				Client.SendGameData(Card.animationModeOn);
+		}
 
 		Transform cardTrans = holding.transform;
 		while (holding != null) {
@@ -112,12 +119,19 @@ public class CardHolder : MonoBehaviour
 
 		yield return new WaitForSeconds(0.25f);
 
-		if (ServerManager.CheckIfClient(playerData, false))
-			yield return Client.DesyncCompensation;
-
-		if (disabledAnimationMode)
-			playerData.hand.input.DeactivateSpellMode();
-		else
+		if (disabledAnimationMode) {
+			//we need to unlink it
+			playerData.hand.input.holding = null;
+			if (ServerManager.CheckIfClient(playerData, true)) {
+				playerData.hand.input.DeactivateSpellMode();
+				if (!ServerManager.localMultiplayer)
+					Client.SendGameData(Card.spellModeOff);
+			}
+		}
+		else if (ServerManager.CheckIfClient(playerData, true)) {
 			playerData.hand.input.DeactivateAnimationMode();
+			if (!ServerManager.localMultiplayer)
+				Client.SendGameData(Card.animationModeOff);
+		}
 	}
 }
