@@ -1,4 +1,4 @@
-//#define PRINT_TO_CONSOLE
+#define PRINT_TO_CONSOLE
 
 using System;
 using System.Collections.Generic;
@@ -46,6 +46,8 @@ public class SynServer
 			#if PRINT_TO_CONSOLE
 			Console.WriteLine("Player \"" + username + "\" was terminated");
 			#endif
+
+			handler.Shutdown(SocketShutdown.Both);
 			handler.Close();
 		}
 	}
@@ -77,9 +79,9 @@ public class SynServer
 			#if PRINT_TO_CONSOLE
 			Console.WriteLine("Lobby \"" + name + "\" was terminated");
 			#endif
-			if (udpSocket != null) {
-				udpSocket.Close();
-			}
+
+			udpSocket.Shutdown(SocketShutdown.Both);
+			udpSocket.Close();
 		}
 	}
 	
@@ -108,7 +110,7 @@ public class SynServer
 	static IPAddress ip = null;
 
 	//return true on success
-	public static bool StartServer(int maxPlayers) {
+	public static bool StartServer(int maxQueuedPlayers) {
 		IPEndPoint localEP = new IPEndPoint(ip, 42069);
 
 		server = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -119,7 +121,7 @@ public class SynServer
 		try {
 			server.Bind(localEP);
 			//how many people before it drops the rest
-			server.Listen(maxPlayers);
+			server.Listen(maxQueuedPlayers);
 		}
 		catch (Exception e) {
 			Console.WriteLine(e.ToString());
@@ -133,6 +135,8 @@ public class SynServer
 		leftLBMsg = Encoding.ASCII.GetBytes("LLB" + terminator);
 		p1LeftMsg = Encoding.ASCII.GetBytes("LVP" + player1Code + terminator);
 		p2LeftMsg = Encoding.ASCII.GetBytes("LVP" + player2Code + terminator);
+
+		server.BeginAccept(new AsyncCallback(AsyncAccept), null);
 		return true;
 	}
 
@@ -187,14 +191,73 @@ public class SynServer
 		return false;
 	}
 
+	static void AsyncAccept(IAsyncResult result) {
+		try {
+			//tempHandler = server.Accept();
+			tempHandler = server.EndAccept(result);
+
+			IPEndPoint clientEP = (IPEndPoint)tempHandler.RemoteEndPoint;
+
+			tempHandler.Blocking = false;
+			string defaultName = GetName();
+
+			Player player = new Player(tempHandler, defaultName, ++playerCount);
+
+			tempHandler.SendTo(Encoding.ASCII.GetBytes(player.id.ToString() + spliter
+				+ defaultName + terminator), clientEP);
+
+			serverLobby.players.Add(player);
+
+			#if PRINT_TO_CONSOLE
+			//Print Client info (IP and PORT)
+			Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
+			Console.WriteLine("Player \"{0}\" id: {1}", defaultName, player.id);
+			#endif
+
+			//actually means first player
+			if (playerCount == 1) {
+				#if PRINT_TO_CONSOLE
+				Console.WriteLine("stopped blocking");
+				#endif
+
+				server.Blocking = false;
+			}
+
+			byte[] join = Encoding.ASCII.GetBytes("NTF" + defaultName
+					+ " joined the server" + terminator);
+			foreach (Player other in serverLobby.players) {
+				//send to all players that user joined
+				//if (player == other) continue;
+				other.handler.SendTo(join, other.remoteEP);
+			}
+		}
+		catch (SocketException sockExcep) {
+			//if error isn't blocking related, send
+			if (sockExcep.SocketErrorCode == SocketError.WouldBlock) {
+				//send the new player joining to all others?
+				//also wait till the player responds with their username
+				tempHandler = null;
+			}
+			else {
+				Console.WriteLine(sockExcep.ToString());
+			}
+		}
+		catch (Exception e) {
+			Console.WriteLine(e.ToString());
+		}
+
+		//restart the loop
+		server.BeginAccept(new AsyncCallback(AsyncAccept), null);
+	}
+
 	static bool RunServer() {
 		/*maintain the multiple different aspects of the server
 		 * listen for new players
 		 * manage each lobby
 		*/
 
-		//see if new player joining
-		try {
+		//see if new player joining, hopefully all we need to do is slap this into a function to make it async
+		/*try {
 			tempHandler = server.Accept();
 
 			IPEndPoint clientEP = (IPEndPoint)tempHandler.RemoteEndPoint;
@@ -244,18 +307,13 @@ public class SynServer
 		}
 		catch (Exception e) {
 			Console.WriteLine(e.ToString());
-		}
+		}*/
 
-		/*if (playerCount <= 0) {
-			#if PRINT_TO_CONSOLE
-			Console.WriteLine("no players");
-			#endif
-
-			server.Blocking = true;
+		//just returns true aka skips if empty (because accept will be async)
+		if (server.Blocking) {
 			return true;
 		}
-		//if no players
-		else*/
+
 		if (lobbies.Count == 0 && serverLobby.players.Count == 0) {
 			#if PRINT_TO_CONSOLE
 			Console.WriteLine("no more players, resetting id");
@@ -273,6 +331,11 @@ public class SynServer
 			Player player = serverLobby.players[i];
 
 			try {
+				if (player.handler.Available == 0) {
+					++i;
+					continue;
+				}
+
 				recv = player.handler.Receive(buffer) - msgCodeSize;
 				if (recv >= 0) {
 					//do something with it
@@ -467,6 +530,11 @@ public class SynServer
 				Player player = lobby.players[i];
 
 				try {
+					if (player.handler.Available == 0) {
+						++i;
+						continue;
+					}
+
 					recv = player.handler.Receive(buffer) - msgCodeSize;
 					if (recv >= 0) {
 						//do something with it
@@ -991,7 +1059,7 @@ public class SynServer
 		}
 
 		//if the ip fails
-		if (!StartServer(1)) {
+		if (!StartServer(3)) {
 			Console.WriteLine("Press any button to close the app...");
 			Console.ReadKey();
 			return -1;

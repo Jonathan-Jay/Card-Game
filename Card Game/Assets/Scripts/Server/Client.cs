@@ -158,23 +158,27 @@ public class Client : MonoBehaviour
 					//format is id/username, where / is the spliter
 					int index = username.IndexOf(spliter);
 					playerId = int.Parse(username.Substring(0, index));
-					username = username.Substring(index + 1);
 
 					//send garbage for refreshing data, it'll now be through the udp command
 					//client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
 
-					//send it whatever might be after the name
-					index = username.IndexOf(terminator);
-					if (index > 1) {
-						byte[] testMessage = new byte[recv - index - 1];
-						Buffer.BlockCopy(recBuffer, index + 1, testMessage, 0, testMessage.Length);
+					//we need to get the index of the terminator
+					int index2 = username.IndexOf(terminator, ++index);
+
+					//get the index check for if there is more to the message
+					int index3 = username.IndexOf(terminator, index2 + 1) - index2;
+
+					//now we can trim username from the spliter to terminator
+					username = username.Substring(index, index2 - index);
+					usernameText.text = username;
+
+					//send whatever might be after the name
+					if (index3 > 1) {
+						byte[] testMessage = new byte[recv - index3];
+						Array.Copy(recBuffer, index2 + 1, testMessage, 0, testMessage.Length);
 
 						TestMessage(testMessage, testMessage.Length);
-
-						//then get the real username
-						username = username.Substring(0, index);
 					}
-					usernameText.text = username;
 				}
 
 				//now we can create our udp socket and send it to the server
