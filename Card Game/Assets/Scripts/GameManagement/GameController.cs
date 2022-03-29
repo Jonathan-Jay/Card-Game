@@ -74,7 +74,7 @@ public class GameController : MonoBehaviour
 	IEnumerator Doturn(PlayerData current, PlayerData opposing) {
 		current.hand.input.DeActivateAll();
 
-		MonsterCard temp = null;
+		Card temp = null;
 		int counter = 0;
 		//move cards
 		foreach (CardHolder tile in current.backLine) {
@@ -106,7 +106,7 @@ public class GameController : MonoBehaviour
 				tile.DoUpdate();
 
 				//only delay if has a card and can attack
-				if (temp && temp.currAttack > 0) {
+				if (temp && ((MonsterCard)temp).currAttack > 0) {
 					++counter;
 					yield return turnDelay;
 				}
@@ -117,9 +117,9 @@ public class GameController : MonoBehaviour
 			firstTurn = false;
 			//update boosts without attacking
 			foreach (CardHolder tile in current.field) {
-				temp = (MonsterCard)tile.holding;
+				temp = tile.holding;
 				if (temp && temp.targetable) {
-					temp.UpdateBoosts();
+					((MonsterCard)temp).UpdateBoosts();
 				}
 			}
 		}
@@ -131,15 +131,15 @@ public class GameController : MonoBehaviour
 
 		//perform boost update for defending cards
 		foreach(CardHolder tile in opposing.field) {
-			temp = (MonsterCard)tile.holding;
+			temp = tile.holding;
 			if (temp && temp.targetable) {
-				temp.UpdateBoosts();
+				((MonsterCard)temp).UpdateBoosts();
 			}
 		}
 		foreach(CardHolder tile in opposing.backLine) {
-			temp = (MonsterCard)tile.holding;
+			temp = tile.holding;
 			if (temp && temp.targetable) {
-				temp.UpdateBoosts();
+				((MonsterCard)temp).UpdateBoosts();
 			}
 		}
 

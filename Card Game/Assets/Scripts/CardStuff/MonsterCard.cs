@@ -108,29 +108,30 @@ public class MonsterCard : Card
 
 		Transform hit = null;
 		void UpdateRaycastHit(Transform rayHit) {
-			hit = rayHit;
+			if (player.hand.input.activeSpells  > 0)
+				hit = rayHit;
 		}
 
 		//activate spell mode
 		if (ServerManager.CheckIfClient(player, true)) {
 			player.hand.input.ActivateSpellMode();
 		}
-		
-		player.hand.input.clickEvent += UpdateRaycastHit;
 
-		for (float i = 0; i < 0.25f; i += Time.deltaTime) {
-			transform.localPosition += Vector3.forward * Time.deltaTime;
-			yield return eof;
-		}
-		transform.localPosition = placement.floatingHeight + Vector3.forward * 0.25f;
+		player.hand.input.clickEvent += UpdateRaycastHit;
 
 		int requirement = data.cost;
 		int index = placement.index;
 		PlayerData target = null;
 		List<int> targets = new List<int>();
 
+		Vector3 targetPos = placement.floatingHeight + Vector3.forward * 0.25f;
+
 		while (requirement > 0) {
 			yield return eof;
+			if (transform.localPosition != targetPos) {
+				transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPos, Time.deltaTime);
+			}
+
 			target = SpellData.TargetAnyPlayerCard(current, opposing, ref index, ref hit);
 
 			//if you didnt click something
@@ -140,11 +141,13 @@ public class MonsterCard : Card
 			if (index >= 0) {
 				//reject duplicates
 				if (!targets.Contains(index)) {
-					if (index >= current.field.Count && current.backLine[index - current.field.Count].holding)
-						current.backLine[index - current.field.Count].holding
-							.transform.localRotation = Quaternion.Euler(0f, 0f, 180f);
+					if (index >= current.field.Count) {
+						if (current.backLine[index - current.field.Count].holding)
+							current.backLine[index - current.field.Count].holding
+								.transform.localRotation = Quaternion.Euler(0f, 0f, 180f);
+					}
 					else if (current.field[index].holding)
-						current.field[index].holding.transform.localRotation =Quaternion.Euler(0f, 0f, 180f);
+						current.field[index].holding.transform.localRotation = Quaternion.Euler(0f, 0f, 180f);
 					
 					targets.Add(index);
 					--requirement;
@@ -163,9 +166,11 @@ public class MonsterCard : Card
 		if (requirement < 0) {
 			//revert transforms of selected cards
 			foreach (int i in targets) {
-				if (i >= current.field.Count && current.backLine[i - current.field.Count].holding)
-					current.backLine[i - current.field.Count].holding
-						.transform.localRotation = Quaternion.identity;
+				if (i >= current.field.Count) {
+					if (current.backLine[i - current.field.Count].holding)
+						current.backLine[i - current.field.Count].holding
+							.transform.localRotation = Quaternion.identity;
+				}
 				else if (current.field[i].holding)
 					current.field[i].holding.transform.localRotation = Quaternion.identity;
 			}
@@ -176,8 +181,10 @@ public class MonsterCard : Card
 			//kill all selected cards
 			MonsterCard monster = null;
 			foreach (int i in targets) {
-				if (i >= current.field.Count && current.backLine[i - current.field.Count].holding)
-					monster = (MonsterCard)current.backLine[i - current.field.Count].holding;
+				if (i >= current.field.Count) {
+					if (current.backLine[i - current.field.Count].holding)
+						monster = (MonsterCard)current.backLine[i - current.field.Count].holding;
+				}
 				else if (current.field[i].holding)
 					monster = (MonsterCard)current.field[i].holding;
 				
@@ -185,12 +192,13 @@ public class MonsterCard : Card
 					monster.TakeDamage(monster.currHealth);
 			}
 
-			//fix position
-			for (float i = 0; i < 0.25f; i += Time.deltaTime) {
+			//fix position if not moving from a different force
+			for (float i = 0; !moving && (i < 0.25f); i += Time.deltaTime) {
 				transform.localPosition += Vector3.back * Time.deltaTime;
 				yield return eof;
 			}
-			transform.localPosition = placement.floatingHeight;
+			if (!moving)
+				transform.localPosition = placement.floatingHeight;
 
 			//remove card after paying cost
 			base.OnPlace(current, opposing);
@@ -209,7 +217,7 @@ public class MonsterCard : Card
 
 		//deactivate spell mode
 		if (ServerManager.CheckIfClient(player, true)) {
-			player.hand.input.DeactivateSpellMode();
+			player.hand.input.DeactivateSpellMode(true);
 		}
 
 	}
@@ -246,7 +254,7 @@ public class MonsterCard : Card
 					UpdateBoosts();
 				}
 				StartCoroutine(AttackAnim(
-					opposing.hand.transform.position + Vector3.up * 0.5f, 15f,
+					opposing.hand.transform.position + Vector3.up * 0.25f, 15f,
 					placement.floatingHeight, 10f, DealDamage
 				));
 			}
@@ -264,8 +272,8 @@ public class MonsterCard : Card
 					//handle all boosts after attacking
 					UpdateBoosts();
 				}
-				StartCoroutine(AttackAnim(
-					target.transform.position + target.transform.rotation * Vector3.forward * 1.5f, 5f,
+				StartCoroutine(AttackAnim(target.transform.position + Vector3.up * 0.5f
+					+ target.transform.rotation * Vector3.forward * 1.5f, 5f,
 					placement.floatingHeight, 3f, DealDamage
 
 				));
@@ -284,6 +292,8 @@ public class MonsterCard : Card
 	IEnumerator AttackAnim(Vector3 targetPos, float attackSpeed,
 		Vector3 returnPos, float returnSpeed, System.Action attack)
 	{
+		//take control
+		moving = true;
 		while (transform.position != targetPos) {
 			transform.position = Vector3.MoveTowards(transform.position, targetPos,
 				attackSpeed * Time.deltaTime);
@@ -298,6 +308,7 @@ public class MonsterCard : Card
 				returnSpeed * Time.deltaTime);
 			yield return eof;
 		}
+		moving = false;
 	}
 
 	public void UpdateBoosts() {

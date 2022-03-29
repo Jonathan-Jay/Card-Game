@@ -77,7 +77,8 @@ public class Client : MonoBehaviour
 			joinedLobby?.Invoke(inLobby, lobbyName);
 			tableSeatUpdated?.Invoke();
 			//refresh list somehow
-			client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
+			//client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
+			SendStringMessage("DTY");
 		}
 	}
 
@@ -186,9 +187,9 @@ public class Client : MonoBehaviour
 				udpClient = new Socket(server.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
 
 				//start searching from this port onwards
-				int udpPort = 420;
+				int udpPort = 4200;
 				EndPoint remote = null;
-				while (!connected) {
+				while (!connected && udpPort < 5000) {
 					remote = new IPEndPoint(server.Address, ++udpPort);
 					try {
 						udpClient.Bind(remote);
@@ -206,8 +207,12 @@ public class Client : MonoBehaviour
 					}
 				}
 
-				//send the udpPort now
-				client.SendTo(Encoding.ASCII.GetBytes("UDP" + udpPort.ToString()), server);
+				//if it broke, it'd hit this
+				if (udpPort < 5000) {
+					//send the udpPort now
+					//client.SendTo(Encoding.ASCII.GetBytes("UDP" + udpPort.ToString()), server);
+					SendStringMessage("UDP" + udpPort.ToString());
+				}
 
 				break;
 			}
@@ -243,58 +248,64 @@ public class Client : MonoBehaviour
 	public void SendTextChatMessage() {
 		if (textChat.text == "")	return;
 
-		byte[] msg = Encoding.ASCII.GetBytes("MSG" + textChat.text);
-		client.SendTo(msg, server);
+		//client.SendTo(Encoding.ASCII.GetBytes("MSG" + textChat.text), server);
+		SendStringMessage("MSG" + textChat.text);
 		textChat.text = "";
 	}
 
 	public static void SendStringMessage(string message) {
-		client.SendTo(Encoding.ASCII.GetBytes(message), server);
+		client.SendTo(Encoding.ASCII.GetBytes(message + terminator), server);
 	}
 
 	public static void ChangeUserName(TMPro.TMP_InputField username) {
-		if (username.text == "")	return;
+		if (username.text == "" || username.text == Client.username)	return;
 
-		client.SendTo(Encoding.ASCII.GetBytes("CNM" + username.text), server);
+		//client.SendTo(Encoding.ASCII.GetBytes("CNM" + username.text), server);
+		SendStringMessage("CNM" + username.text);
 	}
 
 	public static void CreateLobby(TMPro.TMP_InputField input) {
 		if (input.text == "")	return;
 
-		client.SendTo(Encoding.ASCII.GetBytes("CLB" + input.text), server);
+		//client.SendTo(Encoding.ASCII.GetBytes("CLB" + input.text), server);
+		SendStringMessage("CLB" + input.text);
 	}
 
 	public static void JoinLobby(int index) {
-		client.SendTo(Encoding.ASCII.GetBytes("JLB" + index), server);
+		//client.SendTo(Encoding.ASCII.GetBytes("JLB" + index), server);
+		SendStringMessage("JLB" + index);
 	}
 
 	public static void LeaveLobby() {
-		client.SendTo(Encoding.ASCII.GetBytes("LLB"), server);
+		//client.SendTo(Encoding.ASCII.GetBytes("LLB"), server);
+		SendStringMessage("LLB");
 	}
 
 	public static void JoinPlayer(bool player1) {
-		if (player1) {
-			client.SendTo(Encoding.ASCII.GetBytes("JNP" + player1Code), server);
-		}
-		else {
-			client.SendTo(Encoding.ASCII.GetBytes("JNP" + player2Code), server);
-		}
+		if (player1)
+			//client.SendTo(Encoding.ASCII.GetBytes("JNP" + player1Code), server);
+			SendStringMessage("JNP" + player1Code);
+		else
+			//client.SendTo(Encoding.ASCII.GetBytes("JNP" + player2Code), server);
+			SendStringMessage("JNP" + player2Code);
 	}
 
 	public static void LeavePlayer() {
-		client.SendTo(Encoding.ASCII.GetBytes("LVP"), server);
+		//client.SendTo(Encoding.ASCII.GetBytes("LVP"), server);
+		SendStringMessage("LVP");
 	}
 
 	public static void StartGame() {
-		if (!inGame) {
-			client.SendTo(Encoding.ASCII.GetBytes("SRT"), server);
-		}
+		if (!inGame)
+			//client.SendTo(Encoding.ASCII.GetBytes("SRT"), server);
+			SendStringMessage("SRT");
 	}
 
 	public static void ExitGame() {
 		if (canStart) {
 			if (inGame)
-				client.SendTo(Encoding.ASCII.GetBytes("EXT"), server);
+				//client.SendTo(Encoding.ASCII.GetBytes("EXT"), server);
+				SendStringMessage("EXT");
 		}
 		else {
 			//if not online, treat like normal
@@ -322,7 +333,8 @@ public class Client : MonoBehaviour
 
 	public static void Concede() {
 		if (inGame && ServerManager.CheckIfClient(null, false)) {
-			client.SendTo(Encoding.ASCII.GetBytes("CND"), server);
+			//client.SendTo(Encoding.ASCII.GetBytes("CND"), server);
+			SendStringMessage("CND");
 		}
 	}
 
@@ -331,7 +343,8 @@ public class Client : MonoBehaviour
 
 		//make it stall
 		//client.Blocking = true;
-		client.SendTo(Encoding.ASCII.GetBytes("LAP"), server);
+		//client.SendTo(Encoding.ASCII.GetBytes("LAP"), server);
+		SendStringMessage("LAP");
 
 		//reset player id
 		playerId = -1;
@@ -391,6 +404,7 @@ public class Client : MonoBehaviour
 		int compoundIndex = 0;
 
 		string code = textBuffer.Substring(0, 3);
+
 		while (index > 1 || code == "COD") {
 			if (code != "COD") {
 				byte[] message = new byte[index - msgCodeSize];
@@ -427,8 +441,9 @@ public class Client : MonoBehaviour
 			index = textBuffer.IndexOf(terminator);
 
 			//only retrieve code if it's longer'
-			if (textBuffer.Length > 2)
+			if (textBuffer.Length > 2) {
 				code = textBuffer.Substring(0, 3);
+			}
 		}
 	}
 
@@ -578,7 +593,8 @@ public class Client : MonoBehaviour
 				ServerManager.localMultiplayer = true;
 				SceneController.ChangeScene("Main Menu");
 				//also send dirty flag
-				client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
+				//client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
+				SendStringMessage("DTY");
 				break;
 			}
 		}

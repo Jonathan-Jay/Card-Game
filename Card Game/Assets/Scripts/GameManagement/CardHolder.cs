@@ -58,7 +58,7 @@ public class CardHolder : MonoBehaviour
 		holding = card;
 		GetComponentInChildren<MeshRenderer>().material.color = hasCard;
 
-		StartCoroutine(CardTransition(newCard, newCard && card.data.cost > 0));
+		StartCoroutine(CardTransition(newCard, newCard && (card.data.cost > 0)));
 
 		return true;
 	}
@@ -102,6 +102,19 @@ public class CardHolder : MonoBehaviour
 					cardTrans.localPosition, floatingHeight, slamSpeed * Time.deltaTime);
 			yield return Card.eof;
 		}
+		// > this thing broke the network code my god i hate this?
+		//yield return new WaitForSeconds(0.25f);
+
+		if (disabledAnimationMode) {
+			//we need to unlink it
+			if (ServerManager.CheckIfClient(playerData, true)) {
+				playerData.hand.input.DeactivateSpellMode(true);
+			}
+		}
+		else if (ServerManager.CheckIfClient(playerData, true)) {
+			playerData.hand.input.DeactivateAnimationMode();
+		}
+
 		//final fix in case
 		if (holding != null) {
 			//now valid
@@ -111,18 +124,6 @@ public class CardHolder : MonoBehaviour
 			
 			//play the sound
 			audioPlayer?.Play();
-		}
-
-		yield return new WaitForSeconds(0.25f);
-
-		if (disabledAnimationMode) {
-			//we need to unlink it
-			if (ServerManager.CheckIfClient(playerData, true)) {
-				playerData.hand.input.DeactivateSpellMode();
-			}
-		}
-		else if (ServerManager.CheckIfClient(playerData, true)) {
-			playerData.hand.input.DeactivateAnimationMode();
 		}
 	}
 }

@@ -61,7 +61,8 @@ public class SpellCard : Card
 
 		Transform hit = null;
 		void UpdateRaycastHit(Transform rayHit) {
-			hit = rayHit;
+			if (player.hand.input.activeSpells > 0)
+				hit = rayHit;
 		}
 
 		//stop mouse from working immediately
@@ -87,7 +88,7 @@ public class SpellCard : Card
 				endPos, 2f * Time.deltaTime);
 		}
 
-		while (transform.localPosition != startPos) {
+		while (transform.localPosition != startPos && !moving) {
 			yield return eof;
 			transform.localPosition = Vector3.MoveTowards(transform.localPosition,
 				startPos, 4f * Time.deltaTime);
@@ -104,7 +105,7 @@ public class SpellCard : Card
 			current.ReduceMana(-data.cost);
 
 			if (ServerManager.CheckIfClient(player, true)) {
-				player.hand.input.DeactivateSpellMode();
+				player.hand.input.DeactivateSpellMode(true);
 			}
 			
 			yield break;
@@ -113,6 +114,8 @@ public class SpellCard : Card
 		//now we can render the face
 		base.OnPlace(current, opposing);
 		
+		//just in case
+		moving = true;
 		//cast spell should take card of this
 		((SpellData)data).CastSpell(this, target, newIndex);
 	}
@@ -127,7 +130,7 @@ public class SpellCard : Card
 		//delay on client, dont want them clicking button immidiately after the thing
 		
 		if (ServerManager.CheckIfClient(player, true)) {
-			player.hand.input.DeactivateSpellMode();
+			player.hand.input.DeactivateSpellMode(true);
 		}
 		
 		StartCoroutine("Death");

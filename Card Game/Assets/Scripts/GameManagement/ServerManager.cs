@@ -460,6 +460,7 @@ public class ServerManager : MonoBehaviour
 		if (code == "INP") {
 			string msg = System.Text.Encoding.ASCII.GetString(message,
 					Client.player1Code.Length + Client.msgCodeSize, 5);
+			
 			//get the animation mode code
 			code = msg.Substring(0, 3);
 
@@ -473,7 +474,7 @@ public class ServerManager : MonoBehaviour
 				if (msg.Substring(3, 2) == "ON")
 					mouse.ActivateSpellMode(false);
 				else
-					mouse.DeactivateSpellMode(false);
+					mouse.DeactivateSpellMode(false, false);
 			}
 			return;
 		}

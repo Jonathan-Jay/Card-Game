@@ -27,8 +27,8 @@ public class Mouse : MonoBehaviour {
 
 
 	//used in the disabling of things
-	int activeAnims = 0;
-	int activeSpells = 0;
+	public int activeAnims {get; private set;} = 0;
+	public int activeSpells { get; private set; } = 0;
     // Start is called before the first frame update
     private void Awake() {
         cam = GetComponent<Camera>();
@@ -253,12 +253,12 @@ public class Mouse : MonoBehaviour {
 		defaultCursor.material.color = defaultCol;
 	}
 
-	public void DeactivateSpellMode(bool trySend = true) {
+	public void DeactivateSpellMode(bool isPlayer, bool trySend = true) {
 		if (--activeSpells != 0)	return;
 
 		//if (disabledAnimationMode)
 		LinkInteractablesFunc();
-		DeactivateAnimationMode(false);
+		DeactivateAnimationMode(isPlayer || false);
 
 		if (trySend && !ServerManager.localMultiplayer)
 			Client.SendGameData(spellModeOff);

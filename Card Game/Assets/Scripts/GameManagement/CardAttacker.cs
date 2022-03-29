@@ -29,7 +29,7 @@ public class CardAttacker : CardHolder
 		holding.gameObject.layer = playerData.hand.input.ignoredLayer;
 
 		Transform cardTrans = holding.transform;
-		while (holding != null) {
+		while (holding != null && !holding.moving) {
 			cardTrans.localPosition = Vector3.Lerp(cardTrans.localPosition, slamHeight,
 				moveSpeed * Time.deltaTime);
 			cardTrans.localRotation = Quaternion.Slerp(cardTrans.localRotation, Quaternion.identity,
@@ -40,11 +40,12 @@ public class CardAttacker : CardHolder
 			}
 			yield return Card.eof;
 		}
-		while (holding != null && cardTrans.localPosition != floatingHeight) {
+		while (holding != null && !holding.moving && cardTrans.localPosition != floatingHeight) {
 			cardTrans.localPosition = Vector3.MoveTowards(
 					cardTrans.localPosition, floatingHeight, slamSpeed * Time.deltaTime);
 			yield return Card.eof;
 		}
+		
 		//final fix in case
 		if (holding != null) {
 			//now valid

@@ -16,7 +16,10 @@ public class Card : MonoBehaviour
 	[SerializeField]	protected TMP_Text flavourTextMesh;
 	static public WaitForEndOfFrame eof = new WaitForEndOfFrame();
 	static Material defaultMaterial = null;
-	
+
+	//for coroutines
+	public bool moving = false;
+
 	private void Start() {
 		if (!defaultMaterial) {
 			defaultMaterial = frontFace.material;
@@ -94,6 +97,8 @@ public class Card : MonoBehaviour
 
 	IEnumerator Death() {
 		Release();
+		//in case something tries to move it while dying
+		moving = true;
 		for (float i = 1; i >= 0; i -= Time.deltaTime * 2f) {
 			transform.localScale = Vector3.one * i;
 			yield return eof;
