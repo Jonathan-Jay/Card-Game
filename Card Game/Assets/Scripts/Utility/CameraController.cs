@@ -6,10 +6,10 @@ public class CameraController : MonoBehaviour
 {
 	public int index = 0;
 	[SerializeField]	List<Transform> posOptions = new List<Transform>();
-	[SerializeField]	float moveSpeed = 2f;
-	[SerializeField]	float rotSpeed = 3f;
+	public float moveSpeed = 2f;
+	public float rotSpeed = 3f;
 	Transform targetTrans;
-	bool transitioning = true;
+	public bool transitioning { get; private set;} = true;
 
 	void Start()
 	{
@@ -42,16 +42,34 @@ public class CameraController : MonoBehaviour
 		Transition();
 	}
 
+	public void ForceTransition(Transform target) {
+		if (target)
+			targetTrans = target;
+		else
+			targetTrans = posOptions[index];
+			
+		if (!transitioning)
+			StartCoroutine(MoveCam());
+	}
+
+	//for it to snap into position
+	public void Snap() {
+		transform.position = targetTrans.position;
+		transform.rotation = targetTrans.rotation;
+	}
+
+	public Transform GetCurrent() {
+		return posOptions[index];
+	}
+
 	void Transition() {
 		targetTrans = posOptions[index];
 		if (!transitioning)
-		{
-			transitioning = true;
-			StartCoroutine("MoveCam");
-		}
+			StartCoroutine(MoveCam());
 	}
 
 	IEnumerator MoveCam() {
+		transitioning = true;
 		while (transitioning) {
 			yield return Card.eof;
 

@@ -81,6 +81,23 @@ public class Mouse : MonoBehaviour {
 
 	public Transform holding = null;
 
+	public void Drop() {
+		if (holding) {
+			holding.GetComponent<Rigidbody>().isKinematic = false;
+			holding.gameObject.layer = cardLayer;
+			holding.SetParent(null, true);
+			holding = null;
+		}
+	}
+
+	//a seperate value to ignore
+	public void SetDisabled(bool val) {
+		//drop anything we may be holding
+		Drop();
+
+		disabled = val;
+	}
+
 	bool ignore = false;
 	public void IgnoreInput(bool val) {
 		ignore = val;
@@ -170,12 +187,7 @@ public class Mouse : MonoBehaviour {
 	}*/
 	public void LinkInteractablesFunc() {
 		//make sure we're not holding anything
-		if (holding) {
-			holding.GetComponent<Rigidbody>().isKinematic = false;
-			holding.gameObject.layer = cardLayer;
-			holding.SetParent(null, true);
-			holding = null;
-		}
+		Drop();
 
 		clickEvent += ClickCard;
 		releaseEvent += ReleaseCardHolder;
@@ -184,12 +196,7 @@ public class Mouse : MonoBehaviour {
 
 	public void UnLinkInteractablesFunc() {
 		//make sure we're not holding anything
-		if (holding) {
-			holding.GetComponent<Rigidbody>().isKinematic = false;
-			holding.gameObject.layer = cardLayer;
-			holding.SetParent(null, true);
-			holding = null;
-		}
+		Drop();
 
 		clickEvent -= ClickCard;
 		releaseEvent -= ReleaseCardHolder;
