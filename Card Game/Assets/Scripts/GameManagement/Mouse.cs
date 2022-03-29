@@ -212,10 +212,8 @@ public class Mouse : MonoBehaviour {
 		clickEvent -= ClickButton;
 		//clickEvent -= ClickDeck;
 
-		if (trySend && !ServerManager.localMultiplayer) {
+		if (trySend && !ServerManager.localMultiplayer)
 			Client.SendGameData(animationModeOn);
-			Debug.Log("sent anime");
-		}
 	}
 
 	public void DeactivateAnimationMode(bool trySend = true) {
@@ -225,10 +223,8 @@ public class Mouse : MonoBehaviour {
 		clickEvent += ClickButton;
 		//clickEvent += ClickDeck;
 
-		if (trySend && !ServerManager.localMultiplayer) {
+		if (trySend && !ServerManager.localMultiplayer)
 			Client.SendGameData(animationModeOff);
-			Debug.Log("undsent anime");
-		}
 	}
 
 	//to turn off animation mode (avoid weird desync issues in networking, vm, seems to still do issues lol)
@@ -241,10 +237,8 @@ public class Mouse : MonoBehaviour {
 		UnLinkInteractablesFunc();
 		ActivateAnimationMode(false);
 
-		if (trySend && !ServerManager.localMultiplayer) {
+		if (trySend && !ServerManager.localMultiplayer)
 			Client.SendGameData(spellModeOn);
-			Debug.Log("sent magic");
-		}
 		
 		//change rendering
 		targettingCursor.gameObject.SetActive(true);
@@ -259,10 +253,8 @@ public class Mouse : MonoBehaviour {
 		LinkInteractablesFunc();
 		DeactivateAnimationMode(false);
 
-		if (trySend && !ServerManager.localMultiplayer) {
+		if (trySend && !ServerManager.localMultiplayer)
 			Client.SendGameData(spellModeOff);
-			Debug.Log("unsent magic");
-		}
 
 		//change rendering
 		targettingCursor.gameObject.SetActive(false);

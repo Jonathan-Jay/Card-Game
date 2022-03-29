@@ -85,7 +85,7 @@ public class SynServer
 		}
 	}
 	
-	static byte[] buffer = new byte[512];
+	static byte[] buffer = new byte[256];
 	static Socket server;
 	//each lobby has their own for ease of use (dont have to find the specific server the udp was received on)
 	//this is to make it unique per lobby
@@ -730,9 +730,8 @@ public class SynServer
 									Buffer.BlockCopy(buffer, msgCodeSize, message, start.Length, gameCodeSize);
 
 									#if PRINT_TO_CONSOLE
-									Console.WriteLine("COD: " + Encoding.ASCII.GetString(message, msgCodeSize, gameCodeSize + 2));
 									//debugging purposes
-									Console.WriteLine(recv);
+									Console.WriteLine("COD size" + recv + ": " + Encoding.ASCII.GetString(message, msgCodeSize, gameCodeSize + 2));
 									#endif
 
 									foreach (Player other in lobby.players) {

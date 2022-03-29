@@ -17,7 +17,7 @@ public class Client : MonoBehaviour
 	public const char terminator = '\r';
 	public const string player1Code = "P1";
 	public const string player2Code = "P2";
-    public static byte[] recBuffer = new byte[256];
+    public static byte[] recBuffer = new byte[512];
 	public static Socket client;
 	public static Socket udpClient;
 	public static IPEndPoint server;

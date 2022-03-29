@@ -461,24 +461,16 @@ public class ServerManager : MonoBehaviour
 			code = msg.Substring(0, 3);
 
 			if (code == "ANM") {
-				if (msg.Substring(3, 2) == "ON") {
-					Debug.Log(GetPlayerCode(mouse.player) + " activated anim");
+				if (msg.Substring(3, 2) == "ON")
 					mouse.ActivateAnimationMode(false);
-				}
-				else {
-					Debug.Log(GetPlayerCode(mouse.player) + " deactivated anim");
+				else
 					mouse.DeactivateAnimationMode(false);
-				}
 			}
 			else if (code == "SPL") {
-				if (msg.Substring(3, 2) == "ON") {
-					Debug.Log(GetPlayerCode(mouse.player) + " activated spell");
+				if (msg.Substring(3, 2) == "ON")
 					mouse.ActivateSpellMode(false);
-				}
-				else {
-					Debug.Log(GetPlayerCode(mouse.player) + " deactivated spell");
+				else
 					mouse.DeactivateSpellMode(false);
-				}
 			}
 			return;
 		}
