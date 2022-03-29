@@ -14,7 +14,7 @@ public class ReturnOnExit : MonoBehaviour
 	}
 
 	float delay = 0f;
-	const float respawnDelay = 0.25f;
+	public float respawnDelay = 0.25f;
 	IEnumerator DelayedSpawning(Transform target) {
 		float tempDelay = delay;
 		delay += respawnDelay;

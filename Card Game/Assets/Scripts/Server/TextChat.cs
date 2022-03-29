@@ -8,6 +8,8 @@ public class TextChat : MonoBehaviour
 	[SerializeField] TMPro.TMP_Text chatBox;
 	[SerializeField] GameObject chat;
 	[SerializeField] UnityEngine.UI.Toggle showBox;
+	[SerializeField] Color notificationCol = Color.green;
+	[SerializeField] Color defaultCol = Color.white;
 	static string chatString = "";
 
 	private void OnEnable() {
@@ -28,6 +30,11 @@ public class TextChat : MonoBehaviour
 		}
 		//store it in the string for reloading purposes
 		chatString = chatBox.text;
+
+		//provide notification if not on
+		if (!showBox.isOn) {
+			showBox.image.color = notificationCol;
+		}
     }
 
 	public void Reload() {
@@ -37,6 +44,11 @@ public class TextChat : MonoBehaviour
 	public void Toggled() {
 		if (chat.activeInHierarchy != showBox.isOn) {
 			chat.SetActive(showBox.isOn);
+			
+			//turn off the colour when opened
+			if (showBox.isOn) {
+				showBox.image.color = defaultCol;
+			}
 		}
 	}
 }

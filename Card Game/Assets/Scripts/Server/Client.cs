@@ -106,10 +106,12 @@ public class Client : MonoBehaviour
 		//maybe we'll need
 		//connectingEvent?.Invoke(true, "Connecting...");
 
+		IPAddress ip = null;
+
         //Setup our end point (server)
         try {
             //IPAddress ip = Dns.GetHostAddresses("mail.bigpond.com")[0];
-            IPAddress ip = IPAddress.Parse(ipText);
+            ip = IPAddress.Parse(ipText);
             server = new IPEndPoint(ip, 42069);
             //create out client socket 
             client = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -184,13 +186,13 @@ public class Client : MonoBehaviour
 				}
 
 				//now we can create our udp socket and send it to the server
-				udpClient = new Socket(server.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+				udpClient = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
 				//start searching from this port onwards
 				int udpPort = 4200;
 				EndPoint remote = null;
 				while (!connected && udpPort < 5000) {
-					remote = new IPEndPoint(server.Address, ++udpPort);
+					remote = new IPEndPoint(IPAddress.Any, ++udpPort);
 					try {
 						udpClient.Bind(remote);
 						udpClient.Blocking = false;
