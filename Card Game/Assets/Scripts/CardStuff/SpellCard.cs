@@ -67,8 +67,6 @@ public class SpellCard : Card
 		//stop mouse from working immediately
 		if (ServerManager.CheckIfClient(player, true)) {
 			player.hand.input.ActivateSpellMode();
-			if (!ServerManager.localMultiplayer)
-				Client.SendGameData(spellModeOn);
 		}
 
 		player.hand.input.clickEvent += UpdateRaycastHit;
@@ -107,8 +105,6 @@ public class SpellCard : Card
 
 			if (ServerManager.CheckIfClient(player, true)) {
 				player.hand.input.DeactivateSpellMode();
-				if (!ServerManager.localMultiplayer)
-					Client.SendGameData(spellModeOff);
 			}
 			
 			yield break;
@@ -132,8 +128,6 @@ public class SpellCard : Card
 		
 		if (ServerManager.CheckIfClient(player, true)) {
 			player.hand.input.DeactivateSpellMode();
-			if (!ServerManager.localMultiplayer)
-				Client.SendGameData(spellModeOff);
 		}
 		
 		StartCoroutine("Death");

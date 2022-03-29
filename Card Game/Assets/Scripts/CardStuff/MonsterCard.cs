@@ -114,8 +114,6 @@ public class MonsterCard : Card
 		//activate spell mode
 		if (ServerManager.CheckIfClient(player, true)) {
 			player.hand.input.ActivateSpellMode();
-			if (!ServerManager.localMultiplayer)
-				Client.SendGameData(spellModeOn);
 		}
 		
 		player.hand.input.clickEvent += UpdateRaycastHit;
@@ -212,8 +210,6 @@ public class MonsterCard : Card
 		//deactivate spell mode
 		if (ServerManager.CheckIfClient(player, true)) {
 			player.hand.input.DeactivateSpellMode();
-			if (!ServerManager.localMultiplayer)
-				Client.SendGameData(spellModeOff);
 		}
 
 	}

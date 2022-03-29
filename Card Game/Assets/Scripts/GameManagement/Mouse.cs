@@ -196,32 +196,55 @@ public class Mouse : MonoBehaviour {
 		releaseEvent -= ReleaseCard;
 	}
 
+
+	//for networking
+	public static byte[] animationModeOn = System.Text.Encoding.ASCII.GetBytes("INPANMON");
+	public static byte[] animationModeOff = System.Text.Encoding.ASCII.GetBytes("INPANMOF");
+	public static byte[] spellModeOn = System.Text.Encoding.ASCII.GetBytes("INPSPLON");
+	public static byte[] spellModeOff = System.Text.Encoding.ASCII.GetBytes("INPSPLOF");
+
+
 	//only allows for holding and placing cards
-	public void ActivateAnimationMode() {
+	public void ActivateAnimationMode(bool trySend = true) {
 		//if more animations
 		if (activeAnims++ != 0)	return;
 
 		clickEvent -= ClickButton;
 		//clickEvent -= ClickDeck;
+
+		if (trySend && !ServerManager.localMultiplayer) {
+			Client.SendGameData(animationModeOn);
+			Debug.Log("sent anime");
+		}
 	}
 
-	public void DeactivateAnimationMode() {
+	public void DeactivateAnimationMode(bool trySend = true) {
 		//if no more animations
 		if (--activeAnims != 0)	return;
 
 		clickEvent += ClickButton;
 		//clickEvent += ClickDeck;
+
+		if (trySend && !ServerManager.localMultiplayer) {
+			Client.SendGameData(animationModeOff);
+			Debug.Log("undsent anime");
+		}
 	}
 
 	//to turn off animation mode (avoid weird desync issues in networking, vm, seems to still do issues lol)
 	//public bool disabledAnimationMode = false;
 
-	public void ActivateSpellMode() {
+	public void ActivateSpellMode(bool trySend = true) {
 		if (activeSpells++ != 0)	return;
 
 		//if (disabledAnimationMode)
 		UnLinkInteractablesFunc();
-		ActivateAnimationMode();
+		ActivateAnimationMode(false);
+
+		if (trySend && !ServerManager.localMultiplayer) {
+			Client.SendGameData(spellModeOn);
+			Debug.Log("sent magic");
+		}
 		
 		//change rendering
 		targettingCursor.gameObject.SetActive(true);
@@ -229,13 +252,18 @@ public class Mouse : MonoBehaviour {
 		defaultCursor.material.color = defaultCol;
 	}
 
-	public void DeactivateSpellMode() {
+	public void DeactivateSpellMode(bool trySend = true) {
 		if (--activeSpells != 0)	return;
 
 		//if (disabledAnimationMode)
 		LinkInteractablesFunc();
-		DeactivateAnimationMode();
-		
+		DeactivateAnimationMode(false);
+
+		if (trySend && !ServerManager.localMultiplayer) {
+			Client.SendGameData(spellModeOff);
+			Debug.Log("unsent magic");
+		}
+
 		//change rendering
 		targettingCursor.gameObject.SetActive(false);
 		targettingCursor.material.color = defaultCol;

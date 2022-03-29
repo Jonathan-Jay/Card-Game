@@ -100,10 +100,4 @@ public class Card : MonoBehaviour
 		}
 		Destroy(gameObject);
 	}
-
-	//for the children classes:
-	public static byte[] animationModeOn = System.Text.Encoding.ASCII.GetBytes("INPANMON");
-	public static byte[] animationModeOff = System.Text.Encoding.ASCII.GetBytes("INPANMOF");
-	public static byte[] spellModeOn = System.Text.Encoding.ASCII.GetBytes("INPSPLON");
-	public static byte[] spellModeOff = System.Text.Encoding.ASCII.GetBytes("INPSPLOF");
 }

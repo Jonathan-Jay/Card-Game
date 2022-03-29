@@ -381,6 +381,7 @@ public class SynServer
 									remote = new IPEndPoint(ip, ++udpSocketPort);
 									try {
 										lobby.udpSocket.Bind(remote);
+										lobby.udpSocket.Blocking = false;
 
 										lobby.udpPort = udpSocketPort;
 
@@ -727,6 +728,12 @@ public class SynServer
 										//too big, idk what happened
 									//}
 									Buffer.BlockCopy(buffer, msgCodeSize, message, start.Length, gameCodeSize);
+
+									#if PRINT_TO_CONSOLE
+									Console.WriteLine("COD: " + Encoding.ASCII.GetString(message, msgCodeSize, gameCodeSize + 2));
+									//debugging purposes
+									Console.WriteLine(recv);
+									#endif
 
 									foreach (Player other in lobby.players) {
 										//ignore self

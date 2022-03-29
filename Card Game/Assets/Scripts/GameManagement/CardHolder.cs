@@ -79,14 +79,10 @@ public class CardHolder : MonoBehaviour
 			playerData.hand.input.holding = null;
 			if (ServerManager.CheckIfClient(playerData, true)) {
 				playerData.hand.input.ActivateSpellMode();
-				if (!ServerManager.localMultiplayer)
-					Client.SendGameData(Card.spellModeOn);
 			}
 		}
 		else if (ServerManager.CheckIfClient(playerData, true)) {
 			playerData.hand.input.ActivateAnimationMode();
-			if (!ServerManager.localMultiplayer)
-				Client.SendGameData(Card.animationModeOn);
 		}
 
 		Transform cardTrans = holding.transform;
@@ -121,17 +117,12 @@ public class CardHolder : MonoBehaviour
 
 		if (disabledAnimationMode) {
 			//we need to unlink it
-			playerData.hand.input.holding = null;
 			if (ServerManager.CheckIfClient(playerData, true)) {
 				playerData.hand.input.DeactivateSpellMode();
-				if (!ServerManager.localMultiplayer)
-					Client.SendGameData(Card.spellModeOff);
 			}
 		}
 		else if (ServerManager.CheckIfClient(playerData, true)) {
 			playerData.hand.input.DeactivateAnimationMode();
-			if (!ServerManager.localMultiplayer)
-				Client.SendGameData(Card.animationModeOff);
 		}
 	}
 }

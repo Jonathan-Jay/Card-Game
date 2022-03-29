@@ -17,7 +17,7 @@ public class Client : MonoBehaviour
 	public const char terminator = '\r';
 	public const string player1Code = "P1";
 	public const string player2Code = "P2";
-    public static byte[] recBuffer = new byte[512];
+    public static byte[] recBuffer = new byte[256];
 	public static Socket client;
 	public static Socket udpClient;
 	public static IPEndPoint server;
@@ -52,6 +52,7 @@ public class Client : MonoBehaviour
 	public event Action<bool, string> joinedLobby;
 	public event Action tableSeatUpdated;
 	public event Action<byte[]> gameCodeReceived;
+	public event Action<byte[]> udpEvent;
 
 	public static WaitForSeconds DesyncCompensation = new WaitForSeconds(0.5f);
 
@@ -191,6 +192,7 @@ public class Client : MonoBehaviour
 					remote = new IPEndPoint(server.Address, ++udpPort);
 					try {
 						udpClient.Bind(remote);
+						udpClient.Blocking = false;
 
 						connected = true;
 					}
@@ -302,7 +304,7 @@ public class Client : MonoBehaviour
 	}
 
 	static byte[] gameStartCode = Encoding.ASCII.GetBytes("COD");
-	public static void SendGameData(byte[] data) {
+	public static void SendGameData(in byte[] data) {
 		//for now jsut send it all, trimed to max size
 		byte[] message = new byte[gameStartCode.Length + gameCodeSize];
 
@@ -312,6 +314,10 @@ public class Client : MonoBehaviour
 		Buffer.BlockCopy(data, 0, message, gameStartCode.Length, Mathf.Min(data.Length, gameCodeSize));
 
 		client.SendTo(message, server);
+	}
+
+	public static void SendUDP(in byte[] data) {
+		udpClient.SendTo(data, udpServer);
 	}
 
 	public static void Concede() {
@@ -340,9 +346,27 @@ public class Client : MonoBehaviour
 		if (!canStart)	return;
 
 		try {
-			recv = client.Receive(recBuffer);
-			if (recv > 0) {
-				TestMessage(recBuffer, recv);
+			if (client.Available > 0) {
+				recv = client.Receive(recBuffer);
+				if (recv > 0) {
+					TestMessage(recBuffer, recv);
+				}
+			}
+		}
+		catch (SocketException sock) {
+			if (sock.SocketErrorCode != SocketError.WouldBlock) {
+				Debug.Log(sock.ToString());
+			}
+		}
+		
+		try {
+			if (udpClient.Available > 0) {
+				recv = udpClient.Receive(recBuffer);
+				if (recv > 0) {
+					byte[] message = new byte[recv];
+					Array.Copy(recBuffer, message, recv);
+					udpEvent?.Invoke(message);
+				}
 			}
 		}
 		catch (SocketException sock) {
@@ -355,7 +379,7 @@ public class Client : MonoBehaviour
 	//apparently not necessary
 	//string textBuffer = "";
 
-	void TestMessage(byte[] buffer, int size) {
+	void TestMessage(in byte[] buffer, int size) {
 		//textBuffer += message;
 		string textBuffer = Encoding.ASCII.GetString(buffer, 0, size);
 
@@ -364,13 +388,13 @@ public class Client : MonoBehaviour
 
 		//for going through bytes
 		int index = textBuffer.IndexOf(terminator);
-		int compoundIndex = msgCodeSize;
+		int compoundIndex = 0;
 
 		string code = textBuffer.Substring(0, 3);
 		while (index > 1 || code == "COD") {
 			if (code != "COD") {
 				byte[] message = new byte[index - msgCodeSize];
-				Buffer.BlockCopy(buffer, compoundIndex, message, 0, index - msgCodeSize);
+				Array.Copy(buffer, compoundIndex + msgCodeSize, message, 0, index - msgCodeSize);
 				//check if words
 				ParseMessage(code, message, index - msgCodeSize);
 			}
@@ -380,12 +404,12 @@ public class Client : MonoBehaviour
 
 				//send the message plus the terminator
 				byte[] message = new byte[player1Code.Length + gameCodeSize];
-				Buffer.BlockCopy(buffer, compoundIndex, message, 0, message.Length);
+				Array.Copy(buffer, compoundIndex + msgCodeSize, message, 0, message.Length);
 
 				gameCodeReceived?.Invoke(message);
 
 				//undo possibly terminator
-				index = message.Length - 1;
+				index = message.Length + msgCodeSize - 1;
 				//reset this
 				code = "";
 			}
@@ -398,18 +422,18 @@ public class Client : MonoBehaviour
 			}
 
 			//get rid of everything below the thing
-			textBuffer = Encoding.ASCII.GetString(buffer, compoundIndex - msgCodeSize, size - compoundIndex + msgCodeSize);
+			textBuffer = Encoding.ASCII.GetString(buffer, compoundIndex, size - compoundIndex);
 
 			index = textBuffer.IndexOf(terminator);
 
-			//only retrieve code if it works
-			if (index > 1)
+			//only retrieve code if it's longer'
+			if (textBuffer.Length > 2)
 				code = textBuffer.Substring(0, 3);
 		}
 	}
 
 	//buffer is without code
-	void ParseMessage(string code, byte[] buffer, int size) {
+	void ParseMessage(string code, in byte[] buffer, int size) {
 		//could go back to else if if you wanna remove some depending on if in game or not
 		
 		switch (code) {

@@ -105,6 +105,8 @@ public class ServerManager : MonoBehaviour
 			updateFunc += OnlineMulti;
 			game.playerWon += ShowLeaveButton;
 
+			client.udpEvent += UdpUpdate;
+
 			if (p1turn) {
 				game.player2.turnEndButton.enabled = false;
 				p2bell.material.color = Color.grey;
@@ -135,12 +137,15 @@ public class ServerManager : MonoBehaviour
 					p1mouse.disabled = false;
 					p2cam.enabled = false;
 					p2mouse.disabled = true;
+					StartCoroutine(SendUdpData(p1mouse.mouseObject));
 				}
+				//is p2
 				else {
 					p1cam.enabled = false;
 					p1mouse.disabled = true;
 					p2cam.enabled = true;
 					p2mouse.disabled = false;
+					StartCoroutine(SendUdpData(p2mouse.mouseObject));
 				}
 			}
 			//disable some stuff or smt
@@ -177,7 +182,6 @@ public class ServerManager : MonoBehaviour
 		game = null;
 	}
 
-	//works for both online and local i guess
 	IEnumerator DelayedStart(float delay) {
 		yield return new WaitForSeconds(delay);
 		game.LocalGameStart(p1turn);
@@ -447,23 +451,34 @@ public class ServerManager : MonoBehaviour
 
 		if (mouse == null)	return;
 
+		code = System.Text.Encoding.ASCII.GetString(message, code.Length, Client.msgCodeSize);
+
 		//if an input change
 		if (code == "INP") {
-			string msg = System.Text.Encoding.ASCII.GetString(message, Client.player1Code.Length, 5);
+			string msg = System.Text.Encoding.ASCII.GetString(message,
+					Client.player1Code.Length + Client.msgCodeSize, 5);
 			//get the animation mode code
 			code = msg.Substring(0, 3);
 
 			if (code == "ANM") {
-				if (msg.Substring(3, 2) == "ON")
-					mouse.ActivateAnimationMode();
-				else
-					mouse.DeactivateAnimationMode();
+				if (msg.Substring(3, 2) == "ON") {
+					Debug.Log(GetPlayerCode(mouse.player) + " activated anim");
+					mouse.ActivateAnimationMode(false);
+				}
+				else {
+					Debug.Log(GetPlayerCode(mouse.player) + " deactivated anim");
+					mouse.DeactivateAnimationMode(false);
+				}
 			}
 			else if (code == "SPL") {
-				if (msg.Substring(3, 2) == "ON")
-					mouse.ActivateSpellMode();
-				else
-					mouse.DeactivateSpellMode();
+				if (msg.Substring(3, 2) == "ON") {
+					Debug.Log(GetPlayerCode(mouse.player) + " activated spell");
+					mouse.ActivateSpellMode(false);
+				}
+				else {
+					Debug.Log(GetPlayerCode(mouse.player) + " deactivated spell");
+					mouse.DeactivateSpellMode(false);
+				}
 			}
 			return;
 		}
@@ -471,8 +486,6 @@ public class ServerManager : MonoBehaviour
 		Transform hit = FindTheObject(message, mouse);
 
 		if (hit == null)	return;
-
-		code = System.Text.Encoding.ASCII.GetString(message, code.Length, Client.msgCodeSize);
 
 		if (code == "CLK") {
 			mouse.ForwardClickEvent(hit);
@@ -482,7 +495,7 @@ public class ServerManager : MonoBehaviour
 		}
 	}
 
-	Transform FindTheObject(byte[] message, Mouse mouse) {
+	Transform FindTheObject(in byte[] message, Mouse mouse) {
 		//if too small, ignore
 		if (message.Length < 5)	return null;
 		Transform temp = null;
@@ -545,6 +558,66 @@ public class ServerManager : MonoBehaviour
 		}
 
 		return temp;
+	}
+
+	int[] tempId = new int[1];
+	float[] tempPos = new float[3];
+	const int posArrSize = sizeof(float) * 3;
+	Vector3 tempVec = Vector3.zero;
+	void UdpUpdate(byte[] message) {
+		//get the id
+		System.Buffer.BlockCopy(message, 0, tempId, 0, sizeof(int));
+
+		//don't accept your own messages
+		if (tempId[0] == Client.playerId) {
+			Debug.Log("received own message");
+			return;
+		}
+
+		System.Buffer.BlockCopy(message, sizeof(int), tempPos, 0, posArrSize);
+
+		//store the position
+		tempVec.x = tempPos[0];
+		tempVec.y = tempPos[1];
+		tempVec.z = tempPos[2];
+
+		//if p1
+		if (tempId[0] == p1Index) {
+			p1mouse.mouseObject.position = tempVec;
+		}
+		//if p2
+		else if (tempId[0] == p2Index) {
+			p2mouse.mouseObject.position = tempVec;
+		}
+	}
+
+	IEnumerator SendUdpData(Transform target) {
+		//10 updates a second
+		WaitForSeconds delay = new WaitForSeconds(0.05f);
+
+		tempId[0] = Client.playerId;
+
+		byte[] message = new byte[sizeof(int) + posArrSize];
+		//store the id
+		System.Buffer.BlockCopy(tempId, 0, message, 0, sizeof(int));
+
+		Vector3 prevPos = target.position;
+
+		yield return Card.eof;
+		//as long as the target exists
+		while (target) {
+			if (target.position != prevPos) {
+				tempPos[0] = target.position.x;
+				tempPos[1] = target.position.y;
+				tempPos[2] = target.position.z;
+
+				System.Buffer.BlockCopy(tempPos, 0, message, sizeof(int), posArrSize);
+				Client.SendUDP(message);
+
+				prevPos = target.position;
+			}
+			yield return delay;
+		}
 	}
 
 	void Update() {
