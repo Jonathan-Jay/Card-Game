@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6144701230875085727}
   - component: {fileID: 4949738437724623992}
   - component: {fileID: 2137671615821512857}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Card_Card_Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 6515778556865702109}
   - component: {fileID: 8918909670792528733}
   - component: {fileID: 7503383492274655953}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Flavour Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 2412753085262959850}
   - component: {fileID: 4325044965092204550}
   - component: {fileID: 8249663661552242437}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -501,7 +501,7 @@ GameObject:
   - component: {fileID: 2472709941753267351}
   - component: {fileID: 2030599282479692276}
   - component: {fileID: 6128835198636157550}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}

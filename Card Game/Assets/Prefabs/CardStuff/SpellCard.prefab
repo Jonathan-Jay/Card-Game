@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1572262883}
   - component: {fileID: 1572262885}
   - component: {fileID: 1572262884}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,6 +192,7 @@ MonoBehaviour:
   nameMesh: {fileID: 5671535007085138179}
   costMesh: {fileID: 7621244275813774440}
   flavourTextMesh: {fileID: 8329961278262045116}
+  moving: 0
   descriptionMesh: {fileID: 1572262884}
 --- !u!1001 &1997531350548020077
 PrefabInstance:

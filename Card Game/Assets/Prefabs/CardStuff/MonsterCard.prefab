@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2600367409800035320}
   - component: {fileID: 7314479817341347171}
   - component: {fileID: 5406184301356650649}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 2216918050719750285}
   - component: {fileID: 1185992841981481392}
   - component: {fileID: 8797157165809492266}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -459,6 +459,7 @@ MonoBehaviour:
   nameMesh: {fileID: 4316719185209386507}
   costMesh: {fileID: 2060783283286803296}
   flavourTextMesh: {fileID: 487709919321333428}
+  moving: 0
   attackMesh: {fileID: 8797157165809492266}
   healthMesh: {fileID: 5406184301356650649}
   currHealth: 0

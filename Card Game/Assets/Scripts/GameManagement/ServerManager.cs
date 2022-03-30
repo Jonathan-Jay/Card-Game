@@ -566,7 +566,6 @@ public class ServerManager : MonoBehaviour
 
 		//don't accept your own messages
 		if (tempId[0] == Client.playerId) {
-			Debug.Log("received own message");
 			return;
 		}
 
@@ -576,6 +575,9 @@ public class ServerManager : MonoBehaviour
 		tempVec.x = tempPos[0];
 		tempVec.y = tempPos[1];
 		tempVec.z = tempPos[2];
+
+		//we need to test with AWS again
+		//Debug.Log("p1 is " + p1Index + ", p2 is " + p2Index + " we received " + tempId[0]);
 
 		//if p1
 		if (tempId[0] == p1Index) {
