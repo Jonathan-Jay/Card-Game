@@ -22,6 +22,7 @@ public class PlayerData : MonoBehaviour {
 	//sends old value
 	public event System.Action<int> manaUpdated;
 	public event System.Action drawCard;
+	public event System.Action startOfTurn;
 
 	public AudioQueue damageAudioPlayer;
 	public AudioQueue healAudioPlayer;
@@ -42,12 +43,17 @@ public class PlayerData : MonoBehaviour {
 	public void AddCard(Card card) {
 		heldCards.Add(card);
 	}
+
 	public void RemoveCard(Card card) {
 		heldCards.Remove(card);
 	}
 
 	public void DrawCard() {
 		drawCard?.Invoke();
+	}
+
+	public void StartOfTurn() {
+		startOfTurn?.Invoke();
 	}
 
 	//do whatever a player does when their turn ends

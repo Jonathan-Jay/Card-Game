@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411c63e12c7b28a49a59e2eb73d4e016, type: 3}
   m_Name: Probably Invincible Knight
   m_EditorClassIdentifier: 
-  cardName: <i><size=50%>Probably</size></i> Invincible Knight
+  cardName: <color=red><i><size=50%>Probably</size></i> Invincible Knight</color>
   cardArt: {fileID: 2800000, guid: b0c3fa30ffecc91408c2cf30586f370c, type: 3}
   cost: 2
   flavourText: '*not actually invincible'

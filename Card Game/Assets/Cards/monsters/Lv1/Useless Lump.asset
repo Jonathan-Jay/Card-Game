@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411c63e12c7b28a49a59e2eb73d4e016, type: 3}
   m_Name: Useless Lump
   m_EditorClassIdentifier: 
-  cardName: Useless Lump
+  cardName: <color=yellow>Useless Lump</color>
   cardArt: {fileID: 2800000, guid: b25f69838f8190f4e8af9c208d671537, type: 3}
   cost: 0
   flavourText: Hate Him

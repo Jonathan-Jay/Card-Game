@@ -20,6 +20,13 @@ public class Card : MonoBehaviour
 	//for coroutines
 	public bool moving = false;
 
+	//for angular velocity
+	private void Awake() {
+		Rigidbody temp = GetComponent<Rigidbody>();
+		if (temp)
+			temp.maxAngularVelocity = 100f;
+	}
+
 	private void Start() {
 		if (!defaultMaterial) {
 			defaultMaterial = frontFace.material;
@@ -84,7 +91,11 @@ public class Card : MonoBehaviour
 
 		if (transform.parent)
 			transform.SetParent(null, true);
+		
 		GetComponent<Rigidbody>().isKinematic = false;
+		GetComponent<Rigidbody>().velocity = Vector3.up * 5f;
+		GetComponent<Rigidbody>().angularVelocity = transform.rotation
+				* (Vector3.right * 7f + Vector3.back * 10f);
 	}
 
 	public void CallBackCard() {

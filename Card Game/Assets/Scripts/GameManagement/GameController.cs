@@ -149,6 +149,9 @@ public class GameController : MonoBehaviour
 		//possibly deactivate if the player won
 		if (opposing.currentHP > 0) {
 			turnEnded?.Invoke();
+
+			//call the opposing's start of turn event
+			opposing.StartOfTurn();
 		}
 		else {
 			//what happens when a player wins

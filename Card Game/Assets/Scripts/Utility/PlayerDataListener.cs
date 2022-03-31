@@ -79,6 +79,7 @@ public class PlayerDataListener : MonoBehaviour
 
 		//also set for possible child
 		GetComponentInChildren<ReturnCardsToHand>()?.SetPlayer(target);
+		GetComponentInChildren<CardGenerator>()?.SetPlayer(target);
 	}
 
 	void UpdateHealth(int prevHealth) {

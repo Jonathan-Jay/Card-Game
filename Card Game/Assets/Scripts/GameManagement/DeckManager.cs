@@ -27,7 +27,6 @@ public class DeckManager : MonoBehaviour
 	[SerializeField]	Vector3 defaultRotation = Vector3.forward * 180f;
 	public PlayerData player;
 
-	GameObject temp;
 	CardData data;
 	Card card;
 
@@ -143,10 +142,10 @@ public class DeckManager : MonoBehaviour
 		}
 
 		if (data.GetType().Equals(typeof(MonsterData))) {
-			temp = Instantiate(monsterPrefab.gameObject, pos, rot);
+			card = Instantiate(monsterPrefab, pos, rot);
 		}
 		else if (data.GetType().Equals(typeof(SpellData))) {
-			temp = Instantiate(spellPrefab.gameObject, pos, rot);
+			card = Instantiate(spellPrefab, pos, rot);
 		}
 		else {
 			//invalid
@@ -155,7 +154,6 @@ public class DeckManager : MonoBehaviour
 
 			return null;
 		}
-		card = temp.GetComponent<Card>();
 		card.SetData(data);
 		card.player = player;
 
@@ -166,12 +164,11 @@ public class DeckManager : MonoBehaviour
 		}
 
 		data = null;
-		card = null;
 
 		//play sound
 		audioPlayer?.PlayRandom();
 
-		return temp.transform;
+		return card.transform;
 	}
 
 	public static WaitForSeconds pointFive = new WaitForSeconds(0.4f);

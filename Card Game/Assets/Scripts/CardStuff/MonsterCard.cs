@@ -25,7 +25,8 @@ public class MonsterCard : Card
 
 	AudioQueue sounds;
 
-	private void Awake() {
+	//no ondisable tho lol
+	private void OnEnable() {
 		sounds = GetComponent<AudioQueue>();
 	}
 
@@ -124,7 +125,7 @@ public class MonsterCard : Card
 		PlayerData target = null;
 		List<int> targets = new List<int>();
 
-		Vector3 targetPos = placement.floatingHeight + Vector3.forward * 0.25f;
+		Vector3 targetPos = placement.floatingHeight + Vector3.forward * 0.2f;
 
 		while (requirement > 0) {
 			yield return eof;
@@ -162,6 +163,14 @@ public class MonsterCard : Card
 			//reset
 		}
 
+		//fix position if not moving from a different force
+		for (float i = 0; !moving && (i < 0.2f); i += Time.deltaTime) {
+			transform.localPosition += Vector3.back * Time.deltaTime;
+			yield return eof;
+		}
+		if (!moving)
+			transform.localPosition = placement.floatingHeight;
+
 		//cancelled
 		if (requirement < 0) {
 			//revert transforms of selected cards
@@ -191,14 +200,6 @@ public class MonsterCard : Card
 				if (monster && monster != this)
 					monster.TakeDamage(monster.currHealth);
 			}
-
-			//fix position if not moving from a different force
-			for (float i = 0; !moving && (i < 0.25f); i += Time.deltaTime) {
-				transform.localPosition += Vector3.back * Time.deltaTime;
-				yield return eof;
-			}
-			if (!moving)
-				transform.localPosition = placement.floatingHeight;
 
 			//remove card after paying cost
 			base.OnPlace(current, opposing);
@@ -254,7 +255,7 @@ public class MonsterCard : Card
 					UpdateBoosts();
 				}
 				StartCoroutine(AttackAnim(
-					opposing.hand.transform.position + Vector3.up * 0.25f, 15f,
+					opposing.hand.transform.position + Vector3.up * 0.05f, 15f,
 					placement.floatingHeight, 10f, DealDamage
 				));
 			}
