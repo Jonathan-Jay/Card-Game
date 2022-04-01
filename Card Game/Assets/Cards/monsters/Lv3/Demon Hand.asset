@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Demon Hand
   m_EditorClassIdentifier: 
   cardName: <color=red>Demon Hand</color>
-  cardArt: {fileID: 2800000, guid: b0c3fa30ffecc91408c2cf30586f370c, type: 3}
+  cardArt: {fileID: 2800000, guid: 06094017b82e0c24d8b5972228d2a14d, type: 3}
   cost: 2
   flavourText: idk where the rest of him is
   health: 4
