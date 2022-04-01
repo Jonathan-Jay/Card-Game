@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ogre
   m_EditorClassIdentifier: 
   cardName: <color=orange>Ogre</color>
-  cardArt: {fileID: 2800000, guid: b0c3fa30ffecc91408c2cf30586f370c, type: 3}
+  cardArt: {fileID: 2800000, guid: 70f4ad3609820624090690f9b4fddff2, type: 3}
   cost: 1
   flavourText: Thicc
   health: 2

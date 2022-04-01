@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Probably Invincible Knight
   m_EditorClassIdentifier: 
   cardName: <color=red><i><size=50%>Probably</size></i> Invincible Knight</color>
-  cardArt: {fileID: 2800000, guid: b0c3fa30ffecc91408c2cf30586f370c, type: 3}
+  cardArt: {fileID: 2800000, guid: b0495bd92dbbdef46b53134e5bdabfd6, type: 3}
   cost: 2
   flavourText: '*not actually invincible'
   health: 3
