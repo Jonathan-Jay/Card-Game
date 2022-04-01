@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: <color=red>Demon Hand</color>
   cardArt: {fileID: 2800000, guid: 06094017b82e0c24d8b5972228d2a14d, type: 3}
   cost: 2
-  flavourText: idk where the rest of him is
+  flavourText: 
   health: 4
   attack: 3
   healthRMax: 0

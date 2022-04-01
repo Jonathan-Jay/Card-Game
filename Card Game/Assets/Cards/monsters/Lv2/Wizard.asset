@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: <color=orange>Wizard</color>
   cardArt: {fileID: 2800000, guid: 557bbb17ffa5751448ff2698d7a6984f, type: 3}
   cost: 1
-  flavourText: Not one of Wiz Jr's parent
+  flavourText: 
   health: 3
   attack: 2
   healthRMax: 0

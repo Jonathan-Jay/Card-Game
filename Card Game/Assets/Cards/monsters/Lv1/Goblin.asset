@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: <color=yellow>Goblin</color>
   cardArt: {fileID: 2800000, guid: c0c404d2979ac1c40afd1f2dc1ec89ca, type: 3}
   cost: 0
-  flavourText: Eats shid
+  flavourText: 
   health: 2
   attack: 1
   healthRMax: 0

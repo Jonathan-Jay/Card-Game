@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: <color=orange>Living Wall</color>
   cardArt: {fileID: 2800000, guid: edafd641b1920f743b7b807cab886274, type: 3}
   cost: 1
-  flavourText: Not made of flesh
+  flavourText: 
   health: 5
   attack: 0
   healthRMax: 0

@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Baggy Sleeves
   cardArt: {fileID: 2800000, guid: 9b99214c80164d44ebb9b2b6f1e5a014, type: 3}
   cost: 2
-  flavourText: you're a wizard (with) Baggy (sleeves)
+  flavourText: 
   targettingOption: 4
   activateOption: 0
   abilityOption: 5
