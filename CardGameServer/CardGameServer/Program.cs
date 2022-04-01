@@ -837,10 +837,10 @@ public class SynServer
 
 										other.inGame = false;
 										if (lobby.player1 == other.id) {
-											other.status = "In Lobby: " + lobby.name + "as Player 1";
+											other.status = "In Lobby: " + lobby.name + " as Player 1";
 										}
 										else if (lobby.player2 == other.id) {
-											other.status = "In Lobby: " + lobby.name + "as Player 2";
+											other.status = "In Lobby: " + lobby.name + " as Player 2";
 										}
 										else {
 											other.status = "In Lobby: " + lobby.name;
