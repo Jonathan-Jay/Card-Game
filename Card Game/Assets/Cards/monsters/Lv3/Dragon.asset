@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Dragon
   m_EditorClassIdentifier: 
   cardName: <color=red>Dragon</color>
-  cardArt: {fileID: 2800000, guid: b0c3fa30ffecc91408c2cf30586f370c, type: 3}
+  cardArt: {fileID: 2800000, guid: 8fa15b402a49a5a4296ff01ea874e032, type: 3}
   cost: 2
   flavourText: 
   health: 3
