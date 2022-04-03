@@ -364,40 +364,43 @@ public class ServerManager : MonoBehaviour
 			//avoid the uh oh stinkies
 			//if (mouse.whoopsies)	return;
 
-			//the obvious
-			if (!hit || !hit.CompareTag("Interactable")) return;
+			//the obvious, but also make sure release always sends
+			if ((code != "REL") && (!hit || !hit.CompareTag("Interactable"))) return;
 
 			string message = "";
+			
 			//figure out what we hit
-			//first figure out type
-			Card cardTest = null;
-			CardMover moverTest = null;
-			CardAttacker attackerTest = null;
-			PressEventButton buttonTest = null;
-			int index = -1;
+			if (hit) {
+				//first figure out type
+				Card cardTest = null;
+				CardMover moverTest = null;
+				CardAttacker attackerTest = null;
+				PressEventButton buttonTest = null;
+				int index = -1;
 
-			if (hit.TryGetComponent<Card>(out cardTest)) {
-				index = cardTest.player.heldCards.IndexOf(cardTest);
-				if (index >= 0)
-					message = "CRD" + GetPlayerCode(cardTest.player) + index.ToString() + Client.spliter;
-			}
-			else if (hit.TryGetComponent<CardMover>(out moverTest)) {
-				index = moverTest.playerData.backLine.IndexOf(moverTest);
-				if (index >= 0)
-					message = "CMV" + GetPlayerCode(moverTest.playerData) + index.ToString() + Client.spliter;
-			}
-			else if (hit.TryGetComponent<CardAttacker>(out attackerTest)) {
-				index = attackerTest.playerData.field.IndexOf(attackerTest);
-				if (index >= 0)
-					message = "CAT" + GetPlayerCode(attackerTest.playerData) + index.ToString() + Client.spliter;
-			}
-			else if (hit.TryGetComponent<PressEventButton>(out buttonTest)) {
-				if (buttonTest.player == mouse.player)
-					message = "BUT" + buttonTest.name + Client.spliter;
-			}
+				if (hit.TryGetComponent<Card>(out cardTest)) {
+					index = cardTest.player.heldCards.IndexOf(cardTest);
+					if (index >= 0)
+						message = "CRD" + GetPlayerCode(cardTest.player) + index.ToString() + Client.spliter;
+				}
+				else if (hit.TryGetComponent<CardMover>(out moverTest)) {
+					index = moverTest.playerData.backLine.IndexOf(moverTest);
+					if (index >= 0)
+						message = "CMV" + GetPlayerCode(moverTest.playerData) + index.ToString() + Client.spliter;
+				}
+				else if (hit.TryGetComponent<CardAttacker>(out attackerTest)) {
+					index = attackerTest.playerData.field.IndexOf(attackerTest);
+					if (index >= 0)
+						message = "CAT" + GetPlayerCode(attackerTest.playerData) + index.ToString() + Client.spliter;
+				}
+				else if (hit.TryGetComponent<PressEventButton>(out buttonTest)) {
+					if (buttonTest.player == mouse.player)
+						message = "BUT" + buttonTest.name + Client.spliter;
+				}
 
-			//if none of the above
-			if (message == "")	return;
+				//if none of the above, dont send (since we did hit something)
+				if (message == "")	return;
+			}
 
 			Client.SendGameData(System.Text.Encoding.ASCII.GetBytes(code + message));
 		}
@@ -481,7 +484,8 @@ public class ServerManager : MonoBehaviour
 
 		Transform hit = FindTheObject(message, mouse);
 
-		if (hit == null)	return;
+		//actually helpful we receive null
+		//if (hit == null)	return;
 
 		if (code == "CLK") {
 			mouse.ForwardClickEvent(hit);

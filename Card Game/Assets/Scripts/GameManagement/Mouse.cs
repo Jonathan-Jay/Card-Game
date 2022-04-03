@@ -146,6 +146,7 @@ public class Mouse : MonoBehaviour {
         }
 		
 		if (Input.GetMouseButtonUp(0)) {
+			//can be null
 			releaseEvent?.Invoke(rayHitInfo.transform);
 		}
     }
@@ -272,7 +273,7 @@ public class Mouse : MonoBehaviour {
 
 	void ClickCard(Transform hit) {
 		//first check if we wanna do smt
-		if (!hit.CompareTag("Interactable"))	return;
+		if (!hit || !hit.CompareTag("Interactable"))	return;
 
 		Card cardTest = hit.GetComponent<Card>();
 		if (cardTest == null || cardTest.player != player) return;
@@ -300,7 +301,7 @@ public class Mouse : MonoBehaviour {
 	}*/
 
 	void ClickButton(Transform hit) {
-		if (!hit.CompareTag("Interactable")) return;
+		if (!hit || !hit.CompareTag("Interactable")) return;
 
 		PressEventButton buttonTest = hit.GetComponent<PressEventButton>();
 		if (buttonTest != null && buttonTest.enabled && (buttonTest.player == null || buttonTest.player == player)) {
@@ -309,10 +310,8 @@ public class Mouse : MonoBehaviour {
 	}
 
 	void ReleaseCardHolder(Transform hit) {
-		if (!holding || !hit) return;
-
-		//cardholder test
-		if (!hit.CompareTag("Interactable"))	return;
+		//all in one lol
+		if (!holding || !hit || !hit.CompareTag("Interactable"))	return;
 
 		CardHolder tempHolder = hit.GetComponent<CardHolder>();
 		if (tempHolder != null && tempHolder.PutCard(holding.GetComponent<Card>())) {
