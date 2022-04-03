@@ -10,5 +10,9 @@ public class ScreenControlInputs : MonoBehaviour
 		if (Input.GetKeyDown(toggleWindowed)) {
 			Screen.fullScreen = !Screen.fullScreen;
 		}
+
+		if (Input.GetKeyDown(KeyCode.Equals)) {
+			AudioListener.pause = !AudioListener.pause;
+		}
 	}
 }

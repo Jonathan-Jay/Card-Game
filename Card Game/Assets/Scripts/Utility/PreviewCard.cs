@@ -10,8 +10,11 @@ public class PreviewCard : MonoBehaviour
 	[SerializeField]	float imageOffsetRight;
 	[SerializeField]	LayerMask mask;
 	[SerializeField]	float maxDist = 15;
+	[SerializeField]	Shader unlitShader;
 
 	private void Start() {
+		target.SetReplacementShader(unlitShader, "RenderType");
+
 		image.SetActive(false);
 		target.enabled = false;
 		anchorPosTarget = ((RectTransform)image.transform).anchoredPosition;
