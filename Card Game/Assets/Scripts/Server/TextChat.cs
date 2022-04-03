@@ -18,9 +18,9 @@ public class TextChat : MonoBehaviour
 		Toggled();
 	}
 
-	private void OnDisable() {
-		showBox.isOn = true;
-	}
+	//private void OnDisable() {
+	//	showBox.isOn = true;
+	//}
 
     public void UpdateChat(string message) {
         chatBox.text += message + "\n";

@@ -144,6 +144,7 @@ public class Mouse : MonoBehaviour {
 				clickEvent?.Invoke(rayHitInfo.transform);
 			}
         }
+		
 		if (Input.GetMouseButtonUp(0)) {
 			releaseEvent?.Invoke(rayHitInfo.transform);
 		}

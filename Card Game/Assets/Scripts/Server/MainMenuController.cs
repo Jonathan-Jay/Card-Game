@@ -1,27 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class MainMenuController : MonoBehaviour
 {
 	[SerializeField] Client client;
 
-	[SerializeField] TMPro.TMP_Text ipError;
-	[SerializeField] TMPro.TMP_InputField ipInput;
-	[SerializeField] GameObject localGameButtons;
-	[SerializeField] GameObject joinOnlineButton;
-	[SerializeField] UnityEngine.UI.Button joinServerButton;
-	[SerializeField] UnityEngine.UI.Button leaveServerButton;
-	[SerializeField] TMPro.TMP_Text lobbyName;
-	[SerializeField] TMPro.TMP_Text lobbyError;
 	[SerializeField] CameraController cam;
+	[SerializeField] TMP_Text ipError;
+	[SerializeField] TMP_InputField ipInput;
+	[SerializeField] GameObject localGameButtons;
+	[SerializeField] Button joinOnlineButton;
+	[SerializeField] Button joinServerButton;
+	[SerializeField] Button leaveServerButton;
+	[SerializeField] int outLobbyIndex = 2;
+	[SerializeField] TMP_Text lobbyError;
 	[SerializeField] UITemplateList lobbyList;
 	[SerializeField] UITemplateList playerList;
+	[SerializeField] int inLobbyIndex = 3;
+	[SerializeField] TMP_Text lobbyName;
 	[SerializeField] UITemplateList inLobbyPlayerList;
 	[SerializeField] GameObject joinPlayer1Seat;
+	[SerializeField] GameObject player1Seat;
 	[SerializeField] GameObject joinPlayer2Seat;
-	[SerializeField] GameObject leaveSeat;
-	[SerializeField] GameObject startButton;
+	[SerializeField] GameObject player2Seat;
+	[SerializeField] Button leaveSeat;
+	[SerializeField] Button startButton;
 
 	private void OnEnable() {
 		client.connectedEvent += EnableUI;
@@ -51,13 +57,13 @@ public class MainMenuController : MonoBehaviour
 
 	void EnableUI(bool connected) {
 		//things to hide?
-		localGameButtons.SetActive(!connected);
+		LocalGameButtonInteractable(!connected);
 
 		//things to allow
 		joinServerButton.gameObject.SetActive(!connected);
 		leaveServerButton.gameObject.SetActive(connected);
 
-		joinOnlineButton.SetActive(connected);
+		joinOnlineButton.interactable = connected;
 
 		//only works if not working
 		ipInput.interactable = !connected;
@@ -79,8 +85,9 @@ public class MainMenuController : MonoBehaviour
 		//dont allow empty
 		if (ipInput.text == "") return;
 		//disable these
-		localGameButtons.SetActive(false);
-		GetComponent<AudioQueue>().Play();
+		LocalGameButtonInteractable(false);
+
+		GetComponent<AudioQueue>()?.Play();
 		client.TryConnect(ipInput.text);
 	}
 
@@ -92,7 +99,7 @@ public class MainMenuController : MonoBehaviour
 		joinServerButton.interactable = !functioning;
 
 		//things to hide?
-		localGameButtons.SetActive(!functioning);
+		LocalGameButtonInteractable(!functioning);
 
 		//if not functioning, reset ipInput;
 		if (!functioning)
@@ -125,12 +132,12 @@ public class MainMenuController : MonoBehaviour
 	void JoinedLobby(bool joined, string lobbyName) {
 		this.lobbyName.text = lobbyName;
 		if (joined) {
-			while (cam.index != 2) {
+			while (cam.index != inLobbyIndex) {
 				cam.IncrementIndex(true);
 			}
 		}
 		else {
-			while (cam.index != 1) {
+			while (cam.index != outLobbyIndex) {
 				cam.IncrementIndex(true);
 			}
 		}
@@ -139,20 +146,29 @@ public class MainMenuController : MonoBehaviour
 	void SeatedPlayersChanged() {
 		if (ServerManager.CheckIfClient(null, false)) {
 			//show the leave seat if you're a player
-			leaveSeat.SetActive(true);
+			leaveSeat.interactable = true;
 			joinPlayer1Seat.SetActive(false);
 			joinPlayer2Seat.SetActive(false);
 			
-			startButton.SetActive(ServerManager.p1Index >= 0 && ServerManager.p2Index >= 0);
+			startButton.interactable = (ServerManager.p1Index >= 0 && ServerManager.p2Index >= 0);
 		}
 		else {
-			leaveSeat.SetActive(false);
+			leaveSeat.interactable = false;
 			//make button work if no player
 			joinPlayer1Seat.SetActive(ServerManager.p1Index < 0);
 			joinPlayer2Seat.SetActive(ServerManager.p2Index < 0);
 
-			startButton.SetActive(false);
+			startButton.interactable = false;
 		}
 
+		//render faces if valid or smt
+		player1Seat.SetActive(ServerManager.p1Index >= 0);
+		player2Seat.SetActive(ServerManager.p2Index >= 0);
+	}
+
+	void LocalGameButtonInteractable(bool value) {
+		foreach (Button button in localGameButtons.GetComponentsInChildren<Button>()) {
+			button.interactable = value;
+		}
 	}
 }
