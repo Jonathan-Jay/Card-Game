@@ -8,9 +8,10 @@ public class UITemplate : MonoBehaviour {
 public class UITemplateList : MonoBehaviour
 {
 	[SerializeField] UITemplate prefab;
+	[SerializeField] Transform listParent;
 	List<int> ids = new List<int>();
 	List<UITemplate> profiles = new List<UITemplate>();
-	[SerializeField] Vector3 offset = Vector3.down * 55f;
+	//[SerializeField] Vector3 offset = Vector3.down * 55f;
 
     public void CreateProfile(string data) {
 		//replace the / with a spliter
@@ -31,8 +32,9 @@ public class UITemplateList : MonoBehaviour
 
 		//position index
 		int index = profiles.Count;
-		profiles.Add(Instantiate(prefab, transform));
-		((RectTransform)profiles[index].transform).localPosition = offset * (index + 0.5f);
+		profiles.Add(Instantiate(prefab, listParent));
+		//offset is now handled by scrollrect
+		//((RectTransform)profiles[index].transform).localPosition = offset * (index + 0.5f);
 
 		//dont need to duplicate firstSplit
 		profiles[index].SetData(name, id, data.Substring(0, firstSplit));

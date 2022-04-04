@@ -464,6 +464,7 @@ MonoBehaviour:
   healthMesh: {fileID: 5406184301356650649}
   currHealth: 0
   currAttack: 0
+  attackSounds: {fileID: 7855715080781974253}
 --- !u!114 &7855715080781974253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +477,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1cbfa52de400247a5fb13ce3919589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sounds: []
+  sounds:
+  - {fileID: 4045167820182724411}
   empty: 1
 --- !u!1001 &7991054928470248549
 PrefabInstance:

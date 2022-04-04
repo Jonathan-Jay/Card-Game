@@ -7,7 +7,7 @@ public class SpellCard : Card
 {
 	[SerializeField] protected TMP_Text descriptionMesh;
 
-	private void Start() {
+	private void Awake() {
 		if (data != null) {
 			SetData(data);
 			if (renderingFace) {

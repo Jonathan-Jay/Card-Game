@@ -14,12 +14,7 @@ public class AudioQueue : MonoBehaviour
 		}
 	}
 
-	public bool empty = false;
-
 	public void AddClip(AudioClip clip) {
-		//for dirty checking
-		empty = false;
-
 		foreach (AudioSource source in sounds) {
 			source.clip = clip;
 		}
