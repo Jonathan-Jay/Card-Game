@@ -106,7 +106,7 @@ public class Card : MonoBehaviour
 		player.hand.ReturnCardToHand(transform);
 	}
 
-	IEnumerator Death() {
+	protected IEnumerator Death() {
 		Release();
 		//in case something tries to move it while dying
 		moving = true;

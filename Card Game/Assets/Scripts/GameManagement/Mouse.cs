@@ -103,19 +103,6 @@ public class Mouse : MonoBehaviour {
 		ignore = val;
 	}
 
-	public void DelayedEnableInput(float delay) {
-		StartCoroutine(DelayedIgnoreSetter(true, delay));
-	}
-
-	public void DelayedIgnoreInput(bool val, float delay = 0.25f) {
-		StartCoroutine(DelayedIgnoreSetter(val, delay));
-	}
-
-	IEnumerator DelayedIgnoreSetter(bool val, float delay) {
-		yield return new WaitForSeconds(delay);
-		ignore = val;
-	}
-
 	public void ForwardHoverEvent(Transform hit) {
 		hoverEvent?.Invoke(hit);
 	}

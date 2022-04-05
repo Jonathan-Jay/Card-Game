@@ -444,6 +444,7 @@ public class ServerManager : MonoBehaviour
 		}
 	}
 
+	//would've used a byte pointer if default delegates handled that
 	void ReadCodes(byte[] message) {
 		//get the code
 		string code = System.Text.Encoding.ASCII.GetString(message, 0, Client.player1Code.Length);
@@ -564,6 +565,7 @@ public class ServerManager : MonoBehaviour
 	float[] tempPos = new float[3];
 	const int posArrSize = sizeof(float) * 3;
 	Vector3 tempVec = Vector3.zero;
+	//same
 	void UdpUpdate(byte[] message) {
 		//get the id
 		System.Buffer.BlockCopy(message, 0, tempId, 0, sizeof(int));

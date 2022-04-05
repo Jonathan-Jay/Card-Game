@@ -8,6 +8,7 @@ public class SpellDataEditor : Editor
 {
 	static bool lockedDescription = true;
 	static bool unlockedInts = true;
+	static bool usingRichText = true;
 	SerializedProperty cardArt;
 	SerializedProperty cardName;
 	SerializedProperty cost;
@@ -143,15 +144,15 @@ public class SpellDataEditor : Editor
 	{
 		this.serializedObject.Update();
 		GUIStyle richText = new GUIStyle(GUI.skin.label);
-		richText.richText = true;
+		richText.richText = usingRichText;
 		richText.wordWrap = true;
 		GUIStyle bigText = new GUIStyle(GUI.skin.label);
-		bigText.richText = true;
+		bigText.richText = usingRichText;
 		bigText.wordWrap = true;
 		bigText.stretchHeight = true;
 		bigText.fixedWidth = EditorGUIUtility.currentViewWidth - 50f;
 		GUIStyle richTextBoxed = new GUIStyle(GUI.skin.textField);
-		richTextBoxed.richText = true;
+		richTextBoxed.richText = usingRichText;
 		richTextBoxed.wordWrap = true;
 		richTextBoxed.stretchHeight = true;
 
@@ -271,6 +272,7 @@ public class SpellDataEditor : Editor
 
 		flavourText.stringValue = EditorGUILayout.TextField("Flavour Text", flavourText.stringValue, richTextBoxed);
 
+		usingRichText = EditorGUILayout.Toggle("Use Rich Text", usingRichText);
 		//prefab entry
 		EditorGUILayout.PropertyField(effect);
 

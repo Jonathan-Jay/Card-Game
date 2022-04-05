@@ -238,7 +238,7 @@ public class MonsterCard : Card
 			SetHealth(currHealth += boostEffect.hpBoost, currHealth > ((MonsterData)data).health ? Color.green : Color.red);
 			//check if they die from this
 			if (currHealth <= 0) {
-				StartCoroutine("Death");
+				StartCoroutine(Death());
 				return;
 			}
 		}
@@ -345,7 +345,7 @@ public class MonsterCard : Card
 			
 			//doesn't happen
 			//if (newHealth <= 0) {
-			//	StartCoroutine("Death");
+			//	StartCoroutine(Death());
 			//}
 		}
 	}
@@ -376,7 +376,7 @@ public class MonsterCard : Card
 		SetHealth(currHealth - amt, Color.red);
 		if (currHealth <= 0) {
 			//queue death here
-			StartCoroutine("Death");
+			StartCoroutine(Death());
 			return -currHealth;
 		}
 		return -1;

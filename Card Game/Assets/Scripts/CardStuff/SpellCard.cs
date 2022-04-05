@@ -133,6 +133,6 @@ public class SpellCard : Card
 			player.hand.input.DeactivateSpellMode(true);
 		}
 		
-		StartCoroutine("Death");
+		StartCoroutine(Death());
 	}
 }
