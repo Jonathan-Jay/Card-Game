@@ -34,10 +34,13 @@ public class AudioQueue : MonoBehaviour
 	}
 
 	int lastPlayed = -1;
+	System.Random rand = null;
 	public void PlayRandom()
 	{
+		if (!rand)
+			rand = new System.Random();
 		//Randomise the track played in the queue (will not play the track that was played last)
-		int newIndex = Random.Range(0, sounds.Count);
+		int newIndex = rand.Next() % sounds.Count;
 		if(newIndex == lastPlayed)
 		{
 			newIndex = (newIndex + 1) % sounds.Count;
