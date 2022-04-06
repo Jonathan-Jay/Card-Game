@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 3059895186131061907}
   - component: {fileID: 8857628591965841689}
   - component: {fileID: -7501756154870324049}
-  - component: {fileID: 2204439102299372392}
   - component: {fileID: -8862473300804936420}
+  - component: {fileID: 2204439102299372392}
   m_Layer: 0
   m_Name: SameTimeEffect
   m_TagString: Untagged
@@ -4823,20 +4823,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 0.5
   deathDelay: 0.25
---- !u!114 &2204439102299372392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8967329845126456805}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1cbfa52de400247a5fb13ce3919589, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sounds: []
-  empty: 0
 --- !u!82 &-8862473300804936420
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4933,3 +4919,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2204439102299372392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8967329845126456805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e1cbfa52de400247a5fb13ce3919589, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - {fileID: -8862473300804936420}

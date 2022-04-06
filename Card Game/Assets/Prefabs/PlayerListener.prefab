@@ -1681,6 +1681,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  id: 3
 --- !u!114 &6412223095750574330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2706,6 +2707,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  id: 2
 --- !u!114 &8400126134106522326
 MonoBehaviour:
   m_ObjectHideFlags: 0

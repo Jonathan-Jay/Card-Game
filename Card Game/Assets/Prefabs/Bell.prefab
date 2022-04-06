@@ -63,6 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  id: 5
 --- !u!114 &4608818802814927524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,7 +77,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds: []
-  empty: 0
 --- !u!82 &5393965479983645814
 AudioSource:
   m_ObjectHideFlags: 0

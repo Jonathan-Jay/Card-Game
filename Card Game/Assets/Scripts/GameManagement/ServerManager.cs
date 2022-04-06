@@ -346,7 +346,7 @@ public class ServerManager : MonoBehaviour
 			Client.SendGameData(System.Text.Encoding.ASCII.GetBytes("SED" + seed.ToString() + Client.spliter));
 
 			//might end up waiting more, but for the best lol
-			yield return new WaitForSeconds(delay);
+			//yield return new WaitForSeconds(delay);
 		}
 		Random.InitState(seed);
 
@@ -360,12 +360,12 @@ public class ServerManager : MonoBehaviour
 		//now we make players draw cards
 		game.StartDrawCards(isP1, isP2);
 
-		void InputSend(string code, Transform hit, Mouse mouse) {
+		void InputSend(string code, Transform hit, Mouse mouse, bool checkTag) {
 			//avoid the uh oh stinkies
 			//if (mouse.whoopsies)	return;
 
 			//the obvious, but also make sure release always sends
-			if ((code != "REL") && (!hit || !hit.CompareTag("Interactable"))) return;
+			if (checkTag && (!hit || !hit.CompareTag("Interactable"))) return;
 
 			string message = "";
 			
@@ -394,12 +394,12 @@ public class ServerManager : MonoBehaviour
 						message = "CAT" + GetPlayerCode(attackerTest.playerData) + index.ToString() + Client.spliter;
 				}
 				else if (hit.TryGetComponent<PressEventButton>(out buttonTest)) {
-					if (buttonTest.player == mouse.player)
-						message = "BUT" + buttonTest.name + Client.spliter;
+					if (buttonTest.player == mouse.player || buttonTest.player == null)
+						message = "BUT" + buttonTest.id.ToString() + Client.spliter;
 				}
 
 				//if none of the above, dont send (since we did hit something)
-				if (message == "")	return;
+				if (checkTag && (message == ""))	return;
 			}
 
 			Client.SendGameData(System.Text.Encoding.ASCII.GetBytes(code + message));
@@ -409,25 +409,55 @@ public class ServerManager : MonoBehaviour
 		//hover event is better as UDP
 		if (isP1) {
 			void P1ClickSend(Transform hit) {
-				InputSend("CLK", hit, p1mouse);
+				InputSend("CLK", hit, p1mouse, true);
 			}
 			p1mouse.clickEvent += P1ClickSend;
 
 			void P1ReleaseSend(Transform hit) {
-				InputSend("REL", hit, p1mouse);
+				if (p1mouse.holding)
+					InputSend("REL", hit, p1mouse, false);
 			}
 			p1mouse.releaseEvent += P1ReleaseSend;
+
+			Transform tempTrans = null;
+
+			void P1HovSend(Transform hit) {
+				if (tempTrans != hit) {
+					if ((tempTrans && tempTrans.CompareTag("Interactable"))
+						|| (hit && hit.CompareTag("Interactable")))
+					{
+						InputSend("HOV", hit, p1mouse, false);
+					}
+					tempTrans = hit;
+				}
+			}
+			p1mouse.hoverEvent += P1HovSend;
 		}
 		if (isP2) {
 			void P2ClickSend(Transform hit) {
-				InputSend("CLK", hit, p2mouse);
+				InputSend("CLK", hit, p2mouse, true);
 			}
 			p2mouse.clickEvent += P2ClickSend;
 
 			void P2ReleaseSend(Transform hit) {
-				InputSend("REL", hit, p2mouse);
+				if (p2mouse.holding)
+					InputSend("REL", hit, p2mouse, false);
 			}
 			p2mouse.releaseEvent += P2ReleaseSend;
+
+			Transform tempTrans = null;
+
+			void P2HovSend(Transform hit) {
+				if (tempTrans != hit) {
+					if ((tempTrans && tempTrans.CompareTag("Interactable"))
+						|| (hit && hit.CompareTag("Interactable")))
+					{
+						InputSend("HOV", hit, p2mouse, false);
+					}
+					tempTrans = hit;
+				}
+			}
+			p2mouse.hoverEvent += P2HovSend;
 		}
 
 		//subscribe the gameEvent stuff
@@ -494,6 +524,9 @@ public class ServerManager : MonoBehaviour
 		else if (code == "REL") {
 			mouse.ForwardReleaseEvent(hit);
 		}
+		else if (code == "HOV") {
+			mouse.ForwardHoverEvent(hit);
+		}
 	}
 
 	Transform FindTheObject(in byte[] message, Mouse mouse) {
@@ -550,9 +583,9 @@ public class ServerManager : MonoBehaviour
 		}
 		else if (code == "BUT") {
 			//get the mover index
-			string tempName = input.Substring(code.Length, input.IndexOf(Client.spliter) - code.Length);
+			int tempId = int.Parse(input.Substring(code.Length, input.IndexOf(Client.spliter) - code.Length));
 			foreach (PressEventButton button in FindObjectsOfType<PressEventButton>()) {
-				if (button.player == player && button.name == tempName) {
+				if (button.id == tempId && (button.player == player || button.player == null)) {
 					temp = button.transform;
 				}
 			}
@@ -561,10 +594,13 @@ public class ServerManager : MonoBehaviour
 		return temp;
 	}
 
+	const float udpDelay = 0.2f;
 	int[] tempId = new int[1];
-	float[] tempPos = new float[3];
-	const int posArrSize = sizeof(float) * 3;
-	Vector3 tempVec = Vector3.zero;
+	float[] tempPos = new float[6];
+	const int posArrSize = sizeof(float) * 6;
+	Vector3 tempPosVec = Vector3.zero;
+	Vector3 tempVeloVec = Vector3.zero;
+
 	//same
 	void UdpUpdate(byte[] message) {
 		//get the id
@@ -578,26 +614,32 @@ public class ServerManager : MonoBehaviour
 		System.Buffer.BlockCopy(message, sizeof(int), tempPos, 0, posArrSize);
 
 		//store the position
-		tempVec.x = tempPos[0];
-		tempVec.y = tempPos[1];
-		tempVec.z = tempPos[2];
+		tempPosVec.x = tempPos[0];
+		tempPosVec.y = tempPos[1];
+		tempPosVec.z = tempPos[2];
+
+		//store the velocity
+		tempVeloVec.x = tempPos[3];
+		tempVeloVec.y = tempPos[4];
+		tempVeloVec.z = tempPos[5];
 
 		//we need to test with AWS again
 		//Debug.Log("p1 is " + p1Index + ", p2 is " + p2Index + " we received " + tempId[0]);
 
 		//if p1
-		if (tempId[0] == p1Index) {
-			p1mouse.mouseObject.position = tempVec;
-		}
+		if (tempId[0] == p1Index)
+			p1mouse.MoveMouse(tempPosVec, tempVeloVec, udpDelay);
 		//if p2
-		else if (tempId[0] == p2Index) {
-			p2mouse.mouseObject.position = tempVec;
-		}
+		else if (tempId[0] == p2Index)
+			p2mouse.MoveMouse(tempPosVec, tempVeloVec, udpDelay);
 	}
 
 	IEnumerator SendUdpData(Transform target) {
-		//10 updates a second
-		WaitForSeconds delay = new WaitForSeconds(0.05f);
+		float waitTime = udpDelay;
+		WaitForSeconds delay = new WaitForSeconds(waitTime);
+
+		//so we can scale velo
+		waitTime = 1f / waitTime;
 
 		tempId[0] = Client.playerId;
 
@@ -606,14 +648,28 @@ public class ServerManager : MonoBehaviour
 		System.Buffer.BlockCopy(tempId, 0, message, 0, sizeof(int));
 
 		Vector3 prevPos = target.position;
+		Vector3 velo = Vector3.zero;
+		bool doubleCheck = true;
 
 		yield return Card.eof;
 		//as long as the target exists
 		while (target) {
-			if (target.position != prevPos) {
+			if (target.position != prevPos || doubleCheck) {
+				if (target.position == prevPos)
+					doubleCheck = false;
+				else if (!doubleCheck)
+					doubleCheck = true;
+
 				tempPos[0] = target.position.x;
 				tempPos[1] = target.position.y;
 				tempPos[2] = target.position.z;
+
+				//instantanious velo, consider doing average velo? nah
+				velo = (target.position - prevPos) * waitTime;
+
+				tempPos[3] = velo.x;
+				tempPos[4] = velo.y;
+				tempPos[5] = velo.z;
 
 				System.Buffer.BlockCopy(tempPos, 0, message, sizeof(int), posArrSize);
 				Client.SendUDP(message);

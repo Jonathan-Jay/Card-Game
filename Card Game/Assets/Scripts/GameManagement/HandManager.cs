@@ -33,11 +33,11 @@ public class HandManager : MonoBehaviour
 		input.hoverEvent -= HoverManagement;
 	}
 
-	void HoverManagement(Transform rayHitInfo) {
-		if (!doHover)	return;
+	void HoverManagement(Transform hit) {
+		if (!hit || !doHover)	return;
 
 		splaySelectIndexOld = splaySelectIndex;
-		splaySelectIndex = (rayHitInfo.gameObject.layer == 6 && rayHitInfo.parent == transform && !input.holding) ? rayHitInfo.GetSiblingIndex() : -1;
+		splaySelectIndex = (hit.gameObject.layer == 6 && hit.parent == transform && !input.holding) ? hit.GetSiblingIndex() : -1;
 
 		doSplay = doSplay || splaySelectIndex != splaySelectIndexOld;
 		if (doSplay) TestSplay();
