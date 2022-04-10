@@ -46,7 +46,13 @@ public class PlayerData : MonoBehaviour {
 
 	public void RemoveCard(Card card) {
 		heldCards.Remove(card);
+
+		if (card.placement) {
+			lastPlayedIndex = card.placement.index;
+		}
 	}
+
+	public int lastPlayedIndex = -1;
 
 	public void DrawCard() {
 		drawCard?.Invoke();

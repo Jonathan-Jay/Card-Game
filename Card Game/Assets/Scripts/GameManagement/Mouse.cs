@@ -326,9 +326,10 @@ public class Mouse : MonoBehaviour {
 		}
 	}
 
+	public bool cantPlaceCards = false;
 	void ReleaseCardHolder(Transform hit) {
 		//all in one lol
-		if (!holding || !hit || !hit.CompareTag("Interactable"))	return;
+		if (cantPlaceCards || !holding || !hit || !hit.CompareTag("Interactable"))	return;
 
 		CardHolder tempHolder = hit.GetComponent<CardHolder>();
 		if (tempHolder != null && tempHolder.PutCard(holding.GetComponent<Card>())) {

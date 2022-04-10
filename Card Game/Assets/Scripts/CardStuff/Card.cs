@@ -99,8 +99,7 @@ public class Card : MonoBehaviour
 	}
 
 	public void CallBackCard() {
-		if (transform.parent == player.hand.transform) return;
-		if (placement)	return;
+		if (!player || transform.parent == player.hand.transform || placement)	return;
 		
 		//put in hand
 		player.hand.ReturnCardToHand(transform);

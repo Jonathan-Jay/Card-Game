@@ -6,6 +6,7 @@ using TMPro;
 
 public class MainMenuController : MonoBehaviour
 {
+	static bool firstScreen = true;
 	[SerializeField] Client client;
 
 	[SerializeField] CameraController cam;
@@ -53,6 +54,13 @@ public class MainMenuController : MonoBehaviour
 		client.lobbyError -= LobbyError;
 		client.joinedLobby -= JoinedLobby;
 		client.tableSeatUpdated -= SeatedPlayersChanged;
+	}
+
+	private void Start() {
+		if (firstScreen) {
+			firstScreen = false;
+			cam.DecrementIndex(false);
+		}
 	}
 
 	void EnableUI(bool connected) {

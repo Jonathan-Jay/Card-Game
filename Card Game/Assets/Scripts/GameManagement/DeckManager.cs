@@ -44,10 +44,10 @@ public class DeckManager : MonoBehaviour
 			foreach (CardDataMultiplier data in deckOptions) {
 				counter.Add(data.amt);
 			}
-			foreach (int val in riggedDeck) {
+			for (int i = riggedDeck.Count - 1; i >= 0; --i) {
 				//attempt to fill the deck, but not more than it has
-				if (--counter[val] >= 0)
-					deck.Push(val);
+				if (--counter[riggedDeck[i]] >= -1)
+					deck.Push(riggedDeck[i]);
 			}
 		}
 		//don't store in memory

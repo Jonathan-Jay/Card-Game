@@ -11,9 +11,34 @@ public class TutorialManager : MonoBehaviour
 		//variables to control what it does
 		public string text = "lol";
 		public Vector3 scale = Vector3.one;
-		public bool clickToProceed = true;
+		public bool canEndTurn = false;
+		public bool canPlaceCards = true;
+
+		public enum NextStepTest {
+			CLICKTOPROCEED,
+			DETECTCARDPLACEMENT,
+			DETECTSACRIFICEPLACEMENT,
+			CLICKBELL,
+			NONE,
+			DELAY,
+		}
+
+		public NextStepTest stepTest;
+		public bool mirrorPrevious = false;
+		public int stepTestIndex = -1;
+
+		public enum OpponentAction {
+			NONE,
+			ENDTURN,
+			PLACECARD,
+		}
+
+		public OpponentAction aiAction;
+		public bool mirrorPlayer = false;
+		public int aiIndex = -1;
 	}
 
+	public FodderRain lol;
 	public List<TutorialSection> sections = new List<TutorialSection>();
 	int currentSection = 0;
 	public Client client;
@@ -102,14 +127,36 @@ public class TutorialManager : MonoBehaviour
 		}
 	}
 
+	int lastPlayedIndex = -1;
 	private bool CheckCurrentSegment() {
 		if (currentSection < sections.Count) {
+			TutorialSection temp = sections[currentSection];
 			//perform standard checks
-			if (sections[currentSection].clickToProceed)
-				return false;
+			switch (temp.stepTest) {
+				//case TutorialSection.NextStepTest.CLICKTOPROCEED:
+				default:
+					return false;
 
-			
-			return false;
+				case TutorialSection.NextStepTest.DETECTCARDPLACEMENT:
+					if (lastPlayedIndex != game.player1.lastPlayedIndex) {
+						lastPlayedIndex = game.player1.lastPlayedIndex;
+
+						return (temp.stepTestIndex < 0) || (temp.stepTestIndex == lastPlayedIndex);
+					}
+					return false;
+
+				case TutorialSection.NextStepTest.DETECTSACRIFICEPLACEMENT:
+					if (lastPlayedIndex != game.player1.lastPlayedIndex) {
+						lastPlayedIndex = game.player1.lastPlayedIndex;
+
+						if (game.player1.backLine[lastPlayedIndex].holding &&
+							game.player1.backLine[lastPlayedIndex].holding.data.cost > 0)
+						{
+							return (temp.stepTestIndex < 0) || (temp.stepTestIndex == lastPlayedIndex);
+						}
+					}
+					return false;
+			}
 		}
 		//final check, can do something different
 		else {
@@ -121,9 +168,13 @@ public class TutorialManager : MonoBehaviour
 		if (++currentSection < sections.Count) {
 			//update the text
 			UpdateSection();
+
+			if (currentSection == sections.Count - 1)
+				StartCoroutine(DelayedFunc(delegate { lol.enabled = true; }, 30f));
 		}
 		else {
 			//too big, can trigger something special
+			Client.ExitGame();
 		}
 	}
 
@@ -136,13 +187,58 @@ public class TutorialManager : MonoBehaviour
 
 		tutorialQuad.localScale = temp.scale;
 		tutorialTrans.GetComponent<BoxCollider>().size = temp.scale;
-
 		tutorialTrans.GetComponent<LookAt>().UpdateCam();
+		tutorialTrans.GetComponent<PressEventButton>().enabled = temp.stepTest == TutorialSection.NextStepTest.CLICKTOPROCEED;
 
 		tutorialText.text = temp.text;
 
-		tutorialTrans.GetComponent<PressEventButton>().enabled = temp.clickToProceed;
+		game.player1.turnEndButton.enabled = temp.canEndTurn;
+		game.player1.hand.input.cantPlaceCards = !temp.canPlaceCards;
 
+		lastPlayedIndex = game.player1.lastPlayedIndex;
+
+		if (temp.mirrorPlayer)
+			temp.aiIndex = lastPlayedIndex;
+
+		if (temp.mirrorPrevious) {
+			temp.stepTestIndex = lastPlayedIndex;
+			lastPlayedIndex = -1;
+			game.player1.lastPlayedIndex = -1;
+		}
+
+		if (temp.stepTest == TutorialSection.NextStepTest.DELAY) {
+			StartCoroutine(DelayedFunc(IncrementIndex, temp.stepTestIndex));
+		}
+
+		//do ai things
+		switch (temp.aiAction) {
+			default:	return;
+
+			case TutorialSection.OpponentAction.ENDTURN:
+				StartCoroutine(DelayedFunc(game.player2.turnEndButton.Press, 2f));
+				return;
+
+			case TutorialSection.OpponentAction.PLACECARD:
+				int index = temp.aiIndex;
+
+				if (index < 0)
+					index = Random.Range(0, game.player2.heldCards.Count);
+
+				int attempts = 10;
+				while (!game.player2.backLine[index].PutCard(game.player2.heldCards[0])) {
+					//if too many just abort?
+					if (--attempts < 0)
+						break;
+
+					index = Random.Range(0, game.player2.heldCards.Count);
+				}
+				return;
+		}
+	}
+
+	IEnumerator DelayedFunc(System.Action func, float delayAmt) {
+		yield return new WaitForSeconds(delayAmt);
+		func?.Invoke();
 	}
 	
 	void TurnEndPlayerChange() {
@@ -176,5 +272,9 @@ public class TutorialManager : MonoBehaviour
 			game.player1.turnEndButton.enabled = true;
 			p1bell.material.color = defaultBellCol;
 		}
+
+		if (sections[currentSection].stepTest == TutorialSection.NextStepTest.CLICKBELL
+			|sections[currentSection].aiAction == TutorialSection.OpponentAction.ENDTURN)
+			IncrementIndex();
 	}
 }
