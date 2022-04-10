@@ -80,8 +80,15 @@ public class SynServer
 			Console.WriteLine("Lobby \"" + name + "\" was terminated");
 			#endif
 
-			udpSocket.Shutdown(SocketShutdown.Both);
-			udpSocket.Close();
+			//kill all players if applicable
+			foreach (Player player in players) {
+				player.Kill();
+			}
+
+			if (udpSocket != null) {
+				udpSocket.Shutdown(SocketShutdown.Both);
+				udpSocket.Close();
+			}
 		}
 	}
 	
@@ -89,7 +96,8 @@ public class SynServer
 	static Socket server;
 	//each lobby has their own for ease of use (dont have to find the specific server the udp was received on)
 	//this is to make it unique per lobby
-	static int udpSocketPort = 4200;
+	const int udpPortStart = 5069;
+	static int udpSocketPort = udpPortStart;
 
 	//when checking new players
 	static Socket tempHandler = null;
@@ -243,17 +251,27 @@ public class SynServer
 				//send the new player joining to all others?
 				//also wait till the player responds with their username
 				tempHandler = null;
+				Console.WriteLine("test");
 			}
 			else {
 				Console.WriteLine(sockExcep.ToString());
 			}
 		}
+		catch (ObjectDisposedException) {
+			//stop the async since the socket is closed
+			return;
+		}
 		catch (Exception e) {
 			Console.WriteLine(e.ToString());
 		}
 
-		//restart the loop
-		server.BeginAccept(new AsyncCallback(AsyncAccept), null);
+		try {
+			//restart the loop again
+			server.BeginAccept(new AsyncCallback(AsyncAccept), null);
+		}
+		catch (ObjectDisposedException) {
+			//safety
+		}
 	}
 
 	static bool RunServer() {
@@ -314,6 +332,12 @@ public class SynServer
 		catch (Exception e) {
 			Console.WriteLine(e.ToString());
 		}*/
+
+		//allow the server admin to end the server
+		if (Console.KeyAvailable) {
+			if (Console.ReadKey().Key == ConsoleKey.Escape)
+				return false;
+		}
 
 		//just returns true aka skips if empty (because accept will be async)
 		if (server.Blocking) {
@@ -501,6 +525,10 @@ public class SynServer
 							player.udpEP = new IPEndPoint(((IPEndPoint)player.handler.RemoteEndPoint).Address,
 								int.Parse(Encoding.ASCII.GetString(buffer, compoundIndex, length)));
 							//if it crashes, idk how that happened lol
+							
+							#if PRINT_TO_CONSOLE
+							Console.WriteLine(player.username + " ip at: " + player.udpEP.Port);
+							#endif
 
 							//mark dirty to also let the player reget everything
 							dirty = true;
@@ -897,7 +925,7 @@ public class SynServer
 										lobby.player1 = -1;
 									}
 									else if (lobby.player2 == player.id) {
-										lobby.player1 = -1;
+										lobby.player2 = -1;
 									}
 
 									byte[] left = Encoding.ASCII.GetBytes("NTF" + player.username
@@ -972,7 +1000,7 @@ public class SynServer
 				//all players left, close the lobby
 				#if PRINT_TO_CONSOLE
 				Console.WriteLine("Lobby " + lobby.name + " deleted");
-#endif
+				#endif
 
 				lobby.Kill();
 				lobbies.RemoveAt(j);
@@ -980,7 +1008,7 @@ public class SynServer
 				//check if that was the last lobby
 				if (lobbies.Count == 0) {
 					//if so, reset the udp port number
-					udpSocketPort = 420;
+					udpSocketPort = udpPortStart;
 				}
 
 				dirty = true;
@@ -990,23 +1018,25 @@ public class SynServer
 			//after all the tcp, do udp stuff if gaming
 			if (lobby.inGame) {
 				try {
-					recv = lobby.udpSocket.ReceiveFrom(buffer, ref lobby.remote);
+					if (lobby.udpSocket.Available > 0) {
+						recv = lobby.udpSocket.ReceiveFrom(buffer, ref lobby.remote);
 
-					tempIPRemote = (IPEndPoint)lobby.remote;
-					if (recv > 0) {
-						//send it to everyone else, ignore the one who sent it, the data should be properly formatted
-						foreach (Player player in lobby.players) {
-							if (tempIPRemote.Port == player.udpEP.Port &&
-								tempIPRemote.Address.GetHashCode() == player.udpEP.Address.GetHashCode())
-							{
-								continue;
+						tempIPRemote = (IPEndPoint)lobby.remote;
+						if (recv > 0) {
+							//send it to everyone else, ignore the one who sent it, the data should be properly formatted
+							foreach (Player player in lobby.players) {
+								//if (tempIPRemote.Port == player.udpEP.Port &&
+								//	tempIPRemote.Address.GetHashCode() == player.udpEP.Address.GetHashCode())
+								if (tempIPRemote.GetHashCode() == player.udpEP.GetHashCode()) {
+									continue;
+								}
+								lobby.udpSocket.SendTo(buffer, recv, SocketFlags.None, player.udpEP);
 							}
-							lobby.udpSocket.SendTo(buffer, recv, SocketFlags.None, player.udpEP);
 						}
-					}
-					tempIPRemote = null;
+						tempIPRemote = null;
 
-					lobby.remote = new IPEndPoint(IPAddress.Any, 0);
+						lobby.remote = new IPEndPoint(IPAddress.Any, 0);
+					}
 				}
 				catch (SocketException sockExcep) {
 					if (sockExcep.SocketErrorCode != SocketError.WouldBlock) {
@@ -1101,7 +1131,8 @@ public class SynServer
 		lobbies.Clear();
 
 		//close all sockets
-		server.Shutdown(SocketShutdown.Both);
+		if (server.Connected)
+			server.Shutdown(SocketShutdown.Both);
 		server.Close();
 	}
 

@@ -19,7 +19,6 @@ public class PlayerDataListener : MonoBehaviour
 		public override int GetHashCode() {	return 0;	}
 	}
 
-	[HideInInspector]
 	[SerializeField] PlayerData target = null;
 
 	[SerializeField] TMP_Text healthNumber;
@@ -53,6 +52,12 @@ public class PlayerDataListener : MonoBehaviour
 		}
 		foreach (GameObject obj in manaObjects) {
 			obj.SetActive(false);
+		}
+
+		if (target) {
+			//also set for possible child
+			GetComponentInChildren<ReturnCardsToHand>()?.SetPlayer(target);
+			GetComponentInChildren<CardGenerator>()?.SetPlayer(target);
 		}
 	}
 

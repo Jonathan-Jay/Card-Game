@@ -14,12 +14,13 @@ public class AudioQueue : MonoBehaviour
 		}
 	}
 
-	public bool empty = false;
+	public AudioSource GetAudioSource(int index) {
+		if (index < 0 || index >= sounds.Count)	return null;
+
+		return sounds[index];
+	}
 
 	public void AddClip(AudioClip clip) {
-		//for dirty checking
-		empty = false;
-
 		foreach (AudioSource source in sounds) {
 			source.clip = clip;
 		}
@@ -39,10 +40,13 @@ public class AudioQueue : MonoBehaviour
 	}
 
 	int lastPlayed = -1;
+	System.Random rand = null;
 	public void PlayRandom()
 	{
+		if (rand == null)
+			rand = new System.Random();
 		//Randomise the track played in the queue (will not play the track that was played last)
-		int newIndex = Random.Range(0, sounds.Count);
+		int newIndex = rand.Next() % sounds.Count;
 		if(newIndex == lastPlayed)
 		{
 			newIndex = (newIndex + 1) % sounds.Count;

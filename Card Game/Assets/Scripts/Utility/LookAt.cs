@@ -36,7 +36,7 @@ public class LookAt : MonoBehaviour
 		}
     }
 
-	void UpdateCam() {
+	public void UpdateCam() {
 		//update the target
 		target = Camera.main.transform;
 		dirtyCheck = Camera.main.transform;

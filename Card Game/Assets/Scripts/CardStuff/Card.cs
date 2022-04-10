@@ -21,13 +21,13 @@ public class Card : MonoBehaviour
 	public bool moving = false;
 
 	//for angular velocity
-	private void Awake() {
+	private void Start() {
 		Rigidbody temp = GetComponent<Rigidbody>();
 		if (temp)
 			temp.maxAngularVelocity = 100f;
 	}
 
-	private void Start() {
+	private void Awake() {
 		if (!defaultMaterial) {
 			defaultMaterial = frontFace.material;
 		}
@@ -99,14 +99,13 @@ public class Card : MonoBehaviour
 	}
 
 	public void CallBackCard() {
-		if (transform.parent == player.hand.transform) return;
-		if (placement)	return;
+		if (!player || transform.parent == player.hand.transform || placement)	return;
 		
 		//put in hand
 		player.hand.ReturnCardToHand(transform);
 	}
 
-	IEnumerator Death() {
+	protected IEnumerator Death() {
 		Release();
 		//in case something tries to move it while dying
 		moving = true;

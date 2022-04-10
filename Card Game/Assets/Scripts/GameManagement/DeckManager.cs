@@ -31,6 +31,7 @@ public class DeckManager : MonoBehaviour
 	Card card;
 
 	[SerializeField]	bool autoShuffle = false;
+	[SerializeField]	List<int> riggedDeck = new List<int>();
 
 	AudioQueue audioPlayer;
 	private void Start() {
@@ -38,6 +39,19 @@ public class DeckManager : MonoBehaviour
 		if (autoShuffle) {
 			ShuffleDeck();
 		}
+		else if (riggedDeck.Count > 0) {
+			List<int> counter = new List<int>(deckOptions.Length);
+			foreach (CardDataMultiplier data in deckOptions) {
+				counter.Add(data.amt);
+			}
+			for (int i = riggedDeck.Count - 1; i >= 0; --i) {
+				//attempt to fill the deck, but not more than it has
+				if (--counter[riggedDeck[i]] >= -1)
+					deck.Push(riggedDeck[i]);
+			}
+		}
+		//don't store in memory
+		riggedDeck = null;
 	}
 
 	public void ShuffleDeck() {

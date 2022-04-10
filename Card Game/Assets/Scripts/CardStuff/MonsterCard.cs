@@ -23,14 +23,9 @@ public class MonsterCard : Card
 	}
 	List<TempEffect> boosts = new List<TempEffect>();
 
-	AudioQueue sounds;
+	[SerializeField] AudioQueue attackSounds;
 
-	//no ondisable tho lol
-	private void OnEnable() {
-		sounds = GetComponent<AudioQueue>();
-	}
-
-	private void Start() {
+	private void Awake() {
 		if (data != null) {
 			SetData(data);
 			if (renderingFace) {
@@ -45,18 +40,27 @@ public class MonsterCard : Card
 		base.SetData(newData);
 		targetable = true;
 
-		if (((MonsterData)data).random) {
-			currAttack = currHealth = int.MaxValue;
+		//don't wanna cast too much
+		MonsterData monData = (MonsterData)data;
+
+		if (monData.random) {
+			if (placement) {
+				SetAttack(Random.Range(monData.attack, monData.attackRMax), Color.black);
+				SetHealth(Random.Range(monData.health, monData.healthRMax), Color.black);
+			}
+			else {
+				currAttack = currHealth = int.MaxValue;
+			}
 		}
 		else {
-			currAttack = ((MonsterData)data).attack;
-			currHealth = ((MonsterData)data).health;
+			currAttack = monData.attack;
+			currHealth = monData.health;
 		}
 		attackMesh.color = Color.black;
 		healthMesh.color = Color.black;
 
-		if (sounds.empty)
-			sounds.AddClip(((MonsterData)data).attackSound);
+		//this is so that we can change a card on the fly, if we want to for some reason
+		attackSounds.AddClip(monData.attackSound);
 	}
 
 	public override void RenderFace() {
@@ -234,7 +238,7 @@ public class MonsterCard : Card
 			SetHealth(currHealth += boostEffect.hpBoost, currHealth > ((MonsterData)data).health ? Color.green : Color.red);
 			//check if they die from this
 			if (currHealth <= 0) {
-				StartCoroutine("Death");
+				StartCoroutine(Death());
 				return;
 			}
 		}
@@ -302,7 +306,7 @@ public class MonsterCard : Card
 		}
 
 		attack.Invoke();
-		sounds.Play();
+		attackSounds.Play();
 
 		while (transform.localPosition != returnPos) {
 			transform.localPosition = Vector3.MoveTowards(transform.localPosition, returnPos,
@@ -341,7 +345,7 @@ public class MonsterCard : Card
 			
 			//doesn't happen
 			//if (newHealth <= 0) {
-			//	StartCoroutine("Death");
+			//	StartCoroutine(Death());
 			//}
 		}
 	}
@@ -372,7 +376,7 @@ public class MonsterCard : Card
 		SetHealth(currHealth - amt, Color.red);
 		if (currHealth <= 0) {
 			//queue death here
-			StartCoroutine("Death");
+			StartCoroutine(Death());
 			return -currHealth;
 		}
 		return -1;

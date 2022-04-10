@@ -47,16 +47,20 @@ public class Mouse : MonoBehaviour {
 
 	bool onValidCard = false;
 	void ColourChange(Transform hit) {
-		if (!hit)	return;
-
 		//if in spell mode
 		if (activeSpells > 0) {
-			CardHolder test = hit.GetComponent<CardHolder>();
-			//if over a monster, it's red
-			if (test && test.holding && test.holding.targetable) {
-				if (!onValidCard) {
-					targettingCursor.material.color = hoverCol;
-					onValidCard = true;
+			if (hit) {
+				CardHolder test = hit.GetComponent<CardHolder>();
+				//if over a monster, it's red
+				if (test && test.holding && test.holding.targetable) {
+					if (!onValidCard) {
+						targettingCursor.material.color = hoverCol;
+						onValidCard = true;
+					}
+				}
+				else if (onValidCard) {
+					targettingCursor.material.color = defaultCol;
+					onValidCard = false;
 				}
 			}
 			else if (onValidCard) {
@@ -66,7 +70,7 @@ public class Mouse : MonoBehaviour {
 		}
 		else {
 			//what do we do when not targetting? anythign interactable
-			if (hit.CompareTag("Interactable")) {
+			if (hit && hit.CompareTag("Interactable")) {
 				if (!onValidCard) {
 					defaultCursor.material.color = hoverCol;
 					onValidCard = true;
@@ -103,19 +107,6 @@ public class Mouse : MonoBehaviour {
 		ignore = val;
 	}
 
-	public void DelayedEnableInput(float delay) {
-		StartCoroutine(DelayedIgnoreSetter(true, delay));
-	}
-
-	public void DelayedIgnoreInput(bool val, float delay = 0.25f) {
-		StartCoroutine(DelayedIgnoreSetter(val, delay));
-	}
-
-	IEnumerator DelayedIgnoreSetter(bool val, float delay) {
-		yield return new WaitForSeconds(delay);
-		ignore = val;
-	}
-
 	public void ForwardHoverEvent(Transform hit) {
 		hoverEvent?.Invoke(hit);
 	}
@@ -126,6 +117,29 @@ public class Mouse : MonoBehaviour {
 
 	public void ForwardReleaseEvent(Transform hit) {
 		releaseEvent?.Invoke(hit);
+	}
+
+	float duration = 0f;
+	float speed = 1f;
+	Vector3 targetPos = Vector3.zero;
+	public void MoveMouse(Vector3 pos, Vector3 velo, float moveDuration) {
+		if (duration <= 0f)
+			StartCoroutine(VeloMoveMouse());
+		duration += moveDuration;
+		targetPos = pos + velo * moveDuration;
+		speed = velo.magnitude;
+		if (speed <= 0f)
+			speed = (pos - mouseObject.position).magnitude / moveDuration;
+	}
+
+	IEnumerator VeloMoveMouse() {
+		do {
+			//want to happen on normal update
+			yield return null;
+			mouseObject.position = Vector3.MoveTowards(mouseObject.position,
+					targetPos, speed * Time.deltaTime);
+			duration -= Time.deltaTime;
+		} while (duration > 0f);
 	}
 
     // Update is called once per frame
@@ -281,6 +295,9 @@ public class Mouse : MonoBehaviour {
 		hit.GetComponent<Rigidbody>().isKinematic = true;
 		cardTest.transform.SetParent(mouseObject, true);
 		Vector3 pos = cardTest.transform.localPosition;
+		if (!ServerManager.CheckIfClient(player, true)) {
+			pos = Vector3.zero;
+		}
 		pos.y = vertOffset;
 		cardTest.transform.localPosition = pos;
 		cardTest.gameObject.layer = ignoredLayer;
@@ -309,9 +326,10 @@ public class Mouse : MonoBehaviour {
 		}
 	}
 
+	public bool cantPlaceCards = false;
 	void ReleaseCardHolder(Transform hit) {
 		//all in one lol
-		if (!holding || !hit || !hit.CompareTag("Interactable"))	return;
+		if (cantPlaceCards || !holding || !hit || !hit.CompareTag("Interactable"))	return;
 
 		CardHolder tempHolder = hit.GetComponent<CardHolder>();
 		if (tempHolder != null && tempHolder.PutCard(holding.GetComponent<Card>())) {

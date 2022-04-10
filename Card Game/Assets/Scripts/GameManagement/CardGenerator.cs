@@ -17,13 +17,19 @@ public class CardGenerator : MonoBehaviour
 	[SerializeField]	Vector3 spawnRot = Vector3.zero;
 
 	private void OnEnable() {
-		GetComponent<PressEventButton>().pressed += GenerateCard;
+		PressEventButton test = GetComponent<PressEventButton>();
+		if (test)
+			test.pressed += GenerateCard;
+
 		if (player)
 			player.startOfTurn += Refresh;
 	}
 
 	private void OnDisable() {
-		GetComponent<PressEventButton>().pressed -= GenerateCard;
+		PressEventButton test = GetComponent<PressEventButton>();
+		if (test)
+			test.pressed -= GenerateCard;
+
 		if (player)
 			player.startOfTurn -= Refresh;
 	}
@@ -43,14 +49,24 @@ public class CardGenerator : MonoBehaviour
 
 	int uses = 0;
 	public void GenerateCard() {
-		if (!player || uses <= 0)	return;
+		if (uses <= 0)	return;
 
-		if (!player.ReduceMana(manaCost))	return;
+		if (player && !player.ReduceMana(manaCost))	return;
 
 		Card card = Instantiate(prefab, transform.position + transform.rotation * spawnOffset,
 			transform.rotation * Quaternion.Euler(spawnRot));
 
 		card.SetData(templateData);
+		if (--uses <= 0) {
+			mesh.material.mainTexture = emptyTexture;
+			text.text = "";
+		}
+
+		if (!player) {
+			card.RenderFace();
+			return;
+		}
+
 		card.player = player;
 
 		player.AddCard(card);
@@ -61,15 +77,10 @@ public class CardGenerator : MonoBehaviour
 
 		//immediately return to hand? yes
 		card.CallBackCard();
-
-		if (--uses <= 0) {
-			mesh.material.mainTexture = emptyTexture;
-			text.text = "";
-		}
 	}
 
 	public void Refresh() {
-		if (player && (player.currentMana >= manaCost)) {
+		if ((player && (player.currentMana >= manaCost)) || !player) {
 			uses = usagesPerTurn;
 			text.text = manaCost.ToString() + "*";
 			mesh.material.mainTexture = templateData.cardArt;

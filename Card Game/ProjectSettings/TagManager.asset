@@ -7,7 +7,6 @@ TagManager:
   - Interactable
   - Player1
   - Player2
-  - CardFront
   layers:
   - Default
   - TransparentFX
@@ -19,7 +18,7 @@ TagManager:
   - Ignored
   - Invisible
   - CardText
-  - 
+  - Spectator
   - 
   - 
   - 

@@ -33,6 +33,11 @@ public class GameController : MonoBehaviour
     void Awake() {
 		if (generateField)
         	Generate();
+		else {
+			//these can't be assigned in code rn
+			player1.turnEndButton.pressed += DoPlayer1Turn;
+			player2.turnEndButton.pressed += DoPlayer2Turn;
+		}
     }
 
 	public void LocalGameStart(bool p1Starts) {
