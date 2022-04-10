@@ -14,6 +14,12 @@ public class AudioQueue : MonoBehaviour
 		}
 	}
 
+	public AudioSource GetAudioSource(int index) {
+		if (index < 0 || index >= sounds.Count)	return null;
+
+		return sounds[index];
+	}
+
 	public void AddClip(AudioClip clip) {
 		foreach (AudioSource source in sounds) {
 			source.clip = clip;

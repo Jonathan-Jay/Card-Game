@@ -225,6 +225,10 @@ public class Client : MonoBehaviour
 					connecting = false;
 				}
 			}
+			catch (Exception e) {
+				Debug.Log(e.ToString());
+			}
+
 			yield return new WaitForEndOfFrame();
 		}
 
@@ -242,6 +246,7 @@ public class Client : MonoBehaviour
 		else {
 			connectingEvent?.Invoke(false, "Failed");
 
+			//client?.Close();
 			client = null;
 		}
 		connecting = false;
@@ -352,8 +357,13 @@ public class Client : MonoBehaviour
 		playerId = -1;
 
 		//release the resource
-		client.Shutdown(SocketShutdown.Both);
+		if (client.Connected)
+			client.Shutdown(SocketShutdown.Both);
 		client.Close();
+
+		if (udpClient.Connected)
+			udpClient.Shutdown(SocketShutdown.Both);
+		udpClient.Close();
 	}
 
 	private void Update() {
