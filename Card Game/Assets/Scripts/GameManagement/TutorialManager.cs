@@ -68,7 +68,12 @@ public class TutorialManager : MonoBehaviour
 
 	IEnumerator DelayedStart(float delay) {
 		yield return new WaitForSeconds(delay);
-		game.LocalGameStart(p1turn);
+		//game.LocalGameStart(p1turn);
+		game.player1.Init(game.startingMana, game.cardsPerTurn);
+		game.player2.Init(game.startingMana, game.cardsPerTurn);
+
+		game.StartDrawCards(true, false);
+
 		yield return new WaitForSeconds((game.startingHandSize + 2) * 0.25f);
 		if (p1turn) {
 			//game.player1.deck.FirstDraw(CheckIfClient(game.player1, true));

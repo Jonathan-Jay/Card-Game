@@ -837,6 +837,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1173937035}
     m_Modifications:
+    - target: {fileID: -8407207310497981122, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: sounds.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109862, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: m_RootOrder
       value: 25
@@ -885,6 +889,18 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 2074309364}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[0].amt
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7326191857588110040, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: m_Name
       value: Deck
@@ -1932,6 +1948,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1173937035}
     m_Modifications:
+    - target: {fileID: -8407207310497981122, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: sounds.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109862, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: m_RootOrder
       value: 14
@@ -1980,6 +2000,18 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 882813107}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[0].amt
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7326191857588110040, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: m_Name
       value: Deck
@@ -2637,10 +2669,10 @@ MonoBehaviour:
     text: This is a test
     scale: {x: 1, y: 0.5, z: 0.1}
     clickToProceed: 1
-  - hoverOver: {fileID: 0}
+  - hoverOver: {fileID: 1406332389}
     offset: {x: 0, y: 1, z: 0}
-    text: This is a test n2
-    scale: {x: 1, y: 0.5, z: 0.1}
+    text: This is the player listener
+    scale: {x: 1.5, y: 0.75, z: 0.1}
     clickToProceed: 1
   client: {fileID: 1017104215}
   game: {fileID: 854140102}
@@ -3345,6 +3377,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c8eb99e78e2279246919db18d68fedd4, type: 3}
   m_PrefabInstance: {fileID: 4663023583519104207}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1406332389 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1443076293330110945, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
+  m_PrefabInstance: {fileID: 1540691382}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1431106695
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3621,7 +3658,7 @@ MonoBehaviour:
   m_fontSizeMax: 20
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 1024
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
