@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Interactable
+  - Player1
+  - Player2
   layers:
   - Default
   - TransparentFX
@@ -14,10 +17,8 @@ TagManager:
   - Card
   - Ignored
   - Invisible
-  - 
-  - 
-  - 
-  - 
+  - CardText
+  - Spectator
   - 
   - 
   - 
