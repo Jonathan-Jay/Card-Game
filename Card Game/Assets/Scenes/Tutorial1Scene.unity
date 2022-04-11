@@ -1966,6 +1966,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59bf6ad0184ad7c468937622abb5c330, type: 3}
+--- !u!4 &819613600 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4233657037377689131, guid: 3fa8119b8dc1241479ce3f22708aff84, type: 3}
+  m_PrefabInstance: {fileID: 1600637581}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &827048118 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 06503ac41ab60464592ccf9791679778, type: 3}
@@ -2877,28 +2882,256 @@ MonoBehaviour:
   lol: {fileID: 1829372919}
   sections:
   - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 1, z: 0}
-    text: the ned
-    scale: {x: 1.5, y: 0.75, z: 0.1}
+    offset: {x: 0, y: 1.5, z: -2.5}
+    text: Welcome to Table Fable's basic tutorial! (Click on this prompt to continue)
+    scale: {x: 1.5, y: 0.7, z: 0.1}
     canEndTurn: 0
-    canPlaceCards: 1
+    canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1.5, z: -2.5}
+    text: In this game you will play monsters and spells to take down your opponent.
+    scale: {x: 2, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: -0.5}
+    text: "You have 4 slots on the board to play cards represented by the tiles closest
+      to you. These tiles are called the \u201CBack Row\u201D. The set of tiles in
+      front of them are called the \u201CFront Line\u201D."
+    scale: {x: 3, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 1815001114}
+    offset: {x: 0.5, y: 1, z: 0.5}
+    text: The red jars represent your health. The jars on the opposite side of the
+      field are your opponent's health.
+    scale: {x: 1.5, y: 0.7, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
     aiIndex: -1
   - hoverOver: {fileID: 0}
     offset: {x: 0, y: 1, z: 0}
-    text: trolled
-    scale: {x: 1.5, y: 0.75, z: 0.1}
+    text: Use the W and S keys to raise or lower the camera to change your view of
+      the table. Lowering it will give you a better view of the cards in your hand.
+    scale: {x: 2.5, y: 0.75, z: 0.1}
     canEndTurn: 0
-    canPlaceCards: 1
+    canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1.6, z: -2.5}
+    text: First, I will teach you about monster cards. Each monster card has 2 stats
+      displayed on the card. Attack power on the left and Health on the right.
+    scale: {x: 2, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: -1}
+    text: "To play a monster card, click and drag a card from your hand to a \u201CBack
+      Row\u201D tile on the field."
+    scale: {x: 3, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 1
+    stepTest: 1
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 1815001114}
+    offset: {x: 1, y: 0.75, z: 0.5}
+    text: If you drop a card on the table, you can click the small card on the left
+      to return all dropped cards to your hand.
+    scale: {x: 2.5, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: -1}
+    text: Good. You can also play other monster cards from your hand as long as you
+      have room on the field. When you are done click, on the bell to end your turn.
+    scale: {x: 3, y: 1.5, z: 0.1}
+    canEndTurn: 1
+    canPlaceCards: 1
+    stepTest: 3
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: 0}
+    text: "When your turn is over, monsters will automatically move forward into
+      the \u201CFront Lines\u201D. Next, monsters will attack the slot directly across
+      from them if it\u2019s not the first turn."
+    scale: {x: 3.5, y: 1.5, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 0.75, z: 0.5}
+    text: "If there is a monster there you will deal damage to their health. If there
+      is no monster then you will damage your opponent\u2019s health directly."
+    scale: {x: 3.5, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 0.75, z: 0.5}
+    text: "Next up is your opponent\u2019s turn. (In local multiplayer, use \u2018Q\u2019
+      to switch cameras)"
+    scale: {x: 2, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 2
+    mirrorPlayer: 0
+    avoidPlayer: 1
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: 0}
+    text: "After your opponent\u2019s turn, their monsters will attack you. Now that
+      it is your turn again, you will draw a card and can play."
+    scale: {x: 2, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 1
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 0.75, z: 0.5}
+    text: "If you wish to get a better look at your opponent\u2019s (or your own)
+      cards before making your next move, hover the cursor over the card and hold
+      the right mouse button."
+    scale: {x: 3, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: -0.5}
+    text: "If a monster is already in play in the \u201CFront Lines\u201D and you
+      play a monster directly behind them, then they will enter a queue. What this
+      means is that as long as the front most monster is alive, then the card behind
+      them will wait and will not attack."
+    scale: {x: 3, y: 1.5, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: -0.5}
+    text: Try playing a monster in the queue now. (Behind your last played card)
+    scale: {x: 3.6, y: 0.5, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 1
+    stepTest: 1
+    mirrorPrevious: 1
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 819613600}
+    offset: {x: -0.75, y: 0.75, z: 0.25}
+    text: Now end your turn.
+    scale: {x: 1.7, y: 0.5, z: 0.1}
+    canEndTurn: 1
+    canPlaceCards: 0
+    stepTest: 3
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: 0}
+    text: Great job! This concludes the basic tutorial. See you next time!
+    scale: {x: 2, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
     aiIndex: -1
   client: {fileID: 1017104215}
   game: {fileID: 854140102}
@@ -3495,7 +3728,7 @@ Transform:
   m_GameObject: {fileID: 1299082517}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 2065736762}
   m_RootOrder: 0
@@ -3926,7 +4159,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sample text
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4057,7 +4290,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 10, y: 5}
+  m_SizeDelta: {x: 5, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &1471308774 stripped
 Transform:
@@ -4852,6 +5085,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1734059834}
   m_CullTransparentMesh: 1
+--- !u!4 &1815001114 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1443076293330110945, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
+  m_PrefabInstance: {fileID: 1540691382}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1825661205
 GameObject:
   m_ObjectHideFlags: 0

@@ -35,6 +35,7 @@ public class TutorialManager : MonoBehaviour
 
 		public OpponentAction aiAction;
 		public bool mirrorPlayer = false;
+		public bool avoidPlayer = false;
 		public int aiIndex = -1;
 	}
 
@@ -185,12 +186,13 @@ public class TutorialManager : MonoBehaviour
 		else
 			tutorialTrans.position = game.transform.position + temp.offset;
 
-		tutorialQuad.localScale = temp.scale;
+		tutorialQuad.localScale = temp.scale + Vector3.right * 0.05f + Vector3.up * 0.05f;
 		tutorialTrans.GetComponent<BoxCollider>().size = temp.scale;
 		tutorialTrans.GetComponent<LookAt>().UpdateCam();
 		tutorialTrans.GetComponent<PressEventButton>().enabled = temp.stepTest == TutorialSection.NextStepTest.CLICKTOPROCEED;
 
 		tutorialText.text = temp.text;
+		tutorialText.rectTransform.sizeDelta = temp.scale * 10f;
 
 		game.player1.turnEndButton.enabled = temp.canEndTurn;
 		game.player1.hand.input.cantPlaceCards = !temp.canPlaceCards;
@@ -199,6 +201,12 @@ public class TutorialManager : MonoBehaviour
 
 		if (temp.mirrorPlayer)
 			temp.aiIndex = lastPlayedIndex;
+
+		if (temp.avoidPlayer) {
+			do {
+				temp.aiIndex = Random.Range(0, game.player1.backLine.Count);
+			} while (temp.aiIndex == lastPlayedIndex);
+		}
 
 		if (temp.mirrorPrevious) {
 			temp.stepTestIndex = lastPlayedIndex;
@@ -215,14 +223,14 @@ public class TutorialManager : MonoBehaviour
 			default:	return;
 
 			case TutorialSection.OpponentAction.ENDTURN:
-				StartCoroutine(DelayedFunc(game.player2.turnEndButton.Press, 2f));
+				StartCoroutine(DelayedFunc(game.player2.turnEndButton.Press, 1f));
 				return;
 
 			case TutorialSection.OpponentAction.PLACECARD:
 				int index = temp.aiIndex;
 
 				if (index < 0)
-					index = Random.Range(0, game.player2.heldCards.Count);
+					index = Random.Range(0, game.player2.backLine.Count);
 
 				int attempts = 10;
 				while (!game.player2.backLine[index].PutCard(game.player2.heldCards[0])) {
@@ -230,7 +238,7 @@ public class TutorialManager : MonoBehaviour
 					if (--attempts < 0)
 						break;
 
-					index = Random.Range(0, game.player2.heldCards.Count);
+					index = Random.Range(0, game.player2.backLine.Count);
 				}
 				return;
 		}
@@ -273,8 +281,8 @@ public class TutorialManager : MonoBehaviour
 			p1bell.material.color = defaultBellCol;
 		}
 
-		if (sections[currentSection].stepTest == TutorialSection.NextStepTest.CLICKBELL
-			|sections[currentSection].aiAction == TutorialSection.OpponentAction.ENDTURN)
+		if (sections[currentSection].stepTest == TutorialSection.NextStepTest.CLICKBELL)
+			//sections[currentSection].aiAction == TutorialSection.OpponentAction.ENDTURN)
 			IncrementIndex();
 	}
 }
