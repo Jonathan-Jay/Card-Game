@@ -8,6 +8,7 @@ public class Mouse : MonoBehaviour {
     public MeshRenderer targettingCursor;
 	public Color defaultCol = Color.green;
 	public Color hoverCol = Color.red;
+	public Color cancelCol = Color.yellow;
 	public PlayerData player;
 	public bool disabled = false;
     public float maxDist = 0f;
@@ -45,40 +46,49 @@ public class Mouse : MonoBehaviour {
 		hoverEvent -= ColourChange;
 	}
 
-	bool onValidCard = false;
+	int currentCol = 0;
 	void ColourChange(Transform hit) {
 		//if in spell mode
 		if (activeSpells > 0) {
 			if (hit) {
 				CardHolder test = hit.GetComponent<CardHolder>();
 				//if over a monster, it's red
-				if (test && test.holding && test.holding.targetable) {
-					if (!onValidCard) {
-						targettingCursor.material.color = hoverCol;
-						onValidCard = true;
+				if (test) {
+					//if nto actually placed, sacrificed card
+					if (test.holding && !test.holding.placed) {
+						if (currentCol != 2) {
+							targettingCursor.material.color = cancelCol;
+							currentCol = 2;
+						}
+					}
+					else if (test.holding && test.holding.targetable) {
+						if (currentCol != 1) {
+							targettingCursor.material.color = hoverCol;
+							currentCol = 1;
+						}
 					}
 				}
-				else if (onValidCard) {
+				else if (currentCol != 0) {
 					targettingCursor.material.color = defaultCol;
-					onValidCard = false;
+					currentCol = 0;
 				}
 			}
-			else if (onValidCard) {
+			else if (currentCol != 0) {
 				targettingCursor.material.color = defaultCol;
-				onValidCard = false;
+				currentCol = 0;
 			}
 		}
 		else {
 			//what do we do when not targetting? anythign interactable
 			if (hit && hit.CompareTag("Interactable")) {
-				if (!onValidCard) {
+				if (currentCol != 1) {
 					defaultCursor.material.color = hoverCol;
-					onValidCard = true;
+					currentCol = 1;
 				}
 			}
-			else if (onValidCard) {
+			else if (currentCol != 0) {
 				defaultCursor.material.color = defaultCol;
-				onValidCard = false;
+				currentCol = 0;
 			}
 		}
 	}

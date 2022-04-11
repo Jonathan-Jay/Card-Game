@@ -93,6 +93,7 @@ MonoBehaviour:
   canDraw: 0
   damageAudioPlayer: {fileID: 0}
   healAudioPlayer: {fileID: 0}
+  lastPlayedIndex: -1
 --- !u!1 &1490228982155700937
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,6 +188,7 @@ MonoBehaviour:
   targettingCursor: {fileID: 2379069872909862507}
   defaultCol: {r: 0, g: 1, b: 0, a: 1}
   hoverCol: {r: 1, g: 0, b: 0, a: 1}
+  cancelCol: {r: 1, g: 0.52351147, b: 0.45490193, a: 1}
   player: {fileID: 1490228982075256587}
   disabled: 0
   maxDist: 10
@@ -195,6 +197,7 @@ MonoBehaviour:
   invisibleLayer: 8
   cardLayer: 6
   holding: {fileID: 0}
+  cantPlaceCards: 0
 --- !u!114 &1490228982155700942
 MonoBehaviour:
   m_ObjectHideFlags: 0

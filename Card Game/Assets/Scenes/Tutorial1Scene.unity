@@ -1069,17 +1069,57 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2074309364}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: riggedDeck.Array.size
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: deckOptions.Array.size
+      propertyPath: autoShuffle
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: deckOptions.Array.data[0].amt
-      value: 100
+      propertyPath: deckOptions.Array.size
+      value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[0].amt
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[1].amt
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[2].amt
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[3].amt
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[4].amt
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[5].amt
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[1].data
+      value: 
+      objectReference: {fileID: 11400000, guid: eb03304f94b6b3748b48932e2136c543, type: 2}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[2].data
+      value: 
+      objectReference: {fileID: 11400000, guid: 428a80920c2bb11469f0852877a130c4, type: 2}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[3].data
+      value: 
+      objectReference: {fileID: 11400000, guid: b6c5892b888ffea4997d2e056e9045d2, type: 2}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[4].data
+      value: 
+      objectReference: {fileID: 11400000, guid: c62b9be75672bfc41b7132b39f1cc8c4, type: 2}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[5].data
+      value: 
+      objectReference: {fileID: 11400000, guid: 70e3a127471acdc4dadf7c8f36267fb2, type: 2}
     - target: {fileID: 7326191857588110040, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: m_Name
       value: Deck
@@ -2197,37 +2237,53 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 882813107}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: riggedDeck.Array.size
-      value: 10
+      propertyPath: autoShuffle
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: riggedDeck.Array.data[2]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: riggedDeck.Array.data[6]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: riggedDeck.Array.data[7]
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[0].amt
-      value: 100
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[1].amt
-      value: 2
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[2].amt
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[3].amt
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[4].amt
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[5].amt
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[1].data
       value: 
-      objectReference: {fileID: 11400000, guid: a5ba82881812ccf4987223c7f1a3cf45, type: 2}
+      objectReference: {fileID: 11400000, guid: eb03304f94b6b3748b48932e2136c543, type: 2}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[2].data
+      value: 
+      objectReference: {fileID: 11400000, guid: 428a80920c2bb11469f0852877a130c4, type: 2}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[4].data
+      value: 
+      objectReference: {fileID: 11400000, guid: c62b9be75672bfc41b7132b39f1cc8c4, type: 2}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[5].data
+      value: 
+      objectReference: {fileID: 11400000, guid: 70e3a127471acdc4dadf7c8f36267fb2, type: 2}
     - target: {fileID: 7326191857588110040, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: m_Name
       value: Deck
@@ -2661,7 +2717,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7719684052432154254, guid: c16bfda6d5bc3064eb65d727f16840c0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7719684052440016480, guid: c16bfda6d5bc3064eb65d727f16840c0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -5067,7 +5123,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: dee46c84f30ea8743a240f7d26a4b876, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1

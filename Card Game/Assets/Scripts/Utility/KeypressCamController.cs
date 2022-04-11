@@ -17,6 +17,8 @@ public class KeypressCamController : MonoBehaviour
 	{
 		if (ignore)	return;
 
+		//mouse position check?
+
 		if (Input.GetKeyDown(KeyCode.W)) {
 			cam.IncrementIndex(looping);
 		}

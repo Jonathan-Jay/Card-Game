@@ -35,7 +35,9 @@ public class SpellCard : Card
 
 		costMesh.text = (data.cost) + "*";
 
-		flavourTextMesh.text = data.flavourText;
+		flavourTextMesh.gameObject.SetActive(data.flavourText != "");
+		if (flavourTextMesh.gameObject.activeInHierarchy)
+			flavourTextMesh.text = data.flavourText;
 
 		//dirty flag
 		renderingFace = true;

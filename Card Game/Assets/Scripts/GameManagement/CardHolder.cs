@@ -18,6 +18,7 @@ public class CardHolder : MonoBehaviour
 	public string interactableTag= "Interactable";
 	public int defaultCardLayer = 6;
 
+	[SerializeField] protected ParticleSystem slamParticles;
 	protected AudioQueue audioPlayer;
 	private void Awake() {
 		audioPlayer = GetComponent<AudioQueue>();
@@ -122,6 +123,7 @@ public class CardHolder : MonoBehaviour
 				holding.OnPlace(playerData, opposingData);
 			cardTrans.localPosition = floatingHeight;
 			
+			slamParticles.Play();
 			//play the sound
 			audioPlayer?.Play();
 		}

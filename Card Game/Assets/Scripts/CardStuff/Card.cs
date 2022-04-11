@@ -22,9 +22,7 @@ public class Card : MonoBehaviour
 
 	//for angular velocity
 	private void Start() {
-		Rigidbody temp = GetComponent<Rigidbody>();
-		if (temp)
-			temp.maxAngularVelocity = 100f;
+		GetComponent<Rigidbody>().maxAngularVelocity = 100f;
 	}
 
 	private void Awake() {
@@ -55,7 +53,9 @@ public class Card : MonoBehaviour
 
 		costMesh.text = "Lv. " + (data.cost  + 1);
 
-		flavourTextMesh.text = data.flavourText;
+		flavourTextMesh.gameObject.SetActive(data.flavourText != "");
+		if (flavourTextMesh.gameObject.activeInHierarchy)
+			flavourTextMesh.text = data.flavourText;
 
 		//dirty flag
 		renderingFace = true;
@@ -75,18 +75,23 @@ public class Card : MonoBehaviour
 		renderingFace = false;
 	}
 
+	public bool placed = false;
 	public virtual void OnPlace(PlayerData current, PlayerData opposing) {
 		//render most cards
 		RenderFace();
 		
 		//also remove from hand
 		current.RemoveCard(this);
+
+		//only when OnPlace is called please
+		placed = true;
 	}
 
 	public void Release() {
 		if (placement != null) {
 			placement.UnLink();
 			placement = null;
+			placed = false;
 		}
 
 		if (transform.parent)
