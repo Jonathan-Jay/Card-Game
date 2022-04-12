@@ -182,7 +182,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds: []
-  empty: 0
 --- !u!1001 &9071505420711450409
 PrefabInstance:
   m_ObjectHideFlags: 0

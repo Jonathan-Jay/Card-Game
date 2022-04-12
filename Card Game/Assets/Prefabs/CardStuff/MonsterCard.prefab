@@ -342,7 +342,48 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1185992841981481392}
   m_maskType: 0
---- !u!82 &4045167820182724411
+--- !u!114 &4927160011221335715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370026185277705448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb1bdac9b243b1e4fa96578fb8e68295, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placement: {fileID: 0}
+  data: {fileID: 0}
+  player: {fileID: 0}
+  renderingFace: 0
+  targetable: 0
+  frontFace: {fileID: 8308973208609000700}
+  nameMesh: {fileID: 4316719185209386507}
+  costMesh: {fileID: 2060783283286803296}
+  flavourTextMesh: {fileID: 487709919321333428}
+  moving: 0
+  attackMesh: {fileID: 8797157165809492266}
+  healthMesh: {fileID: 5406184301356650649}
+  currHealth: 0
+  currAttack: 0
+  attackSounds: {fileID: 7855715080781974253}
+--- !u!114 &7855715080781974253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370026185277705448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e1cbfa52de400247a5fb13ce3919589, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - {fileID: 3178062395801338570}
+--- !u!82 &3178062395801338570
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -353,7 +394,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -438,48 +479,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4927160011221335715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370026185277705448}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb1bdac9b243b1e4fa96578fb8e68295, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  placement: {fileID: 0}
-  data: {fileID: 0}
-  player: {fileID: 0}
-  renderingFace: 0
-  targetable: 0
-  frontFace: {fileID: 8308973208609000700}
-  nameMesh: {fileID: 4316719185209386507}
-  costMesh: {fileID: 2060783283286803296}
-  flavourTextMesh: {fileID: 487709919321333428}
-  moving: 0
-  attackMesh: {fileID: 8797157165809492266}
-  healthMesh: {fileID: 5406184301356650649}
-  currHealth: 0
-  currAttack: 0
-  attackSounds: {fileID: 7855715080781974253}
---- !u!114 &7855715080781974253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370026185277705448}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1cbfa52de400247a5fb13ce3919589, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sounds:
-  - {fileID: 4045167820182724411}
-  empty: 1
 --- !u!1001 &7991054928470248549
 PrefabInstance:
   m_ObjectHideFlags: 0

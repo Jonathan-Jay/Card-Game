@@ -12,6 +12,7 @@ public class HandManager : MonoBehaviour
 	public float splayOriginOffset = 3f;
 	public float hoverHeight = 0.1f;
 	public float cardTilt = 10f;
+	public AudioQueue audioPlayer;
 	float splayDegree = 15f;
 	public int splaySelectEmptiness = 3;
 	public int splaySelectIndex = -1;
@@ -108,6 +109,12 @@ public class HandManager : MonoBehaviour
 			transitionData[i].targetPos = basePos + Quaternion.AngleAxis(splayDegree * (effectiveCard - temp), Vector3.up) * inverseBase;
 			//transform.GetChild(i).localRotation = Quaternion.Euler(0f, splayDegree * (effectiveCard - temp), tilt);
 			transitionData[i].targetRot = Quaternion.Euler(0f, splayDegree * (effectiveCard - temp), tilt);
+
+		}
+		if(splaySelectIndex != -1)
+		{
+			audioPlayer.PlayRandom();
+			//Debug.Log("Sound played");
 		}
 
 		if (!transitioning) {
