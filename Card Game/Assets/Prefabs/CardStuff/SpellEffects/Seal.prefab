@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6341679989347176843}
   - component: {fileID: 3059895186131061907}
+  - component: {fileID: 4321136764659035571}
   - component: {fileID: 8857628591965841689}
-  - component: {fileID: 6601482207254468186}
   - component: {fileID: -3727252990489680504}
   - component: {fileID: 3639878179748226033}
   m_Layer: 0
@@ -4742,6 +4742,20 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &4321136764659035571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8967329845126456805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ce401a105fe37d4bad70b7029c06333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.5
+  deathDelay: 0.25
 --- !u!199 &8857628591965841689
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -4809,20 +4823,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &6601482207254468186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8967329845126456805}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9addd9125efdc9148a0e5372e915f850, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  duration: 0.5
-  deathDelay: 0.25
 --- !u!82 &-3727252990489680504
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4832,7 +4832,7 @@ AudioSource:
   m_GameObject: {fileID: 8967329845126456805}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1410572022014993937, guid: 8913019f04f708a449fada98239334d0, type: 2}
   m_audioClip: {fileID: 8300000, guid: 615ed204c6ac32f41a5ee1b10d602f12, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1

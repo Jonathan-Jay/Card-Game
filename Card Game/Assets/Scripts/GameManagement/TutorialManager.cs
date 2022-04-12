@@ -25,6 +25,7 @@ public class TutorialManager : MonoBehaviour
 
 		public NextStepTest stepTest;
 		public bool mirrorPrevious = false;
+		public bool clearLastPlayed = false;
 		public int stepTestIndex = -1;
 
 		public enum OpponentAction {
@@ -35,12 +36,13 @@ public class TutorialManager : MonoBehaviour
 
 		public OpponentAction aiAction;
 		public bool mirrorPlayer = false;
+		public bool avoidPlayer = false;
 		public int aiIndex = -1;
 	}
 
 	public FodderRain lol;
 	public List<TutorialSection> sections = new List<TutorialSection>();
-	int currentSection = 0;
+	public int currentSection = 0;
 	public Client client;
 	public GameController game;
 	public Mouse p1mouse;
@@ -185,12 +187,13 @@ public class TutorialManager : MonoBehaviour
 		else
 			tutorialTrans.position = game.transform.position + temp.offset;
 
-		tutorialQuad.localScale = temp.scale;
+		tutorialQuad.localScale = temp.scale + Vector3.right * 0.1f + Vector3.up * 0.1f;
 		tutorialTrans.GetComponent<BoxCollider>().size = temp.scale;
 		tutorialTrans.GetComponent<LookAt>().UpdateCam();
 		tutorialTrans.GetComponent<PressEventButton>().enabled = temp.stepTest == TutorialSection.NextStepTest.CLICKTOPROCEED;
 
 		tutorialText.text = temp.text;
+		tutorialText.rectTransform.sizeDelta = temp.scale * 10f;
 
 		game.player1.turnEndButton.enabled = temp.canEndTurn;
 		game.player1.hand.input.cantPlaceCards = !temp.canPlaceCards;
@@ -200,29 +203,36 @@ public class TutorialManager : MonoBehaviour
 		if (temp.mirrorPlayer)
 			temp.aiIndex = lastPlayedIndex;
 
-		if (temp.mirrorPrevious) {
-			temp.stepTestIndex = lastPlayedIndex;
-			lastPlayedIndex = -1;
-			game.player1.lastPlayedIndex = -1;
+		if (temp.avoidPlayer) {
+			do {
+				temp.aiIndex = Random.Range(0, game.player1.backLine.Count);
+			} while (temp.aiIndex == lastPlayedIndex);
 		}
 
-		if (temp.stepTest == TutorialSection.NextStepTest.DELAY) {
-			StartCoroutine(DelayedFunc(IncrementIndex, temp.stepTestIndex));
+		if (temp.mirrorPrevious) {
+			temp.stepTestIndex = lastPlayedIndex;
+			lastPlayedIndex = game.player1.lastPlayedIndex = -1;
 		}
+
+		if (temp.clearLastPlayed)
+			lastPlayedIndex = game.player1.lastPlayedIndex = -1;
+
+		if (temp.stepTest == TutorialSection.NextStepTest.DELAY)
+			StartCoroutine(DelayedFunc(IncrementIndex, temp.stepTestIndex));
 
 		//do ai things
 		switch (temp.aiAction) {
 			default:	return;
 
 			case TutorialSection.OpponentAction.ENDTURN:
-				StartCoroutine(DelayedFunc(game.player2.turnEndButton.Press, 2f));
+				StartCoroutine(DelayedFunc(game.player2.turnEndButton.Press, 1.5f));
 				return;
 
 			case TutorialSection.OpponentAction.PLACECARD:
 				int index = temp.aiIndex;
 
 				if (index < 0)
-					index = Random.Range(0, game.player2.heldCards.Count);
+					index = Random.Range(0, game.player2.backLine.Count);
 
 				int attempts = 10;
 				while (!game.player2.backLine[index].PutCard(game.player2.heldCards[0])) {
@@ -230,7 +240,7 @@ public class TutorialManager : MonoBehaviour
 					if (--attempts < 0)
 						break;
 
-					index = Random.Range(0, game.player2.heldCards.Count);
+					index = Random.Range(0, game.player2.backLine.Count);
 				}
 				return;
 		}
@@ -273,8 +283,8 @@ public class TutorialManager : MonoBehaviour
 			p1bell.material.color = defaultBellCol;
 		}
 
-		if (sections[currentSection].stepTest == TutorialSection.NextStepTest.CLICKBELL
-			|sections[currentSection].aiAction == TutorialSection.OpponentAction.ENDTURN)
+		if (sections[currentSection].stepTest == TutorialSection.NextStepTest.CLICKBELL)
+			//sections[currentSection].aiAction == TutorialSection.OpponentAction.ENDTURN)
 			IncrementIndex();
 	}
 }

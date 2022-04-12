@@ -52,7 +52,9 @@ public class CardAttacker : CardHolder
 			if (callPlace)
 				holding.OnPlace(playerData, opposingData);
 			cardTrans.localPosition = floatingHeight;
-			
+
+			slamParticles.Play();
+
 			//play the sound
 			audioPlayer?.Play();
 		}

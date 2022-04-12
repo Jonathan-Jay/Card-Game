@@ -25,4 +25,4 @@ MonoBehaviour:
   abilityParameter1: 2
   abilityParameter2: 0
   abilityParameter3: 0
-  effect: {fileID: -7501756154870324049, guid: 65c6af3ee79b6b240810d9b8adb33669, type: 3}
+  effect: {fileID: 8285071970576054480, guid: b2c2d44887fded2469dcff1b888592d0, type: 3}

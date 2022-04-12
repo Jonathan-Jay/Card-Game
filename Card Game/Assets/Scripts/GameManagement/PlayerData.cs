@@ -23,6 +23,7 @@ public class PlayerData : MonoBehaviour {
 	public event System.Action<int> manaUpdated;
 	public event System.Action drawCard;
 	public event System.Action startOfTurn;
+	public event System.Action endOfTurn;
 
 	public AudioQueue damageAudioPlayer;
 	public AudioQueue healAudioPlayer;
@@ -79,6 +80,8 @@ public class PlayerData : MonoBehaviour {
 			//if they bug this out
 			canDraw = Mathf.Max(maxCards - heldCards.Count, 0);
 		}
+
+		endOfTurn?.Invoke();
 
 		//clamp this
 		drawCard?.Invoke();

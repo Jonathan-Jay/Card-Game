@@ -15,14 +15,17 @@ public class CardGenerator : MonoBehaviour
 	[SerializeField]	int usagesPerTurn = 1;
 	[SerializeField]	Vector3 spawnOffset = Vector3.back * 0.5f + Vector3.up * 0.1f;
 	[SerializeField]	Vector3 spawnRot = Vector3.zero;
+	[SerializeField]	AudioQueue audioPlayer;
 
 	private void OnEnable() {
 		PressEventButton test = GetComponent<PressEventButton>();
 		if (test)
 			test.pressed += GenerateCard;
 
-		if (player)
+		if (player) {
 			player.startOfTurn += Refresh;
+			player.manaUpdated += HideTest;
+		}
 	}
 
 	private void OnDisable() {
@@ -30,8 +33,10 @@ public class CardGenerator : MonoBehaviour
 		if (test)
 			test.pressed -= GenerateCard;
 
-		if (player)
+		if (player) {
 			player.startOfTurn -= Refresh;
+			player.manaUpdated -= HideTest;
+		}
 	}
 
 	private void Start() {
@@ -41,8 +46,10 @@ public class CardGenerator : MonoBehaviour
 	public void SetPlayer(PlayerData newPlayer) {
 		player = newPlayer;
 		GetComponent<PressEventButton>().player = player;
-		if (player)
+		if (player) {
 			player.startOfTurn += Refresh;
+			player.manaUpdated += HideTest;
+		}
 
 		Refresh();
 	}
@@ -61,6 +68,8 @@ public class CardGenerator : MonoBehaviour
 			mesh.material.mainTexture = emptyTexture;
 			text.text = "";
 		}
+
+		audioPlayer?.PlayRandom();
 
 		if (!player) {
 			card.RenderFace();
@@ -82,12 +91,24 @@ public class CardGenerator : MonoBehaviour
 	public void Refresh() {
 		if ((player && (player.currentMana >= manaCost)) || !player) {
 			uses = usagesPerTurn;
+		}
+		HideTest(0);
+	}
+
+	public void EmptyUses() {
+		uses = 0;
+
+		HideTest(0);
+	}
+
+	public void HideTest(int prevVal) {
+		if (uses > 0 && ((player && (player.currentMana >= manaCost)) || !player)) {
 			text.text = manaCost.ToString() + "*";
 			mesh.material.mainTexture = templateData.cardArt;
 		}
 		else {
-			mesh.material.mainTexture = emptyTexture;
 			text.text = "";
+			mesh.material.mainTexture = emptyTexture;
 		}
 	}
 }
