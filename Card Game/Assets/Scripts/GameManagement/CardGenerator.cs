@@ -93,7 +93,7 @@ public class CardGenerator : MonoBehaviour
 	}
 
 	public void HideTest(int prevVal) {
-		if (uses > 0 && player.currentMana >= manaCost) {
+		if (uses > 0 && ((player && (player.currentMana >= manaCost)) || !player)) {
 			text.text = manaCost.ToString() + "*";
 			mesh.material.mainTexture = templateData.cardArt;
 		}
