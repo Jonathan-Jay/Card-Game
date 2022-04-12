@@ -21,4 +21,4 @@ MonoBehaviour:
   healthRMax: 0
   attackRMax: 0
   random: 0
-  attackSound: {fileID: 8300000, guid: 660b0b07770fab646872cffb77aa39d0, type: 3}
+  attackSound: {fileID: 8300000, guid: 519082b0c0b70d74b9a3bd874f2933d9, type: 3}

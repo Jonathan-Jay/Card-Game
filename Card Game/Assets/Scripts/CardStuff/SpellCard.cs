@@ -7,6 +7,8 @@ public class SpellCard : Card
 {
 	[SerializeField] protected TMP_Text descriptionMesh;
 
+	public AudioQueue audioPlayer;
+
 	private void Awake() {
 		if (data != null) {
 			SetData(data);
@@ -119,6 +121,7 @@ public class SpellCard : Card
 		//just in case
 		moving = true;
 		//cast spell should take card of this
+		audioPlayer.PlayIndex(0);
 		((SpellData)data).CastSpell(this, target, newIndex);
 	}
 

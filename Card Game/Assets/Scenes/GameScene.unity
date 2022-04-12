@@ -3431,7 +3431,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2117570409}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.769806, y: -10.551569, z: 4.483631}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3446,7 +3446,7 @@ AudioSource:
   m_GameObject: {fileID: 2117570409}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8200131164879765064, guid: 8913019f04f708a449fada98239334d0, type: 2}
   m_audioClip: {fileID: 8300000, guid: 47f8de6c3a8fef446a07eec1e631b680, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -3542,7 +3542,7 @@ AudioSource:
   m_GameObject: {fileID: 2117570409}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8200131164879765064, guid: 8913019f04f708a449fada98239334d0, type: 2}
   m_audioClip: {fileID: 8300000, guid: 11cdc7f3abfb6db4f943050d7bb0a600, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -3638,7 +3638,7 @@ AudioSource:
   m_GameObject: {fileID: 2117570409}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8200131164879765064, guid: 8913019f04f708a449fada98239334d0, type: 2}
   m_audioClip: {fileID: 8300000, guid: 451760b61d9a44d4097ad0adf04b328d, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -3734,7 +3734,7 @@ AudioSource:
   m_GameObject: {fileID: 2117570409}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8200131164879765064, guid: 8913019f04f708a449fada98239334d0, type: 2}
   m_audioClip: {fileID: 8300000, guid: 6a717717ef0638247ba7ca371e0f55cb, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -3938,6 +3938,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2175967254876581905, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2175967254876581905, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2175967254876581905, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2527519482776816820, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4036,6 +4048,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3314563582720445635, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
       propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6406146412972277176, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6406146412972277176, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8182747304997954403, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8182747304997954403, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8182747304997954403, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9080797169040489410, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9080797169040489410, guid: 5594f19a2e8a4f04fae6f223a6048488, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
