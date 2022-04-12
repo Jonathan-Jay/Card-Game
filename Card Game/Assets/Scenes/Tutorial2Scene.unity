@@ -3320,7 +3320,7 @@ MonoBehaviour:
     aiIndex: -1
   - hoverOver: {fileID: 1815001114}
     offset: {x: 2, y: 1, z: 0}
-    text: The side deck is the small white card on the left hand side of the table.
+    text: The side deck is the small blank card on the left hand side of the table.
       By spending 2 mana points, you can draw on Lv 1 monster once per turn.
     scale: {x: 3, y: 1, z: 0.1}
     canEndTurn: 0
@@ -3379,7 +3379,8 @@ MonoBehaviour:
     aiIndex: -1
   - hoverOver: {fileID: 0}
     offset: {x: 0, y: 1, z: -0.5}
-    text: As you saw, the texture changes depending on your mana, so keep watch.
+    text: "As you saw, it\u2019s blank when you don\u2019t have enough mana, so keep
+      watch."
     scale: {x: 2.8, y: 0.4, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 0
