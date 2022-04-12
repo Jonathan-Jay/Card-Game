@@ -86,19 +86,18 @@ public class CardGenerator : MonoBehaviour
 	}
 
 	public void Refresh() {
-		if ((player && (usagesPerTurn > 0) && (player.currentMana >= manaCost)) || !player) {
+		if ((player && (player.currentMana >= manaCost)) || !player) {
 			uses = usagesPerTurn;
+		}
+		HideTest(0);
+	}
+
+	public void HideTest(int prevVal) {
+		if (uses > 0 && player.currentMana >= manaCost) {
 			text.text = manaCost.ToString() + "*";
 			mesh.material.mainTexture = templateData.cardArt;
 		}
 		else {
-			text.text = "";
-			mesh.material.mainTexture = emptyTexture;
-		}
-	}
-
-	public void HideTest(int prevVal) {
-		if (uses > 0 && player.currentMana < manaCost) {
 			text.text = "";
 			mesh.material.mainTexture = emptyTexture;
 		}
