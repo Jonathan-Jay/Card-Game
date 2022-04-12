@@ -21,8 +21,10 @@ public class CardGenerator : MonoBehaviour
 		if (test)
 			test.pressed += GenerateCard;
 
-		if (player)
+		if (player) {
 			player.startOfTurn += Refresh;
+			player.manaUpdated += HideTest;
+		}
 	}
 
 	private void OnDisable() {
@@ -30,8 +32,10 @@ public class CardGenerator : MonoBehaviour
 		if (test)
 			test.pressed -= GenerateCard;
 
-		if (player)
+		if (player) {
 			player.startOfTurn -= Refresh;
+			player.manaUpdated -= HideTest;
+		}
 	}
 
 	private void Start() {
@@ -41,8 +45,10 @@ public class CardGenerator : MonoBehaviour
 	public void SetPlayer(PlayerData newPlayer) {
 		player = newPlayer;
 		GetComponent<PressEventButton>().player = player;
-		if (player)
+		if (player) {
 			player.startOfTurn += Refresh;
+			player.manaUpdated += HideTest;
+		}
 
 		Refresh();
 	}
@@ -80,14 +86,21 @@ public class CardGenerator : MonoBehaviour
 	}
 
 	public void Refresh() {
-		if ((player && (player.currentMana >= manaCost)) || !player) {
+		if ((player && (usagesPerTurn > 0) && (player.currentMana >= manaCost)) || !player) {
 			uses = usagesPerTurn;
 			text.text = manaCost.ToString() + "*";
 			mesh.material.mainTexture = templateData.cardArt;
 		}
 		else {
-			mesh.material.mainTexture = emptyTexture;
 			text.text = "";
+			mesh.material.mainTexture = emptyTexture;
+		}
+	}
+
+	public void HideTest(int prevVal) {
+		if (uses > 0 && player.currentMana < manaCost) {
+			text.text = "";
+			mesh.material.mainTexture = emptyTexture;
 		}
 	}
 }

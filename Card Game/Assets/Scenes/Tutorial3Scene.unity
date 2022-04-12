@@ -1070,23 +1070,147 @@ PrefabInstance:
       objectReference: {fileID: 2074309364}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: autoShuffle
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: riggedDeck.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.size
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.size
-      value: 6
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[1]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[2]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[3]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[4]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[5]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[6]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[7]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[8]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[9]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[10]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[19]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[20]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[21]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[22]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[23]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[24]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[25]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[26]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[27]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[28]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[29]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[30]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[31]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[32]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[33]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[34]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[35]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[36]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[37]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[38]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[39]
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[0].amt
-      value: 10
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[1].amt
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[2].amt
@@ -1102,28 +1226,32 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[5].amt
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: deckOptions.Array.data[1].data
+      propertyPath: deckOptions.Array.data[0].data
       value: 
       objectReference: {fileID: 11400000, guid: eb03304f94b6b3748b48932e2136c543, type: 2}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[1].data
+      value: 
+      objectReference: {fileID: 11400000, guid: 7890edb8cfb367a43af2407aa45f67fc, type: 2}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[2].data
       value: 
-      objectReference: {fileID: 11400000, guid: 428a80920c2bb11469f0852877a130c4, type: 2}
+      objectReference: {fileID: 11400000, guid: 02ae4e3b26463b545bb92ce83e6578db, type: 2}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[3].data
       value: 
-      objectReference: {fileID: 11400000, guid: b6c5892b888ffea4997d2e056e9045d2, type: 2}
+      objectReference: {fileID: 11400000, guid: 487bfb251922f574584ff1c9f3ac8808, type: 2}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[4].data
       value: 
-      objectReference: {fileID: 11400000, guid: c62b9be75672bfc41b7132b39f1cc8c4, type: 2}
+      objectReference: {fileID: 11400000, guid: fe3b9b9fab972714d938fbfa548f5815, type: 2}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[5].data
       value: 
-      objectReference: {fileID: 11400000, guid: 70e3a127471acdc4dadf7c8f36267fb2, type: 2}
+      objectReference: {fileID: 11400000, guid: 5b0c831435bc9aa48bcf0f30fe63d708, type: 2}
     - target: {fileID: 7326191857588110040, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: m_Name
       value: Deck
@@ -2242,27 +2370,139 @@ PrefabInstance:
       objectReference: {fileID: 882813107}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: autoShuffle
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: riggedDeck.Array.size
-      value: 0
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.size
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
-      propertyPath: riggedDeck.Array.data[2]
+      propertyPath: riggedDeck.Array.data[1]
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[2]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[3]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[4]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[5]
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: riggedDeck.Array.data[6]
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: riggedDeck.Array.data[7]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[8]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[9]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[10]
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[19]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[20]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[21]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[22]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[23]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[24]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[25]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[26]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[27]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[28]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[29]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[30]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[31]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[32]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[33]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[34]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[35]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[36]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[37]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[38]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: riggedDeck.Array.data[39]
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[0].amt
@@ -2270,7 +2510,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[1].amt
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[2].amt
@@ -2286,24 +2526,32 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[5].amt
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[0].data
+      value: 
+      objectReference: {fileID: 11400000, guid: b6c5892b888ffea4997d2e056e9045d2, type: 2}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[1].data
       value: 
-      objectReference: {fileID: 11400000, guid: eb03304f94b6b3748b48932e2136c543, type: 2}
+      objectReference: {fileID: 11400000, guid: 7890edb8cfb367a43af2407aa45f67fc, type: 2}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[2].data
       value: 
-      objectReference: {fileID: 11400000, guid: 428a80920c2bb11469f0852877a130c4, type: 2}
+      objectReference: {fileID: 11400000, guid: 02ae4e3b26463b545bb92ce83e6578db, type: 2}
+    - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
+      propertyPath: deckOptions.Array.data[3].data
+      value: 
+      objectReference: {fileID: 11400000, guid: 487bfb251922f574584ff1c9f3ac8808, type: 2}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[4].data
       value: 
-      objectReference: {fileID: 11400000, guid: c62b9be75672bfc41b7132b39f1cc8c4, type: 2}
+      objectReference: {fileID: 11400000, guid: fe3b9b9fab972714d938fbfa548f5815, type: 2}
     - target: {fileID: 7326191857588109863, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: deckOptions.Array.data[5].data
       value: 
-      objectReference: {fileID: 11400000, guid: 70e3a127471acdc4dadf7c8f36267fb2, type: 2}
+      objectReference: {fileID: 11400000, guid: 5b0c831435bc9aa48bcf0f30fe63d708, type: 2}
     - target: {fileID: 7326191857588110040, guid: d18f53788fb6a4748b6351104efb6bbc, type: 3}
       propertyPath: m_Name
       value: Deck
@@ -2959,12 +3207,13 @@ MonoBehaviour:
   sections:
   - hoverOver: {fileID: 0}
     offset: {x: 0, y: 1.5, z: -2.5}
-    text: Welcome to Table Fable's basic tutorial! (Click on this prompt to continue)
-    scale: {x: 1.5, y: 0.7, z: 0.1}
+    text: Welcome to the spell and mana tutorial!
+    scale: {x: 1.5, y: 0.4, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -2972,69 +3221,29 @@ MonoBehaviour:
     aiIndex: -1
   - hoverOver: {fileID: 0}
     offset: {x: 0, y: 1.5, z: -2.5}
-    text: In this game you will play monsters and spells to take down your opponent.
-    scale: {x: 2, y: 1, z: 0.1}
+    text: In this tutorial you will learn about spell cards and how to play them.
+    scale: {x: 1.75, y: 0.5, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
     avoidPlayer: 0
     aiIndex: -1
   - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 1, z: -0.5}
-    text: "You have 4 slots on the board to play cards represented by the tiles closest
-      to you. These tiles are called the \u201CBack Row\u201D. The set of tiles in
-      front of them are called the \u201CFront Line\u201D."
-    scale: {x: 3, y: 1, z: 0.1}
+    offset: {x: 0, y: 1.25, z: -1.5}
+    text: Spell cards cost mana to be played. You can see how much mana a spell costs
+      on the top right hand corner of the card. You can also see the card's effect
+      on the bottom.
+    scale: {x: 3.5, y: 0.8, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 0
-    mirrorPlayer: 0
-    avoidPlayer: 0
-    aiIndex: -1
-  - hoverOver: {fileID: 1815001114}
-    offset: {x: 0.5, y: 1, z: 0.5}
-    text: The red jars represent your health. The jars on the opposite side of the
-      field are your opponent's health.
-    scale: {x: 1.5, y: 0.7, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
-    mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 0
-    mirrorPlayer: 0
-    avoidPlayer: 0
-    aiIndex: -1
-  - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 1, z: 0}
-    text: Use the W and S keys to raise or lower the camera to change your view of
-      the table. Lowering it will give you a better view of the cards in your hand.
-    scale: {x: 2.5, y: 0.75, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
-    mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 0
-    mirrorPlayer: 0
-    avoidPlayer: 0
-    aiIndex: -1
-  - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 1.6, z: -2.5}
-    text: First, I will teach you about monster cards. Each monster card has 2 stats
-      displayed on the card. Attack power on the left and Health on the right.
-    scale: {x: 2, y: 1, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
-    mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3042,41 +3251,29 @@ MonoBehaviour:
     aiIndex: -1
   - hoverOver: {fileID: 0}
     offset: {x: 0, y: 1, z: -1}
-    text: "To play a monster card, click and drag a card from your hand to a \u201CBack
+    text: "If you have enough mana, you can play a spell in any available \u201CBack
       Row\u201D tile on the field."
-    scale: {x: 3, y: 1, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 1
-    stepTest: 1
-    mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 0
-    mirrorPlayer: 0
-    avoidPlayer: 0
-    aiIndex: -1
-  - hoverOver: {fileID: 1815001114}
-    offset: {x: 1, y: 0.75, z: 0.5}
-    text: If you drop a card on the table, you can click the small card on the left
-      to return all dropped cards to your hand.
-    scale: {x: 2.5, y: 1, z: 0.1}
+    scale: {x: 4, y: 1, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
     avoidPlayer: 0
     aiIndex: -1
   - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 1, z: -1}
-    text: Good. You can also play other monster cards from your hand as long as you
-      have room on the field. When you are done click, on the bell to end your turn.
-    scale: {x: 3, y: 1.5, z: 0.1}
-    canEndTurn: 1
+    offset: {x: 0, y: 0.75, z: 0}
+    text: To play a spell, simply click and drag as you have done before, and to
+      cancel, click on the card, same as you did for high level monsters.
+    scale: {x: 4, y: 1, z: 0.1}
+    canEndTurn: 0
     canPlaceCards: 1
-    stepTest: 3
+    stepTest: 2
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3084,113 +3281,84 @@ MonoBehaviour:
     aiIndex: -1
   - hoverOver: {fileID: 0}
     offset: {x: 0, y: 1, z: 0}
-    text: "When your turn is over, monsters will automatically move forward into
-      the \u201CFront Lines\u201D. Next, monsters will attack the slot directly across
-      from them if it\u2019s not the first turn."
-    scale: {x: 3.5, y: 1.5, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
-    mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 0
-    mirrorPlayer: 0
-    avoidPlayer: 0
-    aiIndex: -1
-  - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 0.75, z: 0.5}
-    text: "If there is a monster there you will deal damage to their health. If there
-      is no monster then you will damage your opponent\u2019s health directly."
-    scale: {x: 3.5, y: 1, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
-    mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 0
-    mirrorPlayer: 0
-    avoidPlayer: 0
-    aiIndex: -1
-  - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 0.75, z: 0.5}
-    text: "Next up is your opponent\u2019s turn. (In local multiplayer, use \u2018Q\u2019
-      to switch cameras)"
-    scale: {x: 2, y: 1, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
-    mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 2
-    mirrorPlayer: 0
-    avoidPlayer: 1
-    aiIndex: -1
-  - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 1, z: 0}
-    text: "After your opponent\u2019s turn, their monsters will attack you. Now that
-      it is your turn again, you will draw a card and can play."
-    scale: {x: 2, y: 1, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
-    mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 1
-    mirrorPlayer: 0
-    avoidPlayer: 0
-    aiIndex: -1
-  - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 0.75, z: 0.5}
-    text: "If you wish to get a better look at your opponent\u2019s (or your own)
-      cards before making your next move, hover the cursor over the card and hold
-      the right mouse button."
-    scale: {x: 3, y: 1, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
-    mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 0
-    mirrorPlayer: 0
-    avoidPlayer: 0
-    aiIndex: -1
-  - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 1, z: -0.5}
-    text: "If a monster is already in play in the \u201CFront Lines\u201D and you
-      play a monster directly behind them, then they will enter a queue. What this
-      means is that as long as the front most monster is alive, then the card behind
-      them will wait and will not attack."
-    scale: {x: 3, y: 1.5, z: 0.1}
-    canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
-    mirrorPrevious: 0
-    stepTestIndex: -1
-    aiAction: 0
-    mirrorPlayer: 0
-    avoidPlayer: 0
-    aiIndex: -1
-  - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 1, z: -0.5}
-    text: Try playing a monster in the queue now. (Behind your last played card)
-    scale: {x: 3.6, y: 0.5, z: 0.1}
+    text: And another.
+    scale: {x: 2.25, y: 0.5, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 1
-    stepTest: 1
-    mirrorPrevious: 1
+    stepTest: 2
+    mirrorPrevious: 0
+    clearLastPlayed: 1
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
     avoidPlayer: 0
     aiIndex: -1
   - hoverOver: {fileID: 819613600}
-    offset: {x: -0.75, y: 0.75, z: 0.25}
-    text: Now end your turn.
-    scale: {x: 1.7, y: 0.5, z: 0.1}
+    offset: {x: -1, y: 1, z: 0.5}
+    text: Click the bell to end your turn.
+    scale: {x: 1.5, y: 0.5, z: 0.1}
     canEndTurn: 1
     canPlaceCards: 0
     stepTest: 3
     mirrorPrevious: 0
+    clearLastPlayed: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 10, z: 0}
+    text: 
+    scale: {x: 0, y: 0, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 5
+    mirrorPrevious: 0
+    clearLastPlayed: 0
+    stepTestIndex: 1
+    aiAction: 2
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 10, z: 0}
+    text: 
+    scale: {x: 0, y: 0, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 5
+    mirrorPrevious: 0
+    clearLastPlayed: 0
+    stepTestIndex: 1
+    aiAction: 2
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 10, z: 0}
+    text: 
+    scale: {x: 0, y: 0, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 3
+    mirrorPrevious: 0
+    clearLastPlayed: 0
+    stepTestIndex: -1
+    aiAction: 1
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: -1}
+    text: Each turn, your maximum mana will go up 1 point until it reaches 5 and
+      always be fully refilled. (This tutorial started you at 3 mana).
+    scale: {x: 3.5, y: 1, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3198,17 +3366,33 @@ MonoBehaviour:
     aiIndex: -1
   - hoverOver: {fileID: 0}
     offset: {x: 0, y: 1, z: 0}
-    text: Great job! This concludes the basic tutorial. See you next time!
-    scale: {x: 2, y: 1, z: 0.1}
+    text: Now, try playing a spell with a higher cost.
+    scale: {x: 2.5, y: 0.5, z: 0.1}
     canEndTurn: 0
-    canPlaceCards: 0
-    stepTest: 0
+    canPlaceCards: 1
+    stepTest: 2
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
     avoidPlayer: 0
     aiIndex: -1
+  - hoverOver: {fileID: 0}
+    offset: {x: 0, y: 1, z: 0}
+    text: Great Job! This concludes the spell and mana tutorial!
+    scale: {x: 2.75, y: 0.5, z: 0.1}
+    canEndTurn: 0
+    canPlaceCards: 0
+    stepTest: 0
+    mirrorPrevious: 0
+    clearLastPlayed: 0
+    stepTestIndex: -1
+    aiAction: 0
+    mirrorPlayer: 0
+    avoidPlayer: 0
+    aiIndex: -1
+  currentSection: 0
   client: {fileID: 1017104215}
   game: {fileID: 854140102}
   p1mouse: {fileID: 963194229}
@@ -3672,6 +3856,14 @@ PrefabInstance:
     - target: {fileID: 1443076293330110946, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
       propertyPath: m_Name
       value: PlayerListener
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400126134106522326, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
+      propertyPath: manaCost
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400126134106522326, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
+      propertyPath: usagesPerTurn
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8574790769293827826, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
       propertyPath: target
@@ -4262,12 +4454,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.1
-  m_fontSizeMax: 20
+  m_fontSizeMax: 40
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -4553,6 +4745,14 @@ PrefabInstance:
     - target: {fileID: 1443076293330110946, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
       propertyPath: m_Name
       value: PlayerListener
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400126134106522326, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
+      propertyPath: manaCost
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400126134106522326, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
+      propertyPath: usagesPerTurn
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8574790769293827826, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
       propertyPath: target
@@ -5161,11 +5361,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1734059834}
   m_CullTransparentMesh: 1
---- !u!4 &1815001114 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1443076293330110945, guid: c40ed1db5e3fa9e49a5176b6728afd0f, type: 3}
-  m_PrefabInstance: {fileID: 1540691382}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1825661205
 GameObject:
   m_ObjectHideFlags: 0
@@ -5887,8 +6082,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 273627369}
     - target: {fileID: 1490228982075256587, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+      propertyPath: maxMana
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1490228982075256587, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
       propertyPath: playerTag
       value: Player2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1490228982075256587, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+      propertyPath: currentMana
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1490228982075256587, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
       propertyPath: turnEndButton
@@ -5941,6 +6144,10 @@ PrefabInstance:
     - target: {fileID: 1490228982326011806, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
       propertyPath: m_Name
       value: P2 hand
+      objectReference: {fileID: 0}
+    - target: {fileID: 1490228982329847308, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1490228982459041021, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
       propertyPath: m_text
@@ -6199,8 +6406,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 889048216}
     - target: {fileID: 1490228982075256587, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+      propertyPath: maxMana
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1490228982075256587, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
       propertyPath: playerTag
       value: Player1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1490228982075256587, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+      propertyPath: currentMana
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1490228982075256587, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
       propertyPath: turnEndButton
@@ -6343,6 +6558,10 @@ PrefabInstance:
       propertyPath: player2
       value: 
       objectReference: {fileID: 2074309364}
+    - target: {fileID: 3518372173776631802, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
+      propertyPath: startingMana
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3518372173776631802, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
       propertyPath: generateField
       value: 0

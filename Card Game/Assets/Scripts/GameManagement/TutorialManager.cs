@@ -25,6 +25,7 @@ public class TutorialManager : MonoBehaviour
 
 		public NextStepTest stepTest;
 		public bool mirrorPrevious = false;
+		public bool clearLastPlayed = false;
 		public int stepTestIndex = -1;
 
 		public enum OpponentAction {
@@ -41,7 +42,7 @@ public class TutorialManager : MonoBehaviour
 
 	public FodderRain lol;
 	public List<TutorialSection> sections = new List<TutorialSection>();
-	int currentSection = 0;
+	public int currentSection = 0;
 	public Client client;
 	public GameController game;
 	public Mouse p1mouse;
@@ -186,7 +187,7 @@ public class TutorialManager : MonoBehaviour
 		else
 			tutorialTrans.position = game.transform.position + temp.offset;
 
-		tutorialQuad.localScale = temp.scale + Vector3.right * 0.05f + Vector3.up * 0.05f;
+		tutorialQuad.localScale = temp.scale + Vector3.right * 0.1f + Vector3.up * 0.1f;
 		tutorialTrans.GetComponent<BoxCollider>().size = temp.scale;
 		tutorialTrans.GetComponent<LookAt>().UpdateCam();
 		tutorialTrans.GetComponent<PressEventButton>().enabled = temp.stepTest == TutorialSection.NextStepTest.CLICKTOPROCEED;
@@ -210,20 +211,21 @@ public class TutorialManager : MonoBehaviour
 
 		if (temp.mirrorPrevious) {
 			temp.stepTestIndex = lastPlayedIndex;
-			lastPlayedIndex = -1;
-			game.player1.lastPlayedIndex = -1;
+			lastPlayedIndex = game.player1.lastPlayedIndex = -1;
 		}
 
-		if (temp.stepTest == TutorialSection.NextStepTest.DELAY) {
+		if (temp.clearLastPlayed)
+			lastPlayedIndex = game.player1.lastPlayedIndex = -1;
+
+		if (temp.stepTest == TutorialSection.NextStepTest.DELAY)
 			StartCoroutine(DelayedFunc(IncrementIndex, temp.stepTestIndex));
-		}
 
 		//do ai things
 		switch (temp.aiAction) {
 			default:	return;
 
 			case TutorialSection.OpponentAction.ENDTURN:
-				StartCoroutine(DelayedFunc(game.player2.turnEndButton.Press, 1f));
+				StartCoroutine(DelayedFunc(game.player2.turnEndButton.Press, 1.5f));
 				return;
 
 			case TutorialSection.OpponentAction.PLACECARD:

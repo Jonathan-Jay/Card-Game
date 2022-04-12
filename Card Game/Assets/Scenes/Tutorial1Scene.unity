@@ -2945,6 +2945,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -2958,6 +2959,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -2967,12 +2969,13 @@ MonoBehaviour:
     offset: {x: 0, y: 1, z: -0.5}
     text: "You have 4 slots on the board to play cards represented by the tiles closest
       to you. These tiles are called the \u201CBack Row\u201D. The set of tiles in
-      front of them are called the \u201CFront Line\u201D."
+      front of them are called the \u201CFront Lines\u201D."
     scale: {x: 3, y: 1, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -2987,6 +2990,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3001,6 +3005,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3015,6 +3020,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3029,6 +3035,7 @@ MonoBehaviour:
     canPlaceCards: 1
     stepTest: 1
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3043,6 +3050,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3052,26 +3060,28 @@ MonoBehaviour:
     offset: {x: 0, y: 1, z: -1}
     text: Good. You can also play other monster cards from your hand as long as you
       have room on the field. When you are done click, on the bell to end your turn.
-    scale: {x: 3, y: 1.5, z: 0.1}
+    scale: {x: 3, y: 1.3, z: 0.1}
     canEndTurn: 1
     canPlaceCards: 1
     stepTest: 3
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
     avoidPlayer: 0
     aiIndex: -1
   - hoverOver: {fileID: 0}
-    offset: {x: 0, y: 1, z: 0}
+    offset: {x: 0, y: 1, z: -1}
     text: "When your turn is over, monsters will automatically move forward into
       the \u201CFront Lines\u201D. Next, monsters will attack the slot directly across
       from them if it\u2019s not the first turn."
-    scale: {x: 3.5, y: 1.5, z: 0.1}
+    scale: {x: 3.5, y: 1.3, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3086,6 +3096,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3100,6 +3111,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 2
     mirrorPlayer: 0
@@ -3114,8 +3126,9 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
-    aiAction: 1
+    aiAction: 0
     mirrorPlayer: 0
     avoidPlayer: 0
     aiIndex: -1
@@ -3125,10 +3138,11 @@ MonoBehaviour:
     scale: {x: 2, y: 0.5, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 0
-    stepTest: 5
+    stepTest: 3
     mirrorPrevious: 0
-    stepTestIndex: 4
-    aiAction: 0
+    clearLastPlayed: 0
+    stepTestIndex: -1
+    aiAction: 1
     mirrorPlayer: 0
     avoidPlayer: 0
     aiIndex: -1
@@ -3142,6 +3156,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3158,6 +3173,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3171,6 +3187,7 @@ MonoBehaviour:
     canPlaceCards: 1
     stepTest: 1
     mirrorPrevious: 1
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3184,6 +3201,7 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 3
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
@@ -3197,11 +3215,13 @@ MonoBehaviour:
     canPlaceCards: 0
     stepTest: 0
     mirrorPrevious: 0
+    clearLastPlayed: 0
     stepTestIndex: -1
     aiAction: 0
     mirrorPlayer: 0
     avoidPlayer: 0
     aiIndex: -1
+  currentSection: 0
   client: {fileID: 1017104215}
   game: {fileID: 854140102}
   p1mouse: {fileID: 963194229}
@@ -5934,6 +5954,10 @@ PrefabInstance:
     - target: {fileID: 1490228982326011806, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
       propertyPath: m_Name
       value: P2 hand
+      objectReference: {fileID: 0}
+    - target: {fileID: 1490228982329847308, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1490228982459041021, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
       propertyPath: m_text
