@@ -373,6 +373,7 @@ MonoBehaviour:
   player: {fileID: 0}
   autoShuffle: 0
   riggedDeck: 
+  audioPlayer: {fileID: -8407207310497981122}
 --- !u!114 &-8407207310497981122
 MonoBehaviour:
   m_ObjectHideFlags: 0

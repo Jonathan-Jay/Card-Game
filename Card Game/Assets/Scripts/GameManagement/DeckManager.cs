@@ -33,9 +33,8 @@ public class DeckManager : MonoBehaviour
 	[SerializeField]	bool autoShuffle = false;
 	[SerializeField]	List<int> riggedDeck = new List<int>();
 
-	AudioQueue audioPlayer;
+	[SerializeField]	AudioQueue audioPlayer;
 	private void Start() {
-		audioPlayer = GetComponent<AudioQueue>();
 		if (autoShuffle) {
 			ShuffleDeck();
 		}

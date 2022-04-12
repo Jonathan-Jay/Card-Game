@@ -7,7 +7,7 @@ public class SpellCard : Card
 {
 	[SerializeField] protected TMP_Text descriptionMesh;
 
-	public AudioQueue audioPlayer;
+	[SerializeField] AudioQueue placementSound;
 
 	private void Awake() {
 		if (data != null) {
@@ -58,11 +58,12 @@ public class SpellCard : Card
 	public override void OnPlace(PlayerData current, PlayerData opposing) {
 		//don't render face until it's placed
 		//RenderFace();
+		placementSound?.Play();
+
 		StartCoroutine(CastSpell(current, opposing));
 	}
 
 	IEnumerator CastSpell(PlayerData current, PlayerData opposing) {
-
 		Transform hit = null;
 		void UpdateRaycastHit(Transform rayHit) {
 			if (player.hand.input.activeSpells > 0)
@@ -120,8 +121,8 @@ public class SpellCard : Card
 		
 		//just in case
 		moving = true;
+
 		//cast spell should take card of this
-		audioPlayer.PlayIndex(0);
 		((SpellData)data).CastSpell(this, target, newIndex);
 	}
 

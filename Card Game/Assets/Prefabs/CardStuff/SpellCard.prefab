@@ -171,31 +171,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1572262885}
   m_maskType: 0
---- !u!114 &5665379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1376643482550696928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae54b7bc810757a44afb1ebcc3473509, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  placement: {fileID: 0}
-  data: {fileID: 0}
-  player: {fileID: 0}
-  renderingFace: 0
-  targetable: 0
-  frontFace: {fileID: 437448587381898228}
-  nameMesh: {fileID: 5671535007085138179}
-  costMesh: {fileID: 7621244275813774440}
-  flavourTextMesh: {fileID: 8329961278262045116}
-  moving: 0
-  placed: 0
-  descriptionMesh: {fileID: 1572262884}
-  audioPlayer: {fileID: 1864951313847743317}
 --- !u!82 &-8697354338591090047
 AudioSource:
   m_ObjectHideFlags: 0
@@ -292,6 +267,31 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5665379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376643482550696928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae54b7bc810757a44afb1ebcc3473509, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placement: {fileID: 0}
+  data: {fileID: 0}
+  player: {fileID: 0}
+  renderingFace: 0
+  targetable: 0
+  frontFace: {fileID: 437448587381898228}
+  nameMesh: {fileID: 5671535007085138179}
+  costMesh: {fileID: 7621244275813774440}
+  flavourTextMesh: {fileID: 8329961278262045116}
+  moving: 0
+  placed: 0
+  descriptionMesh: {fileID: 1572262884}
+  placementSound: {fileID: 1864951313847743317}
 --- !u!114 &1864951313847743317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,7 +304,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1cbfa52de400247a5fb13ce3919589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sounds: []
+  sounds:
+  - {fileID: -8697354338591090047}
 --- !u!1001 &1997531350548020077
 PrefabInstance:
   m_ObjectHideFlags: 0

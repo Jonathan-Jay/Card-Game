@@ -15,6 +15,7 @@ public class CardGenerator : MonoBehaviour
 	[SerializeField]	int usagesPerTurn = 1;
 	[SerializeField]	Vector3 spawnOffset = Vector3.back * 0.5f + Vector3.up * 0.1f;
 	[SerializeField]	Vector3 spawnRot = Vector3.zero;
+	[SerializeField]	AudioQueue audioPlayer;
 
 	private void OnEnable() {
 		PressEventButton test = GetComponent<PressEventButton>();
@@ -68,6 +69,8 @@ public class CardGenerator : MonoBehaviour
 			text.text = "";
 		}
 
+		audioPlayer?.PlayRandom();
+
 		if (!player) {
 			card.RenderFace();
 			return;
@@ -89,6 +92,12 @@ public class CardGenerator : MonoBehaviour
 		if ((player && (player.currentMana >= manaCost)) || !player) {
 			uses = usagesPerTurn;
 		}
+		HideTest(0);
+	}
+
+	public void EmptyUses() {
+		uses = 0;
+
 		HideTest(0);
 	}
 

@@ -14,12 +14,12 @@ public class MixerInitializer : MonoBehaviour
 	}
 
 	public static void SetMixerVolume(string name, float val) {
-		mixer.SetFloat(name, val);
+		mixer?.SetFloat(name, val);
 	}
 
 	public static float GetMixerVolume(string name) {
-		float val;
-		mixer.GetFloat(name, out val);
+		float val = 0;
+		mixer?.GetFloat(name, out val);
 		return val;
 	}
 }

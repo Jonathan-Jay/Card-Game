@@ -31,7 +31,8 @@ public class SameTimeEffect : SpellEffect
 		}
 
 		ability?.Invoke(target, index, (SpellData)caster.data);
-		sounds.Play();
+		if (count == 0)
+			sounds.Play();
 
 		//kill the thing
 		oneOverDelay = 1f/deathDelay;
