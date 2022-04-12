@@ -76,6 +76,7 @@ public class Card : MonoBehaviour
 	}
 
 	public bool placed = false;
+	public virtual void PrePlace(PlayerData current, PlayerData opposing) {}
 	public virtual void OnPlace(PlayerData current, PlayerData opposing) {
 		//render most cards
 		RenderFace();

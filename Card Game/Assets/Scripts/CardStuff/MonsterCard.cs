@@ -92,6 +92,13 @@ public class MonsterCard : Card
 		attackMesh.text = "";
 	}
 
+	public override void PrePlace(PlayerData current, PlayerData opposing) {
+		if (data.cost > 0) {
+			//Ask for sacrifices
+			StartCoroutine(CheckCost(current, opposing));
+		}
+	}
+
 	public override void OnPlace(PlayerData current, PlayerData opposing) {
 		//render face
 		//base.OnPlace(current, opposing);
@@ -99,45 +106,60 @@ public class MonsterCard : Card
 		//perform cost check if cost is not zero
 		if (data.cost > 0) {
 			//Ask for sacrifices
-			StartCoroutine(CheckCost(current, opposing));
+			//StartCoroutine(CheckCost(current, opposing));
+			waiting = true;
 		}
 		else {
+			//calc stats
+			if (currAttack == int.MaxValue) {
+				MonsterData monData = (MonsterData)data;
+				SetAttack(Random.Range(monData.attack, monData.attackRMax), Color.black);
+				SetHealth(Random.Range(monData.health, monData.healthRMax), Color.black);
+			}
+
 			//always render free placed cards
 			//can also instantly remove
 			base.OnPlace(current, opposing);
 		}
 	}
 	
+	bool waiting = false;
 	IEnumerator CheckCost(PlayerData current, PlayerData opposing) {
-		//makes less missinputs, hopefully
-
 		Transform hit = null;
+		Queue<Transform> hits = new Queue<Transform>();
 		void UpdateRaycastHit(Transform rayHit) {
-			if (player.hand.input.activeSpells  > 0)
-				hit = rayHit;
+			hits.Enqueue(rayHit);
 		}
+
+		player.hand.input.clickEvent += UpdateRaycastHit;
+
+		yield return new WaitUntil(delegate { return waiting; });
+		waiting = false;
 
 		//activate spell mode
 		if (ServerManager.CheckIfClient(player, true)) {
 			player.hand.input.ActivateSpellMode();
 		}
 
-		player.hand.input.clickEvent += UpdateRaycastHit;
+		yield return new WaitForSeconds(0.25f);
 
 		int requirement = data.cost;
 		int index = placement.index;
 		PlayerData target = null;
 		List<int> targets = new List<int>();
 
-		Vector3 targetPos = placement.floatingHeight + Vector3.forward * 0.2f;
+		Vector3 targetPos = placement.floatingHeight + Vector3.forward * 0.2f + Vector3.up * 0.05f;
 
 		while (requirement > 0) {
 			yield return eof;
-			if (transform.localPosition != targetPos) {
-				transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPos, Time.deltaTime);
-			}
+			if (transform.localPosition != targetPos)
+				transform.localPosition = Vector3.MoveTowards(transform.localPosition,
+					targetPos, Time.deltaTime);
 
-			target = SpellData.TargetAnyPlayerCard(current, opposing, ref index, ref hit);
+			if (hits.Count > 0) {
+				hit = hits.Dequeue();
+				target = SpellData.TargetAnyPlayerCard(current, opposing, ref index, ref hit);
+			}
 
 			//if you didnt click something
 			if (!target) continue;
@@ -165,15 +187,18 @@ public class MonsterCard : Card
 				requirement = -1;
 			}
 			//reset
+			target = null;
 		}
 
+		hits.Clear();
+		hits = null;
+
 		//fix position if not moving from a different force
-		for (float i = 0; !moving && (i < 0.2f); i += Time.deltaTime) {
-			transform.localPosition += Vector3.back * Time.deltaTime;
+		while (!moving && transform.localPosition != placement.floatingHeight) {
+			transform.localPosition = Vector3.MoveTowards(transform.localPosition,
+				placement.floatingHeight, 4f * Time.deltaTime);
 			yield return eof;
 		}
-		if (!moving)
-			transform.localPosition = placement.floatingHeight;
 
 		//cancelled
 		if (requirement < 0) {

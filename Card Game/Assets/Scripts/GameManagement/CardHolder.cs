@@ -59,6 +59,8 @@ public class CardHolder : MonoBehaviour
 		holding = card;
 		GetComponentInChildren<MeshRenderer>().material.color = hasCard;
 
+		card.PrePlace(playerData, opposingData);
+
 		StartCoroutine(CardTransition(newCard, newCard && (card.data.cost > 0)));
 
 		return true;
@@ -87,7 +89,7 @@ public class CardHolder : MonoBehaviour
 		}
 
 		Transform cardTrans = holding.transform;
-		while (holding != null) {
+		while (holding != null && !holding.moving) {
 			cardTrans.localPosition = Vector3.Lerp(cardTrans.localPosition, slamHeight,
 				moveSpeed * Time.deltaTime);
 			cardTrans.localRotation = Quaternion.Slerp(cardTrans.localRotation, Quaternion.identity,
@@ -98,7 +100,7 @@ public class CardHolder : MonoBehaviour
 				}
 			yield return Card.eof;
 		}
-		while (holding != null && cardTrans.localPosition != floatingHeight) {
+		while (holding != null && !holding.moving && cardTrans.localPosition != floatingHeight) {
 			cardTrans.localPosition = Vector3.MoveTowards(
 					cardTrans.localPosition, floatingHeight, slamSpeed * Time.deltaTime);
 			yield return Card.eof;
@@ -121,7 +123,6 @@ public class CardHolder : MonoBehaviour
 			//now valid
 			if (callPlace)
 				holding.OnPlace(playerData, opposingData);
-			cardTrans.localPosition = floatingHeight;
 			
 			slamParticles.Play();
 			//play the sound

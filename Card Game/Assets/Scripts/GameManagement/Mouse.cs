@@ -54,7 +54,7 @@ public class Mouse : MonoBehaviour {
 				CardHolder test = hit.GetComponent<CardHolder>();
 				//if over a monster, it's red
 				if (test) {
-					//if nto actually placed, sacrificed card
+					//if not actually placed, sacrificed card
 					if (test.holding && !test.holding.placed) {
 						if (currentCol != 2) {
 							targettingCursor.material.color = cancelCol;

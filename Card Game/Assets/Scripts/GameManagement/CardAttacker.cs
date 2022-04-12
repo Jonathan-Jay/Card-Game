@@ -51,7 +51,6 @@ public class CardAttacker : CardHolder
 			//now valid
 			if (callPlace)
 				holding.OnPlace(playerData, opposingData);
-			cardTrans.localPosition = floatingHeight;
 
 			slamParticles.Play();
 

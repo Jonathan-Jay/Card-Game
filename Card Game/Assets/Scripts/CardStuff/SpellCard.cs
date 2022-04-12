@@ -55,31 +55,39 @@ public class SpellCard : Card
 		descriptionMesh.text = "";
 	}
 
+	public override void PrePlace(PlayerData current, PlayerData opposing) {
+		StartCoroutine(CastSpell(current, opposing));
+	}
+
 	public override void OnPlace(PlayerData current, PlayerData opposing) {
 		//don't render face until it's placed
 		//RenderFace();
 		placementSound?.Play();
 
-		StartCoroutine(CastSpell(current, opposing));
+		//StartCoroutine(CastSpell(current, opposing));
+		waiting = true;
 	}
 
+	bool waiting = false;
 	IEnumerator CastSpell(PlayerData current, PlayerData opposing) {
 		Transform hit = null;
+		Queue<Transform> hits = new Queue<Transform>();
 		void UpdateRaycastHit(Transform rayHit) {
-			if (player.hand.input.activeSpells > 0)
-				hit = rayHit;
+			hits.Enqueue(rayHit);
 		}
+
+		player.hand.input.clickEvent += UpdateRaycastHit;
+
+		yield return new WaitUntil(delegate { return waiting; });
+		waiting = false;
 
 		//stop mouse from working immediately
 		if (ServerManager.CheckIfClient(player, true)) {
 			player.hand.input.ActivateSpellMode();
 		}
 
-		player.hand.input.clickEvent += UpdateRaycastHit;
-
 		yield return new WaitForSeconds(0.25f);
 
-		Vector3 startPos = transform.localPosition;
 		Vector3 endPos = Vector3.up * 0.25f;
 
 		//do spell thing
@@ -87,16 +95,23 @@ public class SpellCard : Card
 		PlayerData target = null;
 		while (target == null) {
 			yield return eof;
+			if (transform.localPosition != endPos)
+				transform.localPosition = Vector3.MoveTowards(transform.localPosition,
+					endPos, 2f * Time.deltaTime);
+
+			if (hits.Count > 0)
+				hit = hits.Dequeue();
+
 			target = ((SpellData)data).targetting.Invoke(current, opposing, ref newIndex, ref hit);
-			//levitate card
-			transform.localPosition = Vector3.MoveTowards(transform.localPosition,
-				endPos, 2f * Time.deltaTime);
 		}
 
-		while (transform.localPosition != startPos && !moving) {
-			yield return eof;
+		hits.Clear();
+		hits = null;
+
+		while (!moving && transform.localPosition != placement.floatingHeight) {
 			transform.localPosition = Vector3.MoveTowards(transform.localPosition,
-				startPos, 4f * Time.deltaTime);
+				placement.floatingHeight, 4f * Time.deltaTime);
+			yield return eof;
 		}
 
 		//relink mouse functions
