@@ -351,7 +351,7 @@ AudioSource:
   m_GameObject: {fileID: 7370026185277705448}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1410572022014993937, guid: 8913019f04f708a449fada98239334d0, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -460,6 +460,7 @@ MonoBehaviour:
   costMesh: {fileID: 2060783283286803296}
   flavourTextMesh: {fileID: 487709919321333428}
   moving: 0
+  placed: 0
   attackMesh: {fileID: 8797157165809492266}
   healthMesh: {fileID: 5406184301356650649}
   currHealth: 0
@@ -479,7 +480,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - {fileID: 4045167820182724411}
-  empty: 1
 --- !u!1001 &7991054928470248549
 PrefabInstance:
   m_ObjectHideFlags: 0

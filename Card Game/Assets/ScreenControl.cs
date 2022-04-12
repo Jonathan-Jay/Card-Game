@@ -5,10 +5,12 @@ using UnityEngine.Audio;
 
 public class ScreenControl : MonoBehaviour
 {
+	[SerializeField] UnityEngine.UI.Slider masterSlider;
 	[SerializeField] UnityEngine.UI.Slider musicSlider;
 	[SerializeField] UnityEngine.UI.Slider sfxSlider;
 
 	private void Start() {
+		masterSlider.value = MixerInitializer.GetMixerVolume("Master");
 		musicSlider.value = MixerInitializer.GetMixerVolume("Music");
 		sfxSlider.value = MixerInitializer.GetMixerVolume("SFX");
 	}
@@ -26,6 +28,10 @@ public class ScreenControl : MonoBehaviour
 			Resolution temp = Screen.resolutions[Screen.resolutions.Length - 1];
 			Screen.SetResolution(temp.width, temp.height, true);
 		}
+	}
+
+	public static void SetMasterVolume(float val) {
+		MixerInitializer.SetMixerVolume("Master", val);
 	}
 
 	public static void SetMusicVolume(float val) {
