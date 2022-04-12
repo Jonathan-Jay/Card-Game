@@ -29,6 +29,10 @@ public class MainMenuController : MonoBehaviour
 	[SerializeField] GameObject player2Seat;
 	[SerializeField] Button leaveSeat;
 	[SerializeField] Button startButton;
+	[SerializeField] AudioQueue goForwardPlayer;
+	[SerializeField] AudioQueue goBackPlayer;
+	[SerializeField] AudioQueue connectedAudioPlayer;
+	[SerializeField] AudioQueue seatedAudioPlayer;
 
 	private void OnEnable() {
 		client.connectedEvent += EnableUI;
@@ -95,7 +99,7 @@ public class MainMenuController : MonoBehaviour
 		//disable these
 		LocalGameButtonInteractable(false);
 
-		GetComponent<AudioQueue>()?.Play();
+		connectedAudioPlayer?.Play();
 		client.TryConnect(ipInput.text);
 	}
 
@@ -143,11 +147,13 @@ public class MainMenuController : MonoBehaviour
 			while (cam.index != inLobbyIndex) {
 				cam.IncrementIndex(true);
 			}
+			goForwardPlayer?.PlayRandom();
 		}
 		else {
 			while (cam.index != outLobbyIndex) {
 				cam.IncrementIndex(true);
 			}
+			goBackPlayer?.PlayRandom();
 		}
 	}
 
@@ -168,6 +174,8 @@ public class MainMenuController : MonoBehaviour
 
 			startButton.interactable = false;
 		}
+
+		seatedAudioPlayer?.PlayRandom();
 
 		//render faces if valid or smt
 		player1Seat.SetActive(ServerManager.p1Index >= 0);
