@@ -29,7 +29,7 @@ public class AdaptiveMusic : MonoBehaviour
             {
                 if(segementIndex != i)
                 {
-                    Debug.Log("play " + i);
+                    //Debug.Log("play " + i);
                     //Play segment 1
                     if (target < 0)
                         StartCoroutine(StartNewSegment(i));
