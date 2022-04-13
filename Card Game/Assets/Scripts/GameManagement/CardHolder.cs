@@ -54,6 +54,7 @@ public class CardHolder : MonoBehaviour
 		//also allow other player to see the card, send a message to the server to set data
 		card.transform.SetParent(transform, true);
 		card.placement = this;
+		card.placed = true;
 		card.tag = playerData.playerTag;
 		holding = card;
 		GetComponentInChildren<MeshRenderer>().material.color = hasCard;

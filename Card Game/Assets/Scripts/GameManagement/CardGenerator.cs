@@ -25,6 +25,7 @@ public class CardGenerator : MonoBehaviour
 		if (player) {
 			player.startOfTurn += Refresh;
 			player.manaUpdated += HideTest;
+			player.endOfTurn += EmptyUses;
 		}
 	}
 
@@ -36,6 +37,7 @@ public class CardGenerator : MonoBehaviour
 		if (player) {
 			player.startOfTurn -= Refresh;
 			player.manaUpdated -= HideTest;
+			player.endOfTurn -= EmptyUses;
 		}
 	}
 
@@ -49,6 +51,7 @@ public class CardGenerator : MonoBehaviour
 		if (player) {
 			player.startOfTurn += Refresh;
 			player.manaUpdated += HideTest;
+			player.endOfTurn += EmptyUses;
 		}
 
 		Refresh();
