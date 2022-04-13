@@ -109,7 +109,7 @@ public class SynServer
 	static Lobby serverLobby = new Lobby("");
 	static List<Lobby> lobbies = new List<Lobby>();
 	//cause why not
-	const int maxLobbies = 5;
+	static int maxLobbies = 5;
 
 	static string GetName() {
 		return "NewUser" + (playerCount + 1);
@@ -1137,6 +1137,8 @@ public class SynServer
 	}
 
 	public static int Main(string[] args) {
+		Console.Write("Input max lobby count: ");
+		maxLobbies = int.Parse(Console.ReadLine());
 
 		Console.Write("Type IP address (blank for host ip): ");
 		string input = Console.ReadLine();
