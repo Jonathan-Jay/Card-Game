@@ -10,9 +10,9 @@ public class ScreenControl : MonoBehaviour
 	[SerializeField] UnityEngine.UI.Slider sfxSlider;
 
 	private void Start() {
-		masterSlider.value = MixerInitializer.GetMixerVolume("Master");
-		musicSlider.value = MixerInitializer.GetMixerVolume("Music");
-		sfxSlider.value = MixerInitializer.GetMixerVolume("SFX");
+		masterSlider.value = Mathf.Pow(10f, MixerInitializer.GetMixerVolume("Master") / 80f);
+		musicSlider.value = Mathf.Pow(10f, MixerInitializer.GetMixerVolume("Music") / 80f);
+		sfxSlider.value = Mathf.Pow(10f, MixerInitializer.GetMixerVolume("SFX") / 80f);
 	}
 
 	static int windowedWidth = Screen.width;
@@ -31,14 +31,14 @@ public class ScreenControl : MonoBehaviour
 	}
 
 	public static void SetMasterVolume(float val) {
-		MixerInitializer.SetMixerVolume("Master", val);
+		MixerInitializer.SetMixerVolume("Master", 80f * Mathf.Log10(val));
 	}
 
 	public static void SetMusicVolume(float val) {
-		MixerInitializer.SetMixerVolume("Music", val);
+		MixerInitializer.SetMixerVolume("Music", 80f * Mathf.Log10(val));
 	}
 
 	public static void SetSFXVolume(float val) {
-		MixerInitializer.SetMixerVolume("SFX", val);
+		MixerInitializer.SetMixerVolume("SFX", 80f * Mathf.Log10(val));
 	}
 }
