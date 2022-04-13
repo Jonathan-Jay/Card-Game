@@ -2407,6 +2407,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lol: {fileID: 1829372919}
+  defaultCol: {r: 1, g: 1, b: 1, a: 1}
+  notDefaultCol: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   sections:
   - hoverOver: {fileID: 0}
     offset: {x: 0, y: 1.5, z: -2.5}
@@ -2469,8 +2471,9 @@ MonoBehaviour:
     aiIndex: -1
   - hoverOver: {fileID: 0}
     offset: {x: 0, y: 1, z: 0}
-    text: Use the W and S keys to raise or lower the camera to change your view of
-      the table. Lowering it will give you a better view of the cards in your hand.
+    text: Use the W and S keys or scrollwheel to raise or lower the camera to change
+      your view of the table. Lowering it will give you a better view of the cards
+      in your hand.
     scale: {x: 2.5, y: 0.75, z: 0.1}
     canEndTurn: 0
     canPlaceCards: 0

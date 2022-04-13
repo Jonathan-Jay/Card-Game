@@ -41,6 +41,8 @@ public class TutorialManager : MonoBehaviour
 	}
 
 	public FodderRain lol;
+	public Color defaultCol = Color.white;
+	public Color notDefaultCol = Color.yellow;
 	public List<TutorialSection> sections = new List<TutorialSection>();
 	public int currentSection = 0;
 	public Client client;
@@ -61,6 +63,11 @@ public class TutorialManager : MonoBehaviour
 
 	private void Awake() {
 		pauseScreen.SetActive(false);
+
+		float alpha = tutorialQuad.GetComponent<MeshRenderer>().material.color.a;
+
+		defaultCol.a = alpha;
+		notDefaultCol.a = alpha;
 
 		tutorialTrans.GetComponent<PressEventButton>().pressed += IncrementIndex;
 	}
@@ -172,7 +179,7 @@ public class TutorialManager : MonoBehaviour
 			UpdateSection();
 
 			if (currentSection == sections.Count - 1)
-				StartCoroutine(DelayedFunc(delegate { lol.enabled = true; }, 30f));
+				StartCoroutine(DelayedFunc(delegate { lol.enabled = true; }, 900f));
 		}
 		else {
 			//too big, can trigger something special
@@ -194,6 +201,8 @@ public class TutorialManager : MonoBehaviour
 
 		tutorialText.text = temp.text;
 		tutorialText.rectTransform.sizeDelta = temp.scale * 10f;
+		tutorialQuad.GetComponent<MeshRenderer>().material.color =
+			temp.stepTest == TutorialSection.NextStepTest.CLICKTOPROCEED ? defaultCol : notDefaultCol;
 
 		game.player1.turnEndButton.enabled = temp.canEndTurn;
 		game.player1.hand.input.cantPlaceCards = !temp.canPlaceCards;
