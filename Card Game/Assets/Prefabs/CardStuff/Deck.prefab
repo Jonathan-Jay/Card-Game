@@ -356,7 +356,7 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: 487bfb251922f574584ff1c9f3ac8808, type: 2}
   - amt: 2
     data: {fileID: 11400000, guid: 7890edb8cfb367a43af2407aa45f67fc, type: 2}
-  - amt: 100
+  - amt: 1
     data: {fileID: 11400000, guid: 5c3cbfc52e1a54840981174fe94170f8, type: 2}
   - amt: 3
     data: {fileID: 11400000, guid: 428a80920c2bb11469f0852877a130c4, type: 2}
