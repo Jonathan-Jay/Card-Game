@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1360987306871180655}
   - component: {fileID: 8842997222611948478}
   - component: {fileID: 448442922532718076}
+  - component: {fileID: 3011767724343266190}
   m_Layer: 7
   m_Name: Potion
   m_TagString: Untagged
@@ -115,6 +116,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3011767724343266190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4217825834900920229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26de7750ad91d8344b4c2ab6318338d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minStrength: 6.5
+  soundSource: {fileID: 0}
 --- !u!1 &5621656511023073978
 GameObject:
   m_ObjectHideFlags: 0

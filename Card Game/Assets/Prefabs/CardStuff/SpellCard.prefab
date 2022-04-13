@@ -288,6 +288,7 @@ MonoBehaviour:
   nameMesh: {fileID: 5671535007085138179}
   costMesh: {fileID: 7621244275813774440}
   flavourTextMesh: {fileID: 8329961278262045116}
+  releaseSound: {fileID: 7021567031853193695}
   moving: 0
   placed: 0
   descriptionMesh: {fileID: 1572262884}
@@ -377,6 +378,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 622193675989188749, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
   m_PrefabInstance: {fileID: 1997531350548020077}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7021567031853193695 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8847662511679005362, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}
+  m_PrefabInstance: {fileID: 1997531350548020077}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376643482550696928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e1cbfa52de400247a5fb13ce3919589, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &5692256465493553394 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6144701230875085727, guid: 6ba1d4899137b4843a7ff9a70373de0c, type: 3}

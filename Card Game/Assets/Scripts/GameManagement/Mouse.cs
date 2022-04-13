@@ -152,9 +152,8 @@ public class Mouse : MonoBehaviour {
 		} while (duration > 0f);
 	}
 
-    // Update is called once per frame
-    void Update() {
-		if (disabled || ignore)	return;
+	void Update() {
+		if (disabled || ignore || Client.unfocused)	return;
 
         Ray rayInfo = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit rayHitInfo;

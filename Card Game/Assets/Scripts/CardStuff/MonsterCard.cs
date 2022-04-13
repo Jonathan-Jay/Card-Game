@@ -23,7 +23,8 @@ public class MonsterCard : Card
 	}
 	List<TempEffect> boosts = new List<TempEffect>();
 
-	[SerializeField] AudioQueue attackSounds;
+	[SerializeField] AudioSource attackSounds;
+	[SerializeField] AudioSource killSacrifices;
 
 	private void Awake() {
 		if (data != null) {
@@ -60,7 +61,7 @@ public class MonsterCard : Card
 		healthMesh.color = Color.black;
 
 		//this is so that we can change a card on the fly, if we want to for some reason
-		attackSounds.AddClip(monData.attackSound);
+		attackSounds.clip = monData.attackSound;
 	}
 
 	public override void RenderFace() {
@@ -212,7 +213,7 @@ public class MonsterCard : Card
 				else if (current.field[i].holding)
 					current.field[i].holding.transform.localRotation = Quaternion.identity;
 			}
-			Release();
+			Release(true);
 		}
 		//success
 		else {
@@ -229,6 +230,8 @@ public class MonsterCard : Card
 				if (monster && monster != this)
 					monster.TakeDamage(monster.currHealth);
 			}
+
+			killSacrifices?.Play();
 
 			//remove card after paying cost
 			base.OnPlace(current, opposing);
@@ -331,7 +334,7 @@ public class MonsterCard : Card
 		}
 
 		attack.Invoke();
-		attackSounds.Play();
+		attackSounds?.Play();
 
 		while (transform.localPosition != returnPos) {
 			transform.localPosition = Vector3.MoveTowards(transform.localPosition, returnPos,

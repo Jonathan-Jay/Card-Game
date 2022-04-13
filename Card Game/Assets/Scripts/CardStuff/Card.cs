@@ -14,6 +14,9 @@ public class Card : MonoBehaviour
 	[SerializeField]	protected TMP_Text nameMesh;
 	[SerializeField]	protected TMP_Text costMesh;
 	[SerializeField]	protected TMP_Text flavourTextMesh;
+
+	[SerializeField]	AudioQueue releaseSound;
+
 	static public WaitForEndOfFrame eof = new WaitForEndOfFrame();
 	static Material defaultMaterial = null;
 
@@ -88,7 +91,7 @@ public class Card : MonoBehaviour
 		placed = true;
 	}
 
-	public void Release() {
+	public void Release(bool playSound) {
 		if (placement != null) {
 			placement.UnLink();
 			placement = null;
@@ -97,7 +100,10 @@ public class Card : MonoBehaviour
 
 		if (transform.parent)
 			transform.SetParent(null, true);
-		
+
+		if (playSound)
+			releaseSound?.Play();
+
 		GetComponent<Rigidbody>().isKinematic = false;
 		GetComponent<Rigidbody>().velocity = Vector3.up * 5f;
 		GetComponent<Rigidbody>().angularVelocity = transform.rotation
@@ -112,7 +118,8 @@ public class Card : MonoBehaviour
 	}
 
 	protected IEnumerator Death() {
-		Release();
+		//no sound on death
+		Release(false);
 		//in case something tries to move it while dying
 		moving = true;
 		for (float i = 1; i >= 0; i -= Time.deltaTime * 2f) {

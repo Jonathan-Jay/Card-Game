@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4606315333690536169}
   - component: {fileID: 6308060345286667039}
   - component: {fileID: 8733627473158302175}
+  - component: {fileID: 3712830934687148792}
   m_Layer: 7
   m_Name: Mana
   m_TagString: Untagged
@@ -64,6 +65,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3712830934687148792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3759136477609750484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26de7750ad91d8344b4c2ab6318338d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minStrength: 5
+  soundSource: {fileID: 0}
 --- !u!1001 &3544435229460356183
 PrefabInstance:
   m_ObjectHideFlags: 0

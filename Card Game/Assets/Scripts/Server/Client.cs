@@ -612,6 +612,12 @@ public class Client : MonoBehaviour
 		}
 	}
 
+	public static bool unfocused = false;
+
+	private void OnApplicationFocus(bool focusStatus) {
+		unfocused = !focusStatus;
+	}
+
 	private void OnApplicationQuit() {
 		Close();
 	}

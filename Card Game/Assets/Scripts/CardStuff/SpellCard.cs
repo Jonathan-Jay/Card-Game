@@ -121,7 +121,7 @@ public class SpellCard : Card
 		//can't target something, so just drop card
 		if (newIndex < -1) {
 			//relink mouse functions
-			Release();
+			Release(true);
 			//return the mana cost
 			current.ReduceMana(-data.cost);
 

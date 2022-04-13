@@ -10,7 +10,7 @@ public class SoundOnCollision : MonoBehaviour
 	private void OnCollisionEnter(Collision other) {
 		if (!soundSource)	return;
 
-		if (other.impulse.magnitude > minStrength) {
+		if (other.impulse.magnitude >= minStrength) {
 			soundSource.Play();
 		}
 	}

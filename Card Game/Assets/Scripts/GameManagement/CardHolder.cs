@@ -36,15 +36,14 @@ public class CardHolder : MonoBehaviour
 	}
 
 	//returns true on sucess
-	public virtual bool PutCard(Card card)
-	{
+	public virtual bool PutCard(Card card) {
 		//check if holding smt already, if valid player, and cost
 		if (holding != null || card.player != playerData) {	return false;	}
 
 		//if moved
 		bool newCard = true;
 		if (card.placement != null) {
-			card.Release();
+			card.Release(false);
 			newCard = false;
 		}
 		//else it's a newly placed card, so check cost

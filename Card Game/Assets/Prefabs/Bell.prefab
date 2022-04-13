@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 4233657037377689131}
   - component: {fileID: 4233657037377689133}
   - component: {fileID: 4233657037377689130}
+  - component: {fileID: 7907295295265110100}
   - component: {fileID: 4608818802814927524}
   - component: {fileID: 5393965479983645814}
   - component: {fileID: 1080561514228406070}
-  - component: {fileID: 4684995119607928132}
   m_Layer: 0
   m_Name: Bell
   m_TagString: Interactable
@@ -64,6 +64,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   id: 5
+--- !u!114 &7907295295265110100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233657037377689132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e2541a99a036643ada1d9b7aebc3c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4608818802814927524}
+        m_TargetAssemblyTypeName: AudioQueue, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1080561514228406070}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Ding
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4608818802814927524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,19 +231,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4684995119607928132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4233657037377689132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73f818975538c6942bbda01aa654cce7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim: {fileID: 1080561514228406070}
 --- !u!1001 &7499637059429057495
 PrefabInstance:
   m_ObjectHideFlags: 0

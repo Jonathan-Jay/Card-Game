@@ -144,19 +144,24 @@ public class MainMenuController : MonoBehaviour
 	void JoinedLobby(bool joined, string lobbyName) {
 		this.lobbyName.text = lobbyName;
 		if (joined) {
+			if (cam.index != 1)
+				goForwardPlayer?.PlayRandom();
+
 			while (cam.index != inLobbyIndex) {
 				cam.IncrementIndex(true);
 			}
-			goForwardPlayer?.PlayRandom();
 		}
 		else {
+			if (cam.index != 1)
+				goBackPlayer?.PlayRandom();
+
 			while (cam.index != outLobbyIndex) {
 				cam.IncrementIndex(true);
 			}
-			goBackPlayer?.PlayRandom();
 		}
 	}
 
+	int prevSeatedCount = 0;
 	void SeatedPlayersChanged() {
 		if (ServerManager.CheckIfClient(null, false)) {
 			//show the leave seat if you're a player
@@ -175,7 +180,15 @@ public class MainMenuController : MonoBehaviour
 			startButton.interactable = false;
 		}
 
-		seatedAudioPlayer?.PlayRandom();
+		int seatedCount = 0;
+		if (ServerManager.p1Index >= 0)	++seatedCount;
+		if (ServerManager.p2Index >= 0)	++seatedCount;
+
+		if (seatedCount != prevSeatedCount) {
+			if (seatedCount > 0 || prevSeatedCount > 0)
+				seatedAudioPlayer?.PlayRandom();
+			prevSeatedCount = seatedCount;
+		}
 
 		//render faces if valid or smt
 		player1Seat.SetActive(ServerManager.p1Index >= 0);
