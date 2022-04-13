@@ -12,6 +12,8 @@ public class SpellEffect : MonoBehaviour
 
 	private void Awake() {
 		sounds = GetComponent<AudioQueue>();
+		if (sounds)
+			deathDelay = sounds.GetAudioSource(0).clip.length;
 	}
 
 	public void PerformEffect(SpellCard caster, PlayerData target, int index, int count) {
@@ -32,6 +34,8 @@ public class SpellEffect : MonoBehaviour
 		//instant is default
 		ability?.Invoke(target, index, (SpellData)caster.data);
 		sounds.Play();
+
+		yield return new WaitForSeconds(deathDelay);
 
 		Destroy(gameObject);
 	}

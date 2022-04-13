@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //base class
-public class TargetDeck : SpellEffect
+public class TargetDeckEffect : SpellEffect
 {
 	public override float GetCardDeathDelay(int count) {
 		return duration * count;
@@ -33,6 +33,7 @@ public class TargetDeck : SpellEffect
 		oneOverDelay = 1f/deathDelay;
 		for (float i = deathDelay; i > 0; i -= Time.deltaTime) {
 			transform.localScale = Vector3.one * oneOverDelay * i;
+			yield return Card.eof;
 		}
 		Destroy(gameObject);
 	}

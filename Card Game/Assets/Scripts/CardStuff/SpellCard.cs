@@ -56,13 +56,14 @@ public class SpellCard : Card
 	}
 
 	public override void PrePlace(PlayerData current, PlayerData opposing) {
+		placementSound?.Play();
+
 		StartCoroutine(CastSpell(current, opposing));
 	}
 
 	public override void OnPlace(PlayerData current, PlayerData opposing) {
 		//don't render face until it's placed
 		//RenderFace();
-		placementSound?.Play();
 
 		//StartCoroutine(CastSpell(current, opposing));
 		waiting = true;

@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 6341679989347176843}
   - component: {fileID: 3059895186131061907}
-  - component: {fileID: 6450659945294868625}
+  - component: {fileID: -8809949966835414410}
   - component: {fileID: 8857628591965841689}
   - component: {fileID: -3727252990489680504}
   - component: {fileID: 3639878179748226033}
   m_Layer: 0
-  m_Name: SmallExplosion
+  m_Name: DivineBlessing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -225,7 +225,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.058148384, g: 0, b: 1, a: 1}
+      maxColor: {r: 0.4739629, g: 1, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4742,7 +4742,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!114 &6450659945294868625
+--- !u!114 &-8809949966835414410
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4755,7 +4755,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.5
-  deathDelay: 0.25
+  deathDelay: 0.5
+  offset: {x: 0, y: 0.5, z: 0}
 --- !u!199 &8857628591965841689
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -4833,8 +4834,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -1410572022014993937, guid: 8913019f04f708a449fada98239334d0, type: 2}
-  m_audioClip: {fileID: 8300000, guid: ce64cd6a7d695e04eae46b97b4392782, type: 3}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 8300000, guid: df2f40b8799ba2645aea78d5f0413a0c, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

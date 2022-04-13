@@ -46,7 +46,8 @@ public class MoveCardEffect : SpellEffect
 		ability?.Invoke(target, index, (SpellData)caster.data);
 		sounds.Play();
 
-		//kill the thing instantly
+		yield return new WaitForSeconds(deathDelay);
+
 		Destroy(gameObject);
 	}
 }

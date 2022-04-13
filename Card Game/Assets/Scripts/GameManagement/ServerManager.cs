@@ -27,6 +27,9 @@ public class ServerManager : MonoBehaviour
 	[SerializeField]	GameObject leaveLobbyButton;
 	[SerializeField]	GameObject concedeButton;
 
+	[SerializeField]	GameObject winObj;
+	[SerializeField]	TMPro.TMP_Text winText;
+
 	SkinnedMeshRenderer p1bell;
 	SkinnedMeshRenderer p2bell;
 	Color defaultBellCol;
@@ -35,6 +38,7 @@ public class ServerManager : MonoBehaviour
 		//assign game to static var
 		game = gameCon;
 
+		winObj.SetActive(false);
 		pauseScreen.SetActive(false);
 
 		p1cam = p1mouse.GetComponent<Camera>();
@@ -55,6 +59,12 @@ public class ServerManager : MonoBehaviour
 		game.playerWon += RemoveInputs;
 
 		if (localMultiplayer) {
+			//has to do lots of input controlling
+			updateFunc += LocalMulti;
+			//this one is local only as it hides faces and handles pausing differently
+			game.turnEnded += LocalTurnEndPlayerChange;
+			game.playerWon += LocalWinner;
+
 			//disable the other player
 			if (p1turn) {
 				p1cam.enabled = true;
@@ -81,11 +91,6 @@ public class ServerManager : MonoBehaviour
 			}
 			networkedPauseButtons.SetActive(false);
 
-			//has to do lots of input controlling
-			updateFunc += LocalMulti;
-			//this one is local only as it hides faces and handles pausing differently
-			game.turnEnded += LocalTurnEndPlayerChange;
-
 			//show all cards
 			//game.StartGame(p1turn, true, true);
 			StartCoroutine(DelayedStart(2f));
@@ -106,6 +111,7 @@ public class ServerManager : MonoBehaviour
 
 			//this one kinda just handles pausing tbh
 			updateFunc += OnlineMulti;
+			game.playerWon += OnlineWinner;
 			game.playerWon += ShowLeaveButton;
 
 			client.udpEvent += UdpUpdate;
@@ -685,6 +691,25 @@ public class ServerManager : MonoBehaviour
 		updateFunc?.Invoke();
 	}
 
+	void OnlineMulti() {
+		//pause menu jazz
+		if (Input.GetKeyDown(pauseButton)) {
+			pauseScreen.SetActive(!pauseScreen.activeInHierarchy);
+
+			//toggle the mice, toggle the player's (figure out which is theirs)
+			if (p1Index == Client.playerId) {
+				p1mouse.SetDisabled(pauseScreen.activeInHierarchy);
+				p1mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
+			}
+			else if (p2Index == Client.playerId) {
+				p2mouse.SetDisabled(pauseScreen.activeInHierarchy);
+				p2mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
+			}
+		}
+
+		//nothing else?, possibly add online only keypresses
+	}
+
 	bool lookingAtP1 = true;
 	CameraController localCamTarget = null;
 	void LocalMulti() {
@@ -761,25 +786,6 @@ public class ServerManager : MonoBehaviour
 		localCamTarget.ForceTransition(null);
 		localCamTarget.Snap();
 		localCamTarget = null;
-	}
-
-	void OnlineMulti() {
-		//pause menu jazz
-		if (Input.GetKeyDown(pauseButton)) {
-			pauseScreen.SetActive(!pauseScreen.activeInHierarchy);
-
-			//toggle the mice, toggle the player's (figure out which is theirs)
-			if (p1Index == Client.playerId) {
-				p1mouse.SetDisabled(pauseScreen.activeInHierarchy);
-				p1mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
-			}
-			else if (p2Index == Client.playerId) {
-				p2mouse.SetDisabled(pauseScreen.activeInHierarchy);
-				p2mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
-			}
-		}
-
-		//nothing else?, possibly add online only keypresses
 	}
 
 	void SwapCams() {
@@ -911,6 +917,15 @@ public class ServerManager : MonoBehaviour
 			}
 			game.player1.deck.FirstDraw(true);
 		}
+	}
+
+	void OnlineWinner(PlayerData winner) {
+		LocalWinner(winner);
+	}
+
+	void LocalWinner(PlayerData winner) {
+		winObj.SetActive(true);
+		winText.text = winner.name + " won the game";
 	}
 
 	//always returns true if local game

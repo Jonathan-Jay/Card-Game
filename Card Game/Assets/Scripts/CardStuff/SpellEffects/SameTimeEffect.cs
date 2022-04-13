@@ -38,6 +38,7 @@ public class SameTimeEffect : SpellEffect
 		oneOverDelay = 1f/deathDelay;
 		for (float i = deathDelay; i > 0; i -= Time.deltaTime) {
 			transform.localScale = Vector3.one * oneOverDelay * i;
+			yield return Card.eof;
 		}
 		Destroy(gameObject);
 	}

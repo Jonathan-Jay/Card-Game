@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 6341679989347176843}
   - component: {fileID: 3059895186131061907}
-  - component: {fileID: 9192240081489621331}
+  - component: {fileID: -521161823943904205}
   - component: {fileID: 8857628591965841689}
-  - component: {fileID: -8862473300804936420}
-  - component: {fileID: 2204439102299372392}
+  - component: {fileID: -3727252990489680504}
+  - component: {fileID: 3639878179748226033}
   m_Layer: 0
-  m_Name: TargetDeck
+  m_Name: BaggySleeves
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -225,7 +225,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.030596506, b: 0, a: 1}
+      maxColor: {r: 0.5372549, g: 0.20784315, b: 0.23137257, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4742,7 +4742,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!114 &9192240081489621331
+--- !u!114 &-521161823943904205
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4754,8 +4754,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c048a8270161a1249900d64168018a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 0.5
-  deathDelay: 0.25
+  duration: 0.25
+  deathDelay: 0.5
 --- !u!199 &8857628591965841689
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -4823,7 +4823,7 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!82 &-8862473300804936420
+--- !u!82 &-3727252990489680504
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4833,8 +4833,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -1410572022014993937, guid: 8913019f04f708a449fada98239334d0, type: 2}
-  m_audioClip: {fileID: 8300000, guid: ce64cd6a7d695e04eae46b97b4392782, type: 3}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 8300000, guid: ab06cef1c34645d4f93859cec2f7acff, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -4919,7 +4919,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2204439102299372392
+--- !u!114 &3639878179748226033
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4932,4 +4932,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
-  - {fileID: -8862473300804936420}
+  - {fileID: -3727252990489680504}

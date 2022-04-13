@@ -225,7 +225,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.058148384, g: 0, b: 1, a: 1}
+      maxColor: {r: 0.5596005, g: 0.53207546, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4755,7 +4755,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0.5
-  deathDelay: 0.25
+  deathDelay: 0.5
+  offset: {x: 0, y: 0.25, z: 0}
 --- !u!199 &8857628591965841689
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -4834,7 +4835,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -1410572022014993937, guid: 8913019f04f708a449fada98239334d0, type: 2}
   m_audioClip: {fileID: 8300000, guid: 2998ee6a39c7be247999200165bbf6a2, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

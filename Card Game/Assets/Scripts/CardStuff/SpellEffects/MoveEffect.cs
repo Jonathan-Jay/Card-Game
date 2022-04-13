@@ -5,6 +5,7 @@ using UnityEngine;
 //base class
 public class MoveEffect : SpellEffect
 {
+	public Vector3 offset = Vector3.up * 0.5f;
 	public override float GetCardDeathDelay(int count) {
 		return count * duration;
 	}
@@ -12,21 +13,31 @@ public class MoveEffect : SpellEffect
 	public override IEnumerator DelayedCasting(AbilityFunc ability, PlayerData target,
 		int index, SpellCard caster, int count)
 	{
-		transform.position = caster.transform.position + Vector3.up * 0.5f;
+		transform.position = caster.transform.position + caster.transform.rotation * offset;
 
-		Vector3 targetPos = target.hand.transform.position + Vector3.up;
+		Quaternion targetRot = target.hand.transform.rotation;
+
+		Vector3 targetPos = target.hand.transform.position + targetRot * offset;
 		if (index >= 0) {
-			if (index >= target.field.Count && target.backLine[index - target.field.Count].holding)
-				targetPos = target.backLine[index - target.field.Count].transform.position + Vector3.up * 0.5f;
-			else if (target.field[index].holding)
-				targetPos = target.field[index].transform.position + Vector3.up * 0.5f;
+			if (index >= target.field.Count && target.backLine[index - target.field.Count].holding) {
+				targetRot = target.backLine[index - target.field.Count].transform.rotation;
+				targetPos = target.backLine[index - target.field.Count].transform.position + targetRot * offset;
+			}
+			else if (target.field[index].holding) {
+				targetRot = target.field[index].transform.rotation;
+				targetPos = target.field[index].transform.position + targetRot * offset;
+			}
 		}
 		yield return new WaitForSeconds(count * duration);
 
 		float oneOverDelay = 1f/duration;
+		float val;
+
 		for (float i = 0; i < duration; i += Time.deltaTime) {
-			transform.position = Vector3.Lerp(transform.position, targetPos,
-				Mathf.SmoothStep(0f, 1f, oneOverDelay * i));
+			val = Mathf.SmoothStep(0f, 1f, oneOverDelay * i);
+			transform.position = Vector3.Lerp(transform.position, targetPos, val);
+			transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, val);
+			
 			yield return Card.eof;
 		}
 
@@ -37,6 +48,7 @@ public class MoveEffect : SpellEffect
 		oneOverDelay = 1f/deathDelay;
 		for (float i = deathDelay; i > 0; i -= Time.deltaTime) {
 			transform.localScale = Vector3.one * oneOverDelay * i;
+			yield return Card.eof;
 		}
 		Destroy(gameObject);
 	}
