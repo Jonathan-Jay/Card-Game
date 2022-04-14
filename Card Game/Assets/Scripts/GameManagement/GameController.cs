@@ -32,12 +32,14 @@ public class GameController : MonoBehaviour
 
     void Awake() {
 		if (generateField)
-        	Generate();
-		else {
-			//these can't be assigned in code rn
-			player1.turnEndButton.pressed += DoPlayer1Turn;
-			player2.turnEndButton.pressed += DoPlayer2Turn;
-		}
+			Generate();
+
+		//these can't be assigned in code rn
+		player1.startOfTurn += delegate { ReturnCardsToHand.ReturnAll(player1); };
+		player2.startOfTurn += delegate { ReturnCardsToHand.ReturnAll(player2); };
+
+		player1.turnEndButton.pressed += DoPlayer1Turn;
+		player2.turnEndButton.pressed += DoPlayer2Turn;
     }
 
 	public void LocalGameStart(bool p1Starts) {
@@ -201,7 +203,6 @@ public class GameController : MonoBehaviour
 		temp.localRotation = Quaternion.Euler(0f, 180f, 0f);
 		player2.turnEndButton = temp.GetComponent<PressEventButton>();
 		player2.turnEndButton.player = player2;
-		player2.turnEndButton.pressed += DoPlayer2Turn;
 		//temp.gameObject.tag = "Player2";
 
 		temp = Instantiate(turnEndButtonPrefab.gameObject, transform).transform;
@@ -209,7 +210,6 @@ public class GameController : MonoBehaviour
 		temp.localRotation = Quaternion.identity;
 		player1.turnEndButton = temp.GetComponent<PressEventButton>();
 		player1.turnEndButton.player = player1;
-		player1.turnEndButton.pressed += DoPlayer1Turn;
 		//temp.gameObject.tag = "Player1";
 
 

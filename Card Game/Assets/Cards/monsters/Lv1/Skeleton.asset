@@ -15,7 +15,10 @@ MonoBehaviour:
   cardName: <color=yellow>Skeleton</color>
   cardArt: {fileID: 2800000, guid: 4fcaf5561369aac42a6e7eeb8dcf95dd, type: 3}
   cost: 0
-  flavourText: 
+  flavourText: '<i>"I''ve got a BONE to pick with you"
+
+    <size=50%>(He''s a bad
+    comedian and he doesn''t take criticism well)</size></i>'
   health: 1
   attack: 2
   healthRMax: 0

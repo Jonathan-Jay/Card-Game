@@ -13,23 +13,24 @@ public class KeypressCamController : MonoBehaviour
 		ignore = val;
 	}
 	
-	bool checkScroll = true;
+	public float scrollDelay = 0.1f;
+	float scrollCounter = 0f;
 	void Update()
 	{
 		if (ignore)	return;
 
 		//mouse position check?
-		if (!checkScroll && Input.mouseScrollDelta.y == 0f) {
-			checkScroll = true;
+		if (scrollDelay > 0f) {
+			scrollDelay -= Time.deltaTime;
 		}
 
-		if (Input.GetKeyDown(KeyCode.W) || (checkScroll && Input.mouseScrollDelta.y > 0)) {
+		if (Input.GetKeyDown(KeyCode.W) || (scrollCounter <= 0f && Input.mouseScrollDelta.y > 0f)) {
 			cam.IncrementIndex(looping);
-			checkScroll = false;
+			scrollCounter = scrollDelay;
 		}
-		if (Input.GetKeyDown(KeyCode.S) || (checkScroll && Input.mouseScrollDelta.y < 0)) {
+		if (Input.GetKeyDown(KeyCode.S) || (scrollCounter <= 0f && Input.mouseScrollDelta.y < 0f)) {
 			cam.DecrementIndex(looping);
-			checkScroll = false;
+			scrollCounter = scrollDelay;
 		}
 	}
 }

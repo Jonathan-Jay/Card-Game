@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Divine Blessing
   cardArt: {fileID: 2800000, guid: c7788a4971e6f86438f3c4ff064edce9, type: 3}
-  cost: 1
-  flavourText: 
+  cost: 2
+  flavourText: <i>"I may not be religious, but I'll take it"</i>
   targettingOption: 6
   activateOption: 0
   abilityOption: 3
-  cardDescription: Monster heals and becomes invincible for one turn
+  cardDescription: Selected monster <color=yellow>fully heals</color> and becomes
+    <i>invincible</i> for one turn
   actionParameter1: 0
   actionParameter2: 0
   abilityParameter1: 2

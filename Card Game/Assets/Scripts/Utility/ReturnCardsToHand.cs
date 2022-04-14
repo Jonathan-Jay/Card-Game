@@ -18,10 +18,15 @@ public class ReturnCardsToHand : MonoBehaviour
 		GetComponent<PressEventButton>().player = player;
 	}
 
-    void Return() {
-		//don't include placed cards
+	public void Return() {
+		ReturnAll(player);
+	}
+
+	public static void ReturnAll(PlayerData player) {
+		if (!player)	return;
+
 		foreach(Card card in player.heldCards) {
 			card.CallBackCard();
 		}
-    }
+	}
 }

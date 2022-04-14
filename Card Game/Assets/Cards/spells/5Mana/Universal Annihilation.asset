@@ -15,11 +15,12 @@ MonoBehaviour:
   cardName: Universal Annihilation
   cardArt: {fileID: 2800000, guid: 6ec4448068c0b7f4da9734c509ea8528, type: 3}
   cost: 5
-  flavourText: 
+  flavourText: <i>"Universal Annihilation? Localized entirely within the Front Lines?"</i>
   targettingOption: 3
   activateOption: 3
   abilityOption: 0
-  cardDescription: Deal <color=red>2</color> damage to every monster in the frontlines
+  cardDescription: Deal <color=red>2</color> damage to every monster in the Front
+    Lines
   actionParameter1: 0
   actionParameter2: 0
   abilityParameter1: 2

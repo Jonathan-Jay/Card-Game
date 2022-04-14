@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Strength Potion
   cardArt: {fileID: 2800000, guid: dcd1e4d290c21ca4bae53e08317a7695, type: 3}
   cost: 2
-  flavourText: 
+  flavourText: <i>I Can't Believe It's Not Steroids</i>
   targettingOption: 6
   activateOption: 0
   abilityOption: 3

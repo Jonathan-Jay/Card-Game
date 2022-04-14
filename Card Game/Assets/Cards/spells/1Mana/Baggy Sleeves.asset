@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Baggy Sleeves
   cardArt: {fileID: 2800000, guid: 9b99214c80164d44ebb9b2b6f1e5a014, type: 3}
-  cost: 2
-  flavourText: 
+  cost: 1
+  flavourText: <i>No cheating here...</i>
   targettingOption: 4
   activateOption: 0
   abilityOption: 5
-  cardDescription: Draw <color=yellow>1</color> cards
+  cardDescription: Draw <color=yellow>1</color> card
   actionParameter1: 0
   actionParameter2: 0
   abilityParameter1: 1

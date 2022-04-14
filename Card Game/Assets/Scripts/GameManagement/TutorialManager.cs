@@ -54,8 +54,9 @@ public class TutorialManager : MonoBehaviour
 	[SerializeField] KeyCode pauseButton;
 	[SerializeField] GameObject pauseScreen;
 	[SerializeField] Transform tutorialTrans;
-	[SerializeField] Transform tutorialQuad;
+	[SerializeField] MeshRenderer tutorialQuad;
 	[SerializeField] TMPro.TMP_Text tutorialText;
+	[SerializeField] Transform tutorialArrow;
 
 	SkinnedMeshRenderer p1bell;
 	SkinnedMeshRenderer p2bell;
@@ -64,7 +65,7 @@ public class TutorialManager : MonoBehaviour
 	private void Awake() {
 		pauseScreen.SetActive(false);
 
-		float alpha = tutorialQuad.GetComponent<MeshRenderer>().material.color.a;
+		float alpha = tutorialQuad.material.color.a;
 
 		defaultCol.a = alpha;
 		notDefaultCol.a = alpha;
@@ -189,20 +190,26 @@ public class TutorialManager : MonoBehaviour
 
 	private void UpdateSection() {
 		TutorialSection temp = sections[currentSection];
-		if (temp.hoverOver)
+		if (temp.hoverOver) {
 			tutorialTrans.position = temp.hoverOver.position + temp.offset;
-		else
+			tutorialArrow.position = temp.hoverOver.position;
+			tutorialArrow.GetComponentInChildren<LookAt>().UpdateCam();
+		}
+		else {
 			tutorialTrans.position = game.transform.position + temp.offset;
+			tutorialArrow.position = Vector3.up * 100f;
+		}
 
-		tutorialQuad.localScale = temp.scale + Vector3.right * 0.1f + Vector3.up * 0.1f;
+		tutorialQuad.transform.localScale = temp.scale + Vector3.right * 0.1f + Vector3.up * 0.1f;
+		tutorialQuad.material.color = temp.stepTest == TutorialSection.NextStepTest.CLICKTOPROCEED
+			? defaultCol : notDefaultCol;
+
 		tutorialTrans.GetComponent<BoxCollider>().size = temp.scale;
 		tutorialTrans.GetComponent<LookAt>().UpdateCam();
 		tutorialTrans.GetComponent<PressEventButton>().enabled = temp.stepTest == TutorialSection.NextStepTest.CLICKTOPROCEED;
 
 		tutorialText.text = temp.text;
 		tutorialText.rectTransform.sizeDelta = temp.scale * 10f;
-		tutorialQuad.GetComponent<MeshRenderer>().material.color =
-			temp.stepTest == TutorialSection.NextStepTest.CLICKTOPROCEED ? defaultCol : notDefaultCol;
 
 		game.player1.turnEndButton.enabled = temp.canEndTurn;
 		game.player1.hand.input.cantPlaceCards = !temp.canPlaceCards;

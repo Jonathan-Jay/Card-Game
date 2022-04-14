@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: <color=yellow>Useless Lump</color>
   cardArt: {fileID: 2800000, guid: b25f69838f8190f4e8af9c208d671537, type: 3}
   cost: 0
-  flavourText: 
+  flavourText: <i>"Put me out of my misery"</i>
   health: 1
   attack: 0
   healthRMax: 0

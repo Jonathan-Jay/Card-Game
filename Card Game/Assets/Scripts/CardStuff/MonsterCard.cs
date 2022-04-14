@@ -114,8 +114,8 @@ public class MonsterCard : Card
 			//calc stats
 			if (currAttack == int.MaxValue) {
 				MonsterData monData = (MonsterData)data;
-				SetAttack(Random.Range(monData.attack, monData.attackRMax), Color.black);
-				SetHealth(Random.Range(monData.health, monData.healthRMax), Color.black);
+				SetAttack(Random.Range(monData.attack, monData.attackRMax + 1), Color.black);
+				SetHealth(Random.Range(monData.health, monData.healthRMax + 1), Color.black);
 			}
 
 			//always render free placed cards
@@ -240,8 +240,8 @@ public class MonsterCard : Card
 			//calc stats
 			if (currAttack == int.MaxValue) {
 				MonsterData monData = (MonsterData)data;
-				SetAttack(Random.Range(monData.attack, monData.attackRMax), Color.black);
-				SetHealth(Random.Range(monData.health, monData.healthRMax), Color.black);
+				SetAttack(Random.Range(monData.attack, monData.attackRMax + 1), Color.black);
+				SetHealth(Random.Range(monData.health, monData.healthRMax + 1), Color.black);
 			}
 		}
 

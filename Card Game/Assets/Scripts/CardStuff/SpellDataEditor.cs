@@ -212,7 +212,7 @@ public class SpellDataEditor : Editor
 
 		EditorGUILayout.LabelField("<b>Description:</b>", richText);
 		++EditorGUI.indentLevel;
-		cardDescription.stringValue = EditorGUILayout.TextField(cardDescription.stringValue, richTextBoxed);
+		cardDescription.stringValue = EditorGUILayout.TextArea(cardDescription.stringValue, richTextBoxed);
 		--EditorGUI.indentLevel;
 		lockedDescription = EditorGUILayout.Toggle("Lock Description", lockedDescription);
 
@@ -270,7 +270,8 @@ public class SpellDataEditor : Editor
 				.Replace("{4}", abilityParameter3.intValue.ToString());
 		}
 
-		flavourText.stringValue = EditorGUILayout.TextField("Flavour Text", flavourText.stringValue, richTextBoxed);
+		EditorGUILayout.LabelField("Flavour Text");
+		flavourText.stringValue = EditorGUILayout.TextArea(flavourText.stringValue, richTextBoxed);
 
 		usingRichText = EditorGUILayout.Toggle("Use Rich Text", usingRichText);
 		//prefab entry

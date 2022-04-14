@@ -15,11 +15,12 @@ MonoBehaviour:
   cardName: Predictable Explosion
   cardArt: {fileID: 2800000, guid: adf1b4ad88b30864a96065fd9daafab7, type: 3}
   cost: 1
-  flavourText: 
+  flavourText: <i>"<b>bang.</b>"</i>
   targettingOption: 0
   activateOption: 0
   abilityOption: 0
-  cardDescription: Deal <color=red>1</color> damage directly to the opposing card
+  cardDescription: Deal <color=red>1</color> damage to the monster directly across
+    the field
   actionParameter1: 0
   actionParameter2: 0
   abilityParameter1: 1

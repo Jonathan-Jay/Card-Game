@@ -7,6 +7,7 @@ using UnityEditor;
 public class MonsterDataEditor : Editor
 {
 	static bool unlockedInts = false;
+	static bool usingRichText = true;
 	SerializedProperty cardName;
 	SerializedProperty cardArt;
 	SerializedProperty cost;
@@ -37,7 +38,7 @@ public class MonsterDataEditor : Editor
 	{
 		this.serializedObject.Update();
 		GUIStyle richText = new GUIStyle(GUI.skin.textField);
-		richText.richText = true;
+		richText.richText = usingRichText;
 		richText.wordWrap = true;
 		richText.stretchHeight = true;
 
@@ -67,8 +68,11 @@ public class MonsterDataEditor : Editor
 				healthRMax.intValue = EditorGUILayout.IntSlider("Health Randomized Max", healthRMax.intValue, 0, 10);
 			}
 		}
-		flavourText.stringValue = EditorGUILayout.TextField("Flavour Text", flavourText.stringValue, richText);
-		
+		EditorGUILayout.LabelField("Flavour Text");
+		flavourText.stringValue = EditorGUILayout.TextArea(flavourText.stringValue, richText);
+
+		usingRichText = EditorGUILayout.Toggle("Use Rich Text", usingRichText);
+
 		EditorGUILayout.PropertyField(attackSound);
 
 		this.serializedObject.ApplyModifiedProperties();

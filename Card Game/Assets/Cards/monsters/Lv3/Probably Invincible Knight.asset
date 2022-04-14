@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: <color=red><i><size=50%>Probably</size></i> Invincible Knight</color>
   cardArt: {fileID: 2800000, guid: b0495bd92dbbdef46b53134e5bdabfd6, type: 3}
   cost: 2
-  flavourText: 
+  flavourText: <i>Has severe confidence issues</i>
   health: 3
   attack: 3
   healthRMax: 0

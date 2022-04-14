@@ -15,11 +15,12 @@ MonoBehaviour:
   cardName: Sudden Explosion
   cardArt: {fileID: 2800000, guid: d3acd03aebcc61d4fb24e148521a3985, type: 3}
   cost: 4
-  flavourText: 
+  flavourText: <i>"<b>BANG!</b>"</i>
   targettingOption: 7
   activateOption: 0
   abilityOption: 2
-  cardDescription: Destroy one of the opponent's monsters
+  cardDescription: Destroy <color=red>1</color> of the opponent's monsters, ignoring
+    invincibility
   actionParameter1: 0
   actionParameter2: 0
   abilityParameter1: 0

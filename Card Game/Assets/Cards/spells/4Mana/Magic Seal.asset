@@ -15,14 +15,15 @@ MonoBehaviour:
   cardName: Magic Seal
   cardArt: {fileID: 2800000, guid: 48951190081f5bf4d965f892ee3ea8e0, type: 3}
   cost: 4
-  flavourText: 
+  flavourText: <i>I don't know what you were expecting</i>
   targettingOption: 3
   activateOption: 0
   abilityOption: 4
-  cardDescription: Opposent loses <color=red>all</color> their mana
+  cardDescription: Opponent loses <color=red>all</color> their mana <color=red>this</color>
+    turn
   actionParameter1: 0
   actionParameter2: 0
-  abilityParameter1: 5
+  abilityParameter1: 10
   abilityParameter2: 0
   abilityParameter3: 0
   effect: {fileID: 4321136764659035571, guid: cfd02745a2112474aa9d86b7870903d6, type: 3}
