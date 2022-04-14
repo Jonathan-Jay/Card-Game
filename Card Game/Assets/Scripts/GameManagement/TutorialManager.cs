@@ -41,6 +41,7 @@ public class TutorialManager : MonoBehaviour
 	}
 
 	public FodderRain lol;
+	public ShakeTable lol2;
 	public Color defaultCol = Color.white;
 	public Color notDefaultCol = Color.yellow;
 	public List<TutorialSection> sections = new List<TutorialSection>();
@@ -180,7 +181,7 @@ public class TutorialManager : MonoBehaviour
 			UpdateSection();
 
 			if (currentSection == sections.Count - 1)
-				StartCoroutine(DelayedFunc(delegate { lol.enabled = true; }, 900f));
+				StartCoroutine(DelayedFunc(delegate { lol.enabled = true; lol2.enabled = true; }, 900f));
 		}
 		else {
 			//too big, can trigger something special

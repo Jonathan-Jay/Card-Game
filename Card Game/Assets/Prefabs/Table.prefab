@@ -40,7 +40,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3518372173776631801}
   - component: {fileID: 3518372173776631802}
-  - component: {fileID: 3518372173776631803}
   - component: {fileID: 3518372173776631796}
   m_Layer: 0
   m_Name: Table
@@ -101,20 +100,6 @@ MonoBehaviour:
   fatigueDmg: 1
   player1: {fileID: 0}
   player2: {fileID: 0}
---- !u!114 &3518372173776631803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3518372173776631800}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a1a5a9a6f5f57a4fb1cb413e5faa0d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  range: 15
-  counter: 0
 --- !u!81 &3518372173776631796
 AudioListener:
   m_ObjectHideFlags: 0
