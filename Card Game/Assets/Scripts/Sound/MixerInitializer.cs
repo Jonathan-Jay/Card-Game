@@ -10,7 +10,7 @@ public class MixerInitializer : MonoBehaviour
 	private void Start() {
 		mixer = tempMixer;
 
-		SceneController.ChangeScene("Main Menu");
+		//SceneController.ChangeScene("Main Menu");
 	}
 
 	public static void SetMixerVolume(string name, float val) {
