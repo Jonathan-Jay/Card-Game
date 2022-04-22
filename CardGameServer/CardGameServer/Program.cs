@@ -239,7 +239,7 @@ public class SynServer
 		catch (System.IO.FileNotFoundException) {
 			//make the file instead
 			Console.WriteLine("leaderboard data not found, generating new file");
-			System.IO.File.Create(filename);
+			System.IO.File.Create(filename).Close();
 			leaderboardData = new List<LeaderboardData>();
 		}
 		catch (Exception e) {
