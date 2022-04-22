@@ -153,6 +153,7 @@ public class GameController : MonoBehaviour
 		current.TurnEnd(maxMana, cardsPerTurn, minCardsInHand, maxCardsInHand);
 		current.hand.input.ActivateAll();
 
+		//bool won = false;
 		//possibly deactivate if the player won
 		if (opposing.currentHP > 0) {
 			turnEnded?.Invoke();
@@ -163,14 +164,30 @@ public class GameController : MonoBehaviour
 		else {
 			//what happens when a player wins
 			playerWon?.Invoke(current);
-			yield break;
+			//won = true;
 		}
 
 		//check the fatigue of the current player
+		//if (!won && opposing.FatigueCheck(fatigueDmg)) {
 		if (opposing.FatigueCheck(fatigueDmg)) {
 			//what happens if opponent dies on first turn
 			playerWon?.Invoke(current);
+			//won = true;
 		}
+
+		// if (won) {
+		// 	if (ServerManager.CheckIfClient(current, false)) {
+		// 		Client.SendStringMessage("WIN" + ServerManager.GetPlayerCode(current));
+		// 	}
+		// 	//to avoid double invoking
+		// 	if (ServerManager.CheckIfClient(current, true)) {
+		// 		playerWon?.Invoke(current);
+		// 	}
+		// }
+	}
+
+	public void MakeWinner(PlayerData winner) {
+		playerWon?.Invoke(winner);
 	}
 
 	void Generate() {

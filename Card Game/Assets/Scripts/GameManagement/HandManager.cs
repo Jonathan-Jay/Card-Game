@@ -35,10 +35,13 @@ public class HandManager : MonoBehaviour
 	}
 
 	void HoverManagement(Transform hit) {
-		if (!hit || !doHover)	return;
+		if (!doHover)	return;
 
 		splaySelectIndexOld = splaySelectIndex;
-		splaySelectIndex = (hit.gameObject.layer == 6 && hit.parent == transform && !input.holding) ? hit.GetSiblingIndex() : -1;
+		if (hit)
+			splaySelectIndex = (hit.gameObject.layer == 6 && hit.parent == transform && !input.holding) ? hit.GetSiblingIndex() : -1;
+		else
+			splaySelectIndex = -1;
 
 		doSplay = doSplay || splaySelectIndex != splaySelectIndexOld;
 		if (doSplay) TestSplay();

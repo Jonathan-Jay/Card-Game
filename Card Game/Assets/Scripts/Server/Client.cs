@@ -46,6 +46,7 @@ public class Client : MonoBehaviour
 	//true for currently in lobby
 	public event Action<bool, string> updatePlayerList;
 	public event Action<string> updateLobbyList;
+	public event Action<string> updateLeaderboardList;
 	public event Action dirty;
 	public event Action<string> lobbyError;
 	//true if in lobby, string for lobby name
@@ -53,6 +54,7 @@ public class Client : MonoBehaviour
 	public event Action tableSeatUpdated;
 	public event Action<byte[]> gameCodeReceived;
 	public event Action<byte[]> udpEvent;
+	public event Action<string> winnerEvent;
 
 	public static WaitForSeconds DesyncCompensation = new WaitForSeconds(0.5f);
 
@@ -489,8 +491,12 @@ public class Client : MonoBehaviour
 			}
 			case "LIN": {
 				//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
-
 				updateLobbyList?.Invoke(Encoding.ASCII.GetString(buffer, 0, size));
+				break;
+			}
+			case "LED": {
+				//string message = Encoding.ASCII.GetString(buffer, msgCodeSize, size);
+				updateLeaderboardList?.Invoke(Encoding.ASCII.GetString(buffer, 0, size));
 				break;
 			}
 			case "DTY": {
@@ -607,6 +613,11 @@ public class Client : MonoBehaviour
 				//also send dirty flag
 				//client.SendTo(Encoding.ASCII.GetBytes("DTY"), server);
 				SendStringMessage("DTY");
+				break;
+			}
+			case "WIN": {
+				//format is playercode of winner
+				winnerEvent?.Invoke(Encoding.ASCII.GetString(buffer, 0, size));
 				break;
 			}
 		}
