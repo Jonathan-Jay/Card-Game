@@ -53,6 +53,13 @@ public class PlayerData : MonoBehaviour {
 		}
 	}
 
+	//for animations
+	public void PlayCard(int backLineIndex) {
+		if (heldCards.Count > 0) {
+			backLine[backLineIndex].PutCard(heldCards[0]);
+		}
+	}
+
 	public int lastPlayedIndex = -1;
 
 	public void DrawCard() {

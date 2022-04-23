@@ -14,4 +14,9 @@ public class SceneController : MonoBehaviour
 	static public void StartGame() {
 		ChangeScene(Client.gameSceneName);
 	}
+
+	//for anim
+	public void ChgScene(string name) {
+		ChangeScene(name);
+	}
 }

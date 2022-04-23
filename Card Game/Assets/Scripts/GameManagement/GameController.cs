@@ -44,8 +44,8 @@ public class GameController : MonoBehaviour
 
 	public void LocalGameStart(bool p1Starts) {
 		//null data so it shuffles
-		StartPlayerTurn(p1Starts ? player1 : player2, null);
-		StartPlayerTurn(p1Starts ? player2 : player1, null);
+		StartPlayerTurn(p1Starts ? player1 : player2);
+		StartPlayerTurn(p1Starts ? player2 : player1);
 
 		//only the starting player has visible cards
 		StartDrawCards(p1Starts, !p1Starts);
@@ -59,6 +59,17 @@ public class GameController : MonoBehaviour
 			player.deck.ShuffleDeck();
 		else
 			player.deck.FromArray(deckData);
+	}
+
+	public void StartPlayerTurn(PlayerData player) {
+		player.Init(startingMana, cardsPerTurn);
+		player.deck.ShuffleDeck();
+	}
+
+	//for animations really
+	public void StartDrawCards() {
+		player1.deck.AutoDrawCards(startingHandSize, 0.25f, true);
+		player2.deck.AutoDrawCards(startingHandSize, 0.25f, true);
 	}
 
 	public void StartDrawCards(bool renderP1, bool renderP2) {

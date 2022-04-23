@@ -129,6 +129,15 @@ public class Mouse : MonoBehaviour {
 		releaseEvent?.Invoke(hit);
 	}
 
+	//for animations
+	public void GrabCard() {
+		//grab first card in hand
+		if (player.heldCards.Count > 0) {
+			holding = player.heldCards[0].transform;
+			holding.transform.SetParent(mouseObject, true);
+		}
+	}
+
 	float duration = 0f;
 	float speed = 1f;
 	Vector3 targetPos = Vector3.zero;

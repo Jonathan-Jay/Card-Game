@@ -34,7 +34,7 @@ public class HandManager : MonoBehaviour
 		input.hoverEvent -= HoverManagement;
 	}
 
-	void HoverManagement(Transform hit) {
+	public void HoverManagement(Transform hit) {
 		if (!doHover)	return;
 
 		splaySelectIndexOld = splaySelectIndex;

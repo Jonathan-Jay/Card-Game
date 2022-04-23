@@ -26,7 +26,8 @@ public class ReturnCardsToHand : MonoBehaviour
 		if (!player)	return;
 
 		foreach(Card card in player.heldCards) {
-			card.CallBackCard();
+			if (player.hand.input.holding != card.transform)
+				card.CallBackCard();
 		}
 	}
 }
