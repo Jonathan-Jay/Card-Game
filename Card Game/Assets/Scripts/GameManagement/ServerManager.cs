@@ -115,6 +115,7 @@ public class ServerManager : MonoBehaviour
 			game.playerWon += ShowLeaveButton;
 
 			client.udpEvent += UdpUpdate;
+			client.winnerEvent += MakeWinner;
 
 			if (p1turn) {
 				game.player2.turnEndButton.enabled = false;
@@ -133,6 +134,12 @@ public class ServerManager : MonoBehaviour
 			//p2mouse.disabledAnimationMode = !isP2;
 
 			if (isP1 || isP2) {
+				void SendWin(PlayerData winner) {
+					if (CheckIfClient(winner, false)) {
+						Client.SendStringMessage("WIN");
+					}
+				}
+				game.playerWon += SendWin;
 				leaveButton.SetActive(false);
 				leaveLobbyButton.SetActive(false);
 
@@ -429,8 +436,12 @@ public class ServerManager : MonoBehaviour
 
 			void P1HovSend(Transform hit) {
 				if (tempTrans != hit) {
-					if ((tempTrans && tempTrans.CompareTag("Interactable"))
-						|| (hit && hit.CompareTag("Interactable")))
+					//if ((tempTrans && tempTrans.CompareTag("Interactable"))
+					//	|| (hit && hit.CompareTag("Interactable")))
+
+					//basically a check if hovering over a card
+					if ((tempTrans && tempTrans.GetComponent<Card>())
+						|| (hit && hit.GetComponent<Card>()))
 					{
 						InputSend("HOV", hit, p1mouse, false);
 					}
@@ -455,8 +466,12 @@ public class ServerManager : MonoBehaviour
 
 			void P2HovSend(Transform hit) {
 				if (tempTrans != hit) {
-					if ((tempTrans && tempTrans.CompareTag("Interactable"))
-						|| (hit && hit.CompareTag("Interactable")))
+					//if ((tempTrans && tempTrans.CompareTag("Interactable"))
+					//	|| (hit && hit.CompareTag("Interactable")))
+
+					//basically a check if hovering over a card
+					if ((tempTrans && tempTrans.GetComponent<Card>())
+						|| (hit && hit.GetComponent<Card>()))
 					{
 						InputSend("HOV", hit, p2mouse, false);
 					}
@@ -683,6 +698,15 @@ public class ServerManager : MonoBehaviour
 				prevPos = target.position;
 			}
 			yield return delay;
+		}
+	}
+
+	void MakeWinner(string playerCode) {
+		if (playerCode == Client.player1Code) {
+			game.MakeWinner(game.player1);
+		}
+		else if (playerCode == Client.player2Code) {
+			game.MakeWinner(game.player2);
 		}
 	}
 

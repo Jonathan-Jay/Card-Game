@@ -41,6 +41,8 @@ public class UITemplateList : MonoBehaviour
 	}
 
 	public void Clear() {
+		if (ids.Count == 0)	return;
+
 		ids.Clear();
 		while (profiles.Count > 0) {
 			Destroy(profiles[0].gameObject);

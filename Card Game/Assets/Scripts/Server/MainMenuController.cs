@@ -13,9 +13,10 @@ public class MainMenuController : MonoBehaviour
 	[SerializeField] TMP_Text ipError;
 	[SerializeField] TMP_InputField ipInput;
 	[SerializeField] GameObject localGameButtons;
-	[SerializeField] Button joinOnlineButton;
+	[SerializeField] GameObject onlineGameButton;
 	[SerializeField] Button joinServerButton;
 	[SerializeField] Button leaveServerButton;
+	[SerializeField] UITemplateList leaderboardList;
 	[SerializeField] int outLobbyIndex = 2;
 	[SerializeField] TMP_Text lobbyError;
 	[SerializeField] UITemplateList lobbyList;
@@ -40,6 +41,7 @@ public class MainMenuController : MonoBehaviour
 		client.leaveServerEvent += Leave;
 		client.updatePlayerList += UpdatePlayerList;
 		client.updateLobbyList += UpdateLobbyList;
+		client.updateLeaderboardList += UpdateLeaderboardList;
 		client.dirty += CleanLists;
 		client.lobbyError += LobbyError;
 		client.joinedLobby += JoinedLobby;
@@ -54,6 +56,7 @@ public class MainMenuController : MonoBehaviour
 		client.leaveServerEvent -= Leave;
 		client.updatePlayerList -= UpdatePlayerList;
 		client.updateLobbyList -= UpdateLobbyList;
+		client.updateLeaderboardList -= UpdateLeaderboardList;
 		client.dirty -= CleanLists;
 		client.lobbyError -= LobbyError;
 		client.joinedLobby -= JoinedLobby;
@@ -69,13 +72,13 @@ public class MainMenuController : MonoBehaviour
 
 	void EnableUI(bool connected) {
 		//things to hide?
-		LocalGameButtonInteractable(!connected);
+		MultiButtonInteractable(localGameButtons, !connected);
 
 		//things to allow
 		joinServerButton.gameObject.SetActive(!connected);
 		leaveServerButton.gameObject.SetActive(connected);
 
-		joinOnlineButton.interactable = connected;
+		MultiButtonInteractable(onlineGameButton, connected);
 
 		//only works if not working
 		ipInput.interactable = !connected;
@@ -97,7 +100,7 @@ public class MainMenuController : MonoBehaviour
 		//dont allow empty
 		if (ipInput.text == "") return;
 		//disable these
-		LocalGameButtonInteractable(false);
+		MultiButtonInteractable(localGameButtons, false);
 
 		connectedAudioPlayer?.Play();
 		client.TryConnect(ipInput.text);
@@ -111,7 +114,7 @@ public class MainMenuController : MonoBehaviour
 		joinServerButton.interactable = !functioning;
 
 		//things to hide?
-		LocalGameButtonInteractable(!functioning);
+		MultiButtonInteractable(localGameButtons, !functioning);
 
 		//if not functioning, reset ipInput;
 		if (!functioning)
@@ -128,6 +131,10 @@ public class MainMenuController : MonoBehaviour
 
 	void UpdateLobbyList(string message) {
 		lobbyList.CreateProfile(message);
+	}
+
+	void UpdateLeaderboardList(string message) {
+		leaderboardList.CreateProfile(message);
 	}
 
 	void CleanLists() {
@@ -195,8 +202,8 @@ public class MainMenuController : MonoBehaviour
 		player2Seat.SetActive(ServerManager.p2Index >= 0);
 	}
 
-	void LocalGameButtonInteractable(bool value) {
-		foreach (Button button in localGameButtons.GetComponentsInChildren<Button>()) {
+	void MultiButtonInteractable(GameObject parent, bool value) {
+		foreach (Button button in parent.GetComponentsInChildren<Button>()) {
 			button.interactable = value;
 		}
 	}
