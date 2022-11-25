@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PreviewCard : MonoBehaviour
 {
@@ -11,6 +12,12 @@ public class PreviewCard : MonoBehaviour
 	[SerializeField]	LayerMask mask;
 	[SerializeField]	float maxDist = 15;
 	[SerializeField]	Shader unlitShader;
+	[SerializeField]	InputAction hover;
+	[SerializeField]	InputAction previewCardInput;
+
+	static Quaternion ninetyX = Quaternion.Euler(90f, 0f, 0f);
+	bool dirty = false;
+	Transform card;
 
 	private void Start() {
 		target.SetReplacementShader(unlitShader, "RenderType");
@@ -21,49 +28,84 @@ public class PreviewCard : MonoBehaviour
 		anchorTarget = ((RectTransform)image.transform).anchorMax;
 	}
 
-	static Quaternion ninetyX = Quaternion.Euler(90f, 0f, 0f);
-	void LateUpdate() {
-		bool dirty = true;
+	private void Awake() {
+		previewCardInput.started += ctx => hover.Enable();
+		previewCardInput.canceled += ctx => {
+			hover.Disable();
+			dirty = true;
+		};
 
-		//if holding right click
-		if (Input.GetMouseButton(1)) {
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		hover.performed += ctx => {
+			dirty = true;
+			Vector2 mousePos = ctx.ReadValue<Vector2>();
+
+			Ray ray = Camera.main.ScreenPointToRay(mousePos);
 			RaycastHit rayHit;
 			if (Physics.Raycast(ray, out rayHit, maxDist, mask)) {
 				//we got a hit, check if the thing is a card then teleport the camera
 				Card cardTest = rayHit.transform.GetComponent<Card>();
 				if (cardTest) {
-					target.enabled = true;
-					//manual position parenting, prob not that bad actually
-					target.transform.rotation = rayHit.transform.rotation * ninetyX;
-					target.transform.position = rayHit.transform.position + rayHit.transform.rotation * offset;
-
-					//render the image
-					if (!image.activeInHierarchy)
-						image.SetActive(true);
-
-					//do the left right anchor stuff
-					if (Input.mousePosition.x > (Camera.main.pixelWidth * 0.5f)) {
-						if (anchorPosTarget.x < 0) {
-							anchorTarget = Vector2.up * anchorTarget.y;
-							anchorPosTarget = Vector2.right * imageOffsetRight
-									+ Vector2.up * anchorPosTarget.y;
-						}
-					}
-					else if (anchorPosTarget.x > 0) {
-						anchorTarget = Vector2.right + Vector2.up * anchorTarget.y;
-						anchorPosTarget = Vector2.left * imageOffsetRight
-								+ Vector2.up * anchorPosTarget.y;
-					}
-
-					if (!transitioning)
-						StartCoroutine(TransitionCardPreview());
-
+					PreviewCardData(mousePos.x > (Camera.main.pixelWidth * 0.5f), cardTest);
 				}
-				dirty = false;
+				else {
+					card = null;
+					dirty = false;
+				}
+			}
+			else {
+				card = null;
+			}
+		};
+	}
+
+	public void PreviewCardData(bool leftAnchor, Card card) {
+		if (card == null) {
+			this.card = null;
+			dirty = true;
+			return;
+		}
+		this.card = card.transform;
+		dirty = false;
+
+		target.enabled = true;
+
+		//render the image
+		if (!image.activeInHierarchy)
+			image.SetActive(true);
+
+		//do the left right anchor stuff
+		if (leftAnchor) {
+			if (anchorPosTarget.x < 0) {
+				anchorTarget = Vector2.up * anchorTarget.y;
+				anchorPosTarget = Vector2.right * imageOffsetRight
+					+ Vector2.up * anchorPosTarget.y;
 			}
 		}
-		
+		else if (anchorPosTarget.x > 0) {
+			anchorTarget = Vector2.right + Vector2.up * anchorTarget.y;
+			anchorPosTarget = Vector2.left * imageOffsetRight
+				+ Vector2.up * anchorPosTarget.y;
+		}
+
+		if (!transitioning)
+			StartCoroutine(TransitionCardPreview());
+	}
+
+	private void OnEnable() {
+		previewCardInput.Enable();
+	}
+
+	private void OnDisable() {
+		previewCardInput.Disable();
+	}
+
+	void LateUpdate() {
+		if (card) {
+			//manual position parenting, prob not that bad actually
+			target.transform.rotation = card.rotation * ninetyX;
+			target.transform.position = card.position + card.rotation * offset;
+		}
+
 		if (target.enabled && dirty) {
 			target.enabled = false;
 			transitioning = false;

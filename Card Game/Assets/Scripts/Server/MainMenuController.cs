@@ -68,6 +68,10 @@ public class MainMenuController : MonoBehaviour
 			firstScreen = false;
 			cam.DecrementIndex(false);
 		}
+		else {
+			FindObjectOfType<UnityEngine.EventSystems.EventSystem>()
+				.SetSelectedGameObject(localGameButtons.transform.GetChild(0).gameObject);
+		}
 	}
 
 	void EnableUI(bool connected) {

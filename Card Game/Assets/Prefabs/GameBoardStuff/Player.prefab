@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: 0.6087614, y: -0, z: -0, w: 0.79335344}
   m_LocalPosition: {x: 0, y: 4.6, z: -1.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1490228982075256586}
   m_RootOrder: 2
@@ -40,6 +41,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1490228982075256586}
   - component: {fileID: 1490228982075256587}
+  - component: {fileID: 2978079506537244545}
+  - component: {fileID: 2516823230050409413}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -57,6 +60,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1490228982155700940}
   - {fileID: 1490228982326011807}
@@ -86,6 +90,7 @@ MonoBehaviour:
   currentMana: 1
   maxMana: 1
   hand: {fileID: 8221884563460776616}
+  mouse: {fileID: 1490228982155700941}
   field: []
   backLine: []
   deck: {fileID: 0}
@@ -94,6 +99,209 @@ MonoBehaviour:
   damageAudioPlayer: {fileID: 0}
   healAudioPlayer: {fileID: 0}
   lastPlayedIndex: -1
+--- !u!114 &2978079506537244545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490228982075256585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be229a9d1f3560d499473b1902fe7642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: {fileID: 8221884563460776616}
+  mouse: {fileID: 1490228982155700941}
+  navigateHand:
+    m_Name: Navigate Hand
+    m_Type: 2
+    m_ExpectedControlType: Analog
+    m_Id: d100c3a3-27da-4b35-b165-16c194d54364
+    m_Processors: 
+    m_Interactions: Hold(pressPoint=0.75)
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 41c93f8b-aeae-4166-b9a7-2bf2890e2387
+      m_Path: <Gamepad>/leftStick/x
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate Hand
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 18fc1992-d411-412d-9313-1e78deb877f0
+      m_Path: <Gamepad>/dpad/x
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate Hand
+      m_Flags: 0
+    m_Flags: 0
+  interact:
+    m_Name: Interact
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: e68bd0a7-7b84-461a-a6c5-b4f81cef0212
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: ee85e813-861f-42ba-94a7-3b1e93602523
+      m_Path: <Gamepad>/buttonSouth
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Interact
+      m_Flags: 0
+    m_Flags: 0
+  denavigate:
+    m_Name: Denavigate
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 875d31be-f2b2-43fe-8126-af5b57be3017
+    m_Processors: 
+    m_Interactions: SlowTap(pressPoint=0.75)
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: c10af86d-e877-4698-ab4c-1d7d15c9896f
+      m_Path: <Gamepad>/leftStick/down
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Denavigate
+      m_Flags: 0
+    - m_Name: 
+      m_Id: e55ac77c-ec3f-4bf4-bb2a-d97b9f56764e
+      m_Path: <Gamepad>/dpad/down
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Denavigate
+      m_Flags: 0
+    m_Flags: 0
+  navigateMiddle:
+    m_Name: Navigate Middle
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: cd95c847-7cbe-4853-a8e8-e050c4abf100
+    m_Processors: 
+    m_Interactions: SlowTap(pressPoint=0.75)
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 5274ee1b-0c36-4c14-900a-5c025624d03a
+      m_Path: <Gamepad>/leftStick/up
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate Middle
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 461bb63a-6688-4630-ba56-da0c5cab5f49
+      m_Path: <Gamepad>/dpad/up
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate Middle
+      m_Flags: 0
+    m_Flags: 0
+  delay: 0.175
+--- !u!114 &2516823230050409413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490228982075256585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5458347186d55094ea90862f8136ca78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: {fileID: 2978079506537244545}
+  mouse: {fileID: 1490228982155700941}
+  cam: {fileID: 1490228982155700942}
+  camController: {fileID: 1490228982155700943}
+  previewer: {fileID: 0}
+  manager: {fileID: 0}
+  previewCard:
+    m_Name: Preview Card
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 65c2cb4a-63ec-4c9d-9a8c-9c0a93a59ec1
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 93153f8d-f1f6-4114-a988-4b8dfa4a2ae9
+      m_Path: <Gamepad>/buttonWest
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Preview Card
+      m_Flags: 0
+    m_Flags: 0
+  moveCursor:
+    m_Name: Move Cursor
+    m_Type: 0
+    m_ExpectedControlType: Vector2
+    m_Id: f0e7c970-50dd-4fae-a078-1200715c29c4
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 6d3c1630-e601-48d1-91ee-33d6d91159fd
+      m_Path: <Gamepad>/leftStick
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Move Cursor
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 024b0931-adeb-48fb-8d29-639b920365ca
+      m_Path: <Gamepad>/dpad
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Move Cursor
+      m_Flags: 0
+    m_Flags: 0
+  tryInteract:
+    m_Name: Try Interact
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 8d6db05c-3109-4f60-9611-855c25dce6c5
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: a6a2f679-46ca-428e-aa0e-96d34012ffd5
+      m_Path: <Gamepad>/buttonSouth
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Try Interact
+      m_Flags: 0
+    m_Flags: 0
+  tryCancel:
+    m_Name: Try Cancel
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: e88a995e-91f0-49b7-a449-b74738c74197
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: a43061d2-c4ac-4726-8235-55ff3218c96e
+      m_Path: <Gamepad>/buttonEast
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Try Cancel
+      m_Flags: 0
+    m_Flags: 0
+  delay: 0.2
+  offset: {x: 0, y: 0.2, z: 0}
 --- !u!1 &1490228982155700937
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,6 +332,7 @@ Transform:
   m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
   m_LocalPosition: {x: 0, y: 5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1490228982075256586}
   m_RootOrder: 0
@@ -196,6 +405,57 @@ MonoBehaviour:
   ignoredLayer: 7
   invisibleLayer: 8
   cardLayer: 6
+  hoverAction:
+    m_Name: Hover
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 0a2f7eac-f058-4f86-a2bc-e383242ed669
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 27db12a6-ccae-48fa-a07c-630c7cbb7d80
+      m_Path: <Mouse>/position
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Hover
+      m_Flags: 0
+    m_Flags: 0
+  clickAction:
+    m_Name: Click
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 386b32d1-f888-4c35-a5fc-3b7694d6593c
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 8090cd34-5a03-40e5-8903-69b1ce018463
+      m_Path: <Mouse>/leftButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Click
+      m_Flags: 0
+    m_Flags: 0
+  releaseAction:
+    m_Name: Release
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: a81f06d0-e1e6-421f-a13a-c5a025f67c43
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: aeb69ca0-1006-4c78-80e1-a9d14173940f
+      m_Path: <Mouse>/leftButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Release
+      m_Flags: 0
+    m_Flags: 0
   holding: {fileID: 0}
   cantPlaceCards: 0
 --- !u!114 &1490228982155700942
@@ -229,8 +489,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41d7b2cd39279684da22da2eeacdbdb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  navigate:
+    m_Name: Navigate
+    m_Type: 0
+    m_ExpectedControlType: Analog
+    m_Id: 5d8b6a30-9e7c-4c29-9f1d-89957fb8700d
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: ddba448e-a608-4d4e-a50e-4cc242b10ee8
+      m_Path: <Mouse>/scroll/y
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 0
+    - m_Name: 1D Axis
+      m_Id: 1d2b5306-438b-4f81-9fa8-47f9f838d6bb
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 4
+    - m_Name: negative
+      m_Id: 9270bacd-dc1b-4ae9-8c0c-5f8894dfc6ba
+      m_Path: <Keyboard>/s
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: positive
+      m_Id: c93ec861-46bf-4e9a-9613-a50ffc956701
+      m_Path: <Keyboard>/w
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: 
+      m_Id: 28d7d03b-949e-40f7-9882-38787de9a526
+      m_Path: <Gamepad>/rightStick/y
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 0
+    m_Flags: 0
   cam: {fileID: 1490228982155700942}
   looping: 0
+  scrollDelay: 0.2
 --- !u!1 &1490228982179625400
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,6 +567,7 @@ Transform:
   m_LocalRotation: {x: 0.46174863, y: 0, z: 0, w: 0.8870109}
   m_LocalPosition: {x: 0, y: 1.9, z: -4.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1490228982075256586}
   m_RootOrder: 4
@@ -294,6 +605,7 @@ Transform:
   m_LocalRotation: {x: -0.29237175, y: -0, z: -0, w: 0.9563048}
   m_LocalPosition: {x: 0, y: 0.5, z: -3.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1490228982075256586}
   m_RootOrder: 1
@@ -312,7 +624,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   input: {fileID: 1490228982155700941}
   doHover: 1
-  splayMinimum: 3
+  splayMinimum: 1
   totalSplayDegree: 25
   splayOriginOffset: 3
   hoverHeight: 0.1
@@ -837,8 +1149,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1490228982329847308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.25, z: -1}
+  m_LocalPosition: {x: 0, y: 0.25, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1490228983535554124}
   - {fileID: 547310058302391168}
@@ -874,6 +1187,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1490228982518164944}
   m_RootOrder: 0
@@ -1029,6 +1343,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1490228982518164944}
   m_Father: {fileID: 1490228982987685138}
@@ -1226,6 +1541,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1490228982459041019}
   - {fileID: 1490228983689745689}
@@ -1280,6 +1596,7 @@ RectTransform:
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.01, y: 0.010000001, z: 0.010000001}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1490228982481929810}
   m_Father: {fileID: 1490228982075256586}
@@ -1379,6 +1696,7 @@ Transform:
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.05, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1490228983535554124}
   m_RootOrder: 0
@@ -1460,6 +1778,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1490228983113167481}
   m_Father: {fileID: 1490228982329847309}
@@ -1506,6 +1825,7 @@ Transform:
   m_LocalRotation: {x: 0.3420201, y: 0, z: 0, w: 0.9396927}
   m_LocalPosition: {x: 0, y: 2.5, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1490228982075256586}
   m_RootOrder: 3
@@ -1538,6 +1858,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1490228982518164944}
   m_RootOrder: 1
@@ -1672,6 +1993,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1490228982329847309}
   m_RootOrder: 1

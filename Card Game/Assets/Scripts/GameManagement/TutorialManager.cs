@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -52,7 +53,7 @@ public class TutorialManager : MonoBehaviour
 	public Mouse p2mouse;
 	public bool p1turn = true;
 
-	[SerializeField] KeyCode pauseButton;
+	public InputAction pauseButton;
 	[SerializeField] GameObject pauseScreen;
 	[SerializeField] Transform tutorialTrans;
 	[SerializeField] MeshRenderer tutorialQuad;
@@ -72,6 +73,22 @@ public class TutorialManager : MonoBehaviour
 		notDefaultCol.a = alpha;
 
 		tutorialTrans.GetComponent<PressEventButton>().pressed += IncrementIndex;
+
+		
+		pauseButton.started += ctx => {
+			pauseScreen.SetActive(!pauseScreen.activeInHierarchy);
+
+			p1mouse.SetDisabled(pauseScreen.activeInHierarchy);
+			p1mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
+		};
+	}
+
+	private void OnEnable() {
+		pauseButton.Enable();
+	}
+
+	private void OnDisable() {
+		pauseButton.Disable();
 	}
 
 	private void Start() {
@@ -126,13 +143,6 @@ public class TutorialManager : MonoBehaviour
 	}
 
 	private void Update() {
-		if (Input.GetKeyDown(pauseButton)) {
-			pauseScreen.SetActive(!pauseScreen.activeInHierarchy);
-
-			p1mouse.SetDisabled(pauseScreen.activeInHierarchy);
-			p1mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
-		}
-
 		if (CheckCurrentSegment()) {
 			IncrementIndex();
 		}

@@ -9,6 +9,7 @@ public class PlayerData : MonoBehaviour {
 	public int currentMana = 1;
 	public int maxMana = 1;
 	public HandManager hand;
+	public Mouse mouse;
 	public List<CardAttacker> field = new List<CardAttacker>();
 	public List<CardMover> backLine = new List<CardMover>();
 	public DeckManager deck;

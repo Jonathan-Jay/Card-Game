@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ServerManager : MonoBehaviour
 {
@@ -11,7 +12,6 @@ public class ServerManager : MonoBehaviour
 	public Mouse p2mouse;
 	private Camera p1cam;
 	private Camera p2cam;
-	private event System.Action updateFunc;
 	public static bool localMultiplayer = true;
 
 	//store the current turn
@@ -19,8 +19,9 @@ public class ServerManager : MonoBehaviour
 	public static int p1Index = -1;
 	public static int p2Index = -1;
 
-	[SerializeField]	KeyCode swapCam;
-	[SerializeField]	KeyCode pauseButton;
+	public InputAction pauseButton;
+	public InputAction swapCam;
+
 	[SerializeField]	GameObject pauseScreen;
 	[SerializeField]	GameObject networkedPauseButtons;
 	[SerializeField]	GameObject leaveButton;
@@ -45,6 +46,16 @@ public class ServerManager : MonoBehaviour
 		p2cam = p2mouse.GetComponent<Camera>();
 	}
 
+	private void OnEnable() {
+		pauseButton.Enable();
+		swapCam.Enable();
+	}
+
+	private void OnDisable() {
+		pauseButton.Disable();
+		swapCam.Disable();
+	}
+
 	//late inits
 	private void Start() {
 		//force p1Turn for now
@@ -60,7 +71,49 @@ public class ServerManager : MonoBehaviour
 
 		if (localMultiplayer) {
 			//has to do lots of input controlling
-			updateFunc += LocalMulti;
+			pauseButton.started += ctx => {
+				pauseScreen.SetActive(!pauseScreen.activeInHierarchy);
+
+				//toggle the mice, currently jsut toggle the active one
+				if (lookingAtP1) {
+					p1mouse.SetDisabled(pauseScreen.activeInHierarchy);
+					p1mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
+				}
+				else {
+					p2mouse.SetDisabled(pauseScreen.activeInHierarchy);
+					p2mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
+				}
+			};
+
+			swapCam.started += ctx => {
+				//dont allow camera swapping if paused (you technically dont need to pause in local multi tho)
+				if (!pauseScreen.activeInHierarchy) {
+					//toggle cameras
+					if (lookingAtP1) {
+						lookingAtP1 = false;
+						if (!localCamTarget) {
+							p1mouse.SetDisabled(true);
+							p1mouse.GetComponent<KeypressCamController>().IgnoreInput(true);
+
+							localCamTarget = p1mouse.GetComponent<CameraController>();
+							StartCoroutine(LocalCamSwapTransition());
+						}
+						localCamTarget.ForceTransition(p2cam.GetComponent<CameraController>().GetCurrent());
+					}
+					else {
+						lookingAtP1 = true;
+						if (!localCamTarget) {
+							p2mouse.SetDisabled(true);
+							p2mouse.GetComponent<KeypressCamController>().IgnoreInput(true);
+
+							localCamTarget = p2mouse.GetComponent<CameraController>();
+							StartCoroutine(LocalCamSwapTransition());
+						}
+						localCamTarget.ForceTransition(p1cam.GetComponent<CameraController>().GetCurrent());
+					}
+				}
+			};
+
 			//this one is local only as it hides faces and handles pausing differently
 			game.turnEnded += LocalTurnEndPlayerChange;
 			game.playerWon += LocalWinner;
@@ -110,7 +163,20 @@ public class ServerManager : MonoBehaviour
 			game.turnEnded += OnlineTurnEndPlayerChange;
 
 			//this one kinda just handles pausing tbh
-			updateFunc += OnlineMulti;
+			pauseButton.started += ctx => {
+				pauseScreen.SetActive(!pauseScreen.activeInHierarchy);
+
+				//toggle the mice, toggle the player's (figure out which is theirs)
+				if (p1Index == Client.playerId) {
+					p1mouse.SetDisabled(pauseScreen.activeInHierarchy);
+					p1mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
+				}
+				else if (p2Index == Client.playerId) {
+					p2mouse.SetDisabled(pauseScreen.activeInHierarchy);
+					p2mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
+				}
+			};
+
 			game.playerWon += OnlineWinner;
 			game.playerWon += ShowLeaveButton;
 
@@ -134,6 +200,8 @@ public class ServerManager : MonoBehaviour
 			//p2mouse.disabledAnimationMode = !isP2;
 
 			if (isP1 || isP2) {
+				swapCam.Disable();
+
 				void SendWin(PlayerData winner) {
 					if (CheckIfClient(winner, false)) {
 						Client.SendStringMessage("WIN");
@@ -169,7 +237,35 @@ public class ServerManager : MonoBehaviour
 				concedeButton.SetActive(false);
 
 				//add the ability to swap cams
-				updateFunc += SwapCams;
+				swapCam.started += ctx => {
+					//made for spectators
+					if (!pauseScreen.activeInHierarchy) {
+						//toggle cameras
+						if (p1cam.enabled) {
+							p1cam.enabled = false;
+							p1cam.GetComponent<KeypressCamController>().IgnoreInput(true);
+							p2cam.enabled = true;
+							p2cam.GetComponent<KeypressCamController>().IgnoreInput(false);
+
+							localCamTarget = p2cam.GetComponent<CameraController>();
+							localCamTarget.ForceTransition(p1cam.transform);
+							localCamTarget.Snap();
+							localCamTarget.ForceTransition(null);
+						}
+						else {
+							p1cam.enabled = true;
+							p1cam.GetComponent<KeypressCamController>().IgnoreInput(false);
+							p2cam.enabled = false;
+							p2cam.GetComponent<KeypressCamController>().IgnoreInput(true);
+
+							localCamTarget = p1cam.GetComponent<CameraController>();
+							localCamTarget.ForceTransition(p2cam.transform);
+							localCamTarget.Snap();
+							localCamTarget.ForceTransition(null);
+						}
+						LookAt.ForceUpdateCamera?.Invoke();
+					}	
+				};
 
 				//disable all inputs
 				p1mouse.disabled = true;
@@ -710,74 +806,9 @@ public class ServerManager : MonoBehaviour
 		}
 	}
 
-	void Update() {
-		//this is all it does lol
-		updateFunc?.Invoke();
-	}
-
-	void OnlineMulti() {
-		//pause menu jazz
-		if (Input.GetKeyDown(pauseButton)) {
-			pauseScreen.SetActive(!pauseScreen.activeInHierarchy);
-
-			//toggle the mice, toggle the player's (figure out which is theirs)
-			if (p1Index == Client.playerId) {
-				p1mouse.SetDisabled(pauseScreen.activeInHierarchy);
-				p1mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
-			}
-			else if (p2Index == Client.playerId) {
-				p2mouse.SetDisabled(pauseScreen.activeInHierarchy);
-				p2mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
-			}
-		}
-
-		//nothing else?, possibly add online only keypresses
-	}
-
 	bool lookingAtP1 = true;
 	CameraController localCamTarget = null;
 	void LocalMulti() {
-		//pause menu jazz
-		if (Input.GetKeyDown(pauseButton)) {
-			pauseScreen.SetActive(!pauseScreen.activeInHierarchy);
-
-			//toggle the mice, currently jsut toggle the active one
-			if (lookingAtP1) {
-				p1mouse.SetDisabled(pauseScreen.activeInHierarchy);
-				p1mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
-			}
-			else {
-				p2mouse.SetDisabled(pauseScreen.activeInHierarchy);
-				p2mouse.GetComponent<KeypressCamController>().IgnoreInput(pauseScreen.activeInHierarchy);
-			}
-		}
-
-		//dont allow camera swapping if paused (you technically dont need to pause in local multi tho)
-		if (!pauseScreen.activeInHierarchy && Input.GetKeyDown(swapCam)) {
-			//toggle cameras
-			if (lookingAtP1) {
-				lookingAtP1 = false;
-				if (!localCamTarget) {
-					p1mouse.SetDisabled(true);
-					p1mouse.GetComponent<KeypressCamController>().IgnoreInput(true);
-
-					localCamTarget = p1mouse.GetComponent<CameraController>();
-					StartCoroutine(LocalCamSwapTransition());
-				}
-				localCamTarget.ForceTransition(p2cam.GetComponent<CameraController>().GetCurrent());
-			}
-			else {
-				lookingAtP1 = true;
-				if (!localCamTarget) {
-					p2mouse.SetDisabled(true);
-					p2mouse.GetComponent<KeypressCamController>().IgnoreInput(true);
-
-					localCamTarget = p2mouse.GetComponent<CameraController>();
-					StartCoroutine(LocalCamSwapTransition());
-				}
-				localCamTarget.ForceTransition(p1cam.GetComponent<CameraController>().GetCurrent());
-			}
-		}
 	}
 
 	IEnumerator LocalCamSwapTransition() {
@@ -810,36 +841,6 @@ public class ServerManager : MonoBehaviour
 		localCamTarget.ForceTransition(null);
 		localCamTarget.Snap();
 		localCamTarget = null;
-	}
-
-	void SwapCams() {
-		//made for spectators
-		if (!pauseScreen.activeInHierarchy && Input.GetKeyDown(swapCam)) {
-			//toggle cameras
-			if (p1cam.enabled) {
-				p1cam.enabled = false;
-				p1cam.GetComponent<KeypressCamController>().IgnoreInput(true);
-				p2cam.enabled = true;
-				p2cam.GetComponent<KeypressCamController>().IgnoreInput(false);
-				
-				localCamTarget = p2cam.GetComponent<CameraController>();
-				localCamTarget.ForceTransition(p1cam.transform);
-				localCamTarget.Snap();
-				localCamTarget.ForceTransition(null);
-			}
-			else {
-				p1cam.enabled = true;
-				p1cam.GetComponent<KeypressCamController>().IgnoreInput(false);
-				p2cam.enabled = false;
-				p2cam.GetComponent<KeypressCamController>().IgnoreInput(true);
-
-				localCamTarget = p1cam.GetComponent<CameraController>();
-				localCamTarget.ForceTransition(p2cam.transform);
-				localCamTarget.Snap();
-				localCamTarget.ForceTransition(null);
-			}
-			LookAt.ForceUpdateCamera?.Invoke();
-		}
 	}
 
 	void OnlineTurnEndPlayerChange() {

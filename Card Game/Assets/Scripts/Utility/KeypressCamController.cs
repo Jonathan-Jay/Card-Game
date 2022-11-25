@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class KeypressCamController : MonoBehaviour
 {
+	[SerializeField] UnityEngine.InputSystem.InputAction navigate;
 	public CameraController cam;
 	public bool looping = false;
 
@@ -17,20 +18,34 @@ public class KeypressCamController : MonoBehaviour
 	float scrollCounter = 0f;
 	void Update()
 	{
-		if (ignore)	return;
-
 		//mouse position check?
-		if (scrollDelay > 0f) {
-			scrollDelay -= Time.deltaTime;
+		if (scrollCounter > 0f) {
+			scrollCounter -= Time.deltaTime;
 		}
+	}
 
-		if (Input.GetKeyDown(KeyCode.W) || (scrollCounter <= 0f && Input.mouseScrollDelta.y > 0f)) {
-			cam.IncrementIndex(looping);
-			scrollCounter = scrollDelay;
-		}
-		if (Input.GetKeyDown(KeyCode.S) || (scrollCounter <= 0f && Input.mouseScrollDelta.y < 0f)) {
-			cam.DecrementIndex(looping);
-			scrollCounter = scrollDelay;
-		}
+	private void Awake() {
+		navigate.performed += ctx => {
+			if (ignore)	return;
+
+			float val = ctx.ReadValue<float>();
+
+			if (scrollCounter <= 0f && val > 0.5f) {
+				cam.IncrementIndex(looping);
+				scrollCounter = scrollDelay;
+			}
+			if (scrollCounter <= 0f && val < -0.5f) {
+				cam.DecrementIndex(looping);
+				scrollCounter = scrollDelay;
+			}
+		};
+	}
+
+	private void OnEnable() {
+		navigate.Enable();
+	}
+
+	private void OnDisable() {
+		navigate.Disable();
 	}
 }

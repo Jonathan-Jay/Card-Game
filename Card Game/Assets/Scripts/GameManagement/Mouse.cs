@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Mouse : MonoBehaviour {
     public Transform mouseObject;
@@ -17,15 +18,18 @@ public class Mouse : MonoBehaviour {
 	public int invisibleLayer;
 	public int cardLayer;
 	
+	[SerializeField] InputAction hoverAction;
 	public event System.Action<Transform> hoverEvent;
+	[SerializeField] InputAction clickAction;
 	public event System.Action<Transform> clickEvent;
 	//public RaycastEvent clickEvent;
+	[SerializeField] InputAction releaseAction;
 	public event System.Action<Transform> releaseEvent;
 	//public RaycastEvent releaseEvent;
 
     private Camera cam;
 	int mask;
-
+	Transform rayHit;
 
 	//used in the disabling of things
 	public int activeAnims {get; private set;} = 0;
@@ -36,14 +40,46 @@ public class Mouse : MonoBehaviour {
 		//just do this once
 		mask = ~((1 << ignoredLayer) | (1 << invisibleLayer));
 		targettingCursor.gameObject.SetActive(false);
+
+		hoverAction.performed += ctx => {
+			if (disabled || ignore || Client.unfocused) return;
+
+			Ray rayInfo = cam.ScreenPointToRay(ctx.ReadValue<Vector2>());
+			RaycastHit rayHitInfo;
+
+			if (Physics.Raycast(rayInfo, out rayHitInfo, maxDist, mask)) {
+				mouseObject.position = rayHitInfo.point + Vector3.up * vertOffset;
+
+				rayHit = rayHitInfo.transform;
+
+				hoverEvent?.Invoke(rayHit);
+			}
+			else {
+				rayHit = null;
+			}
+		};
+
+		clickAction.started += ctx => {
+			clickEvent?.Invoke(rayHit);
+		};
+
+		releaseAction.canceled += ctx => {
+			releaseEvent?.Invoke(rayHit);
+		};
 	}
 
 	private void OnEnable() {
 		hoverEvent += ColourChange;
+		hoverAction.Enable();
+		clickAction.Enable();
+		releaseAction.Enable();
 	}
 
 	private void OnDisable() {
 		hoverEvent -= ColourChange;
+		hoverAction.Disable();
+		clickAction.Disable();
+		releaseAction.Disable();
 	}
 
 	int currentCol = 0;
@@ -112,7 +148,7 @@ public class Mouse : MonoBehaviour {
 		disabled = val;
 	}
 
-	bool ignore = false;
+	public bool ignore {private set; get;} = false;
 	public void IgnoreInput(bool val) {
 		ignore = val;
 	}
@@ -161,54 +197,31 @@ public class Mouse : MonoBehaviour {
 		} while (duration > 0f);
 	}
 
-	void Update() {
-		if (disabled || ignore || Client.unfocused)	return;
-
-        Ray rayInfo = cam.ScreenPointToRay(Input.mousePosition);
-        RaycastHit rayHitInfo;
-
-        if (Physics.Raycast(rayInfo, out rayHitInfo, maxDist, mask)) {
-            mouseObject.position = rayHitInfo.point + Vector3.up * vertOffset;
-			
-			hoverEvent?.Invoke(rayHitInfo.transform);
-
-			if (Input.GetMouseButtonDown(0)) {
-				clickEvent?.Invoke(rayHitInfo.transform);
-			}
-        }
-		
-		if (Input.GetMouseButtonUp(0)) {
-			//can be null
-			releaseEvent?.Invoke(rayHitInfo.transform);
-		}
-    }
-
 	public void ActivateAll() {
-		clickEvent += ClickButton;
 		//clickEvent += ClickDeck;
 		releaseEvent += ReleaseCardHolder;
-		clickEvent += ClickCard;
-		releaseEvent += ReleaseCard;
+		ActivateEssentials();
 	}
 
 	public void DeActivateAll() {
-		clickEvent -= ClickButton;
 		//clickEvent -= ClickDeck;
 		releaseEvent -= ReleaseCardHolder;
-		clickEvent -= ClickCard;
-		releaseEvent -= ReleaseCard;
+		DeActivateEssentials();
 	}
 
+	public bool essentials {private set; get;} = false;
 	public void ActivateEssentials() {
 		clickEvent += ClickButton;
 		clickEvent += ClickCard;
 		releaseEvent += ReleaseCard;
+		essentials = true;
 	}
 
 	public void DeActivateEssentials() {
 		clickEvent -= ClickButton;
 		clickEvent -= ClickCard;
 		releaseEvent -= ReleaseCard;
+		essentials = false;
 	}
 
 	/*

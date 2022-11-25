@@ -123,8 +123,7 @@ public class MonsterCard : Card
 			base.OnPlace(current, opposing);
 		}
 	}
-	
-	bool waiting = false;
+
 	IEnumerator CheckCost(PlayerData current, PlayerData opposing) {
 		Transform hit = null;
 		Queue<Transform> hits = new Queue<Transform>();

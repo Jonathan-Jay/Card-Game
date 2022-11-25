@@ -69,7 +69,6 @@ public class SpellCard : Card
 		waiting = true;
 	}
 
-	bool waiting = false;
 	IEnumerator CastSpell(PlayerData current, PlayerData opposing) {
 		Transform hit = null;
 		Queue<Transform> hits = new Queue<Transform>();

@@ -91,6 +91,7 @@ public class Card : MonoBehaviour
 		placed = true;
 	}
 
+	protected bool waiting = false;
 	public void Release(bool playSound) {
 		if (placement != null) {
 			placement.UnLink();

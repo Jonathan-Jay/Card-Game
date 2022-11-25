@@ -32,6 +32,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8043052174737056828}
   m_Father: {fileID: 0}
@@ -62,6 +63,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8100cb0b9373f0d479da8730b678942a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasBinding: 1
+  binding:
+    m_Name: Binding
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: bb50e45f-164c-4f5a-8a45-294a69774ac5
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: c750e959-a399-4c29-a488-11d5ae0b19a3
+      m_Path: <Gamepad>/rightShoulder
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Binding
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 1bce522d-cfd1-4082-9d45-d9c08f6f24f3
+      m_Path: <Gamepad>/rightTrigger
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Binding
+      m_Flags: 0
+    m_Flags: 0
   player: {fileID: 0}
   id: 5
 --- !u!114 &7907295295265110100
@@ -214,7 +241,7 @@ AudioSource:
     m_RotationOrder: 4
 --- !u!95 &1080561514228406070
 Animator:
-  serializedVersion: 3
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -227,6 +254,7 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1

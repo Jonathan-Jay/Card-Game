@@ -1126,6 +1126,8 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 1490228982155700943, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
     - {fileID: 1490228982155700942, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+    - {fileID: 2516823230050409413, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+    - {fileID: 2978079506537244545, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
 --- !u!114 &477346539 stripped
 MonoBehaviour:
@@ -1291,7 +1293,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528558125}
-  m_LocalRotation: {x: -0.031908818, y: 0.70638645, z: 0.031908814, w: 0.7063865}
+  m_LocalRotation: {x: -0.044687558, y: 0.7056933, z: 0.044687558, w: 0.7056933}
   m_LocalPosition: {x: -19.11, y: 2.57, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2151,6 +2153,8 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 1490228982155700942, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
     - {fileID: 1490228982155700943, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+    - {fileID: 2516823230050409413, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
+    - {fileID: 2978079506537244545, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c36c253525d874642925ec14b7b35ff5, type: 3}
 --- !u!114 &892660309 stripped
 MonoBehaviour:
@@ -2317,20 +2321,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3518372173776631800, guid: 29844f729c41bb848aeb042d2053171d, type: 3}
   m_PrefabInstance: {fileID: 1007364456}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1007364459
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1007364458}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a1a5a9a6f5f57a4fb1cb413e5faa0d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  range: 15
-  counter: 0
 --- !u!114 &1007364460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3674,7 +3664,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1754051241}
-  m_LocalRotation: {x: -0.031908818, y: 0.70638645, z: 0.031908814, w: 0.7063865}
+  m_LocalRotation: {x: -0.03190883, y: 0.70638645, z: 0.031908825, w: 0.7063865}
   m_LocalPosition: {x: -19.11, y: 2.57, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
